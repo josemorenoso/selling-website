@@ -1,0 +1,12 @@
+{
+  "name": "luis-moreno-website",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "serve": "node serve.mjs",
+    "screenshot": "node screenshot.mjs http://localhost:3000"
+  },
+  "dependencies": {
+    "puppeteer": "^24.40.0"
+  }
+}

@@ -1,0 +1,12 @@
+node_modules/
+temporary screenshots/
+.tmp/
+.env
+*.log
+
+# Screenshots de referencia/desarrollo
+Captura de pantalla*.png
+1112.png
+
+# Archivos de desarrollo local
+screenshot.mjs

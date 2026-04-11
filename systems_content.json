@@ -1,0 +1,299 @@
+{
+  "children": [
+    {
+      "object": "block",
+      "type": "callout",
+      "callout": {
+        "rich_text": [{"type": "text", "text": {"content": "Este documento reemplaza la teoría por acciones concretas. Checklists, scripts y pasos exactos para ejecutar."}}],
+        "icon": {"type": "emoji", "emoji": "⚡"},
+        "color": "yellow_background"
+      }
+    },
+    {
+      "object": "block",
+      "type": "divider",
+      "divider": {}
+    },
+    {
+      "object": "block",
+      "type": "heading_2",
+      "heading_2": {
+        "rich_text": [{"type": "text", "text": {"content": "1️⃣ ADQUISICIÓN - Checklist Diario"}}]
+      }
+    },
+    {
+      "object": "block",
+      "type": "to_do",
+      "to_do": {
+        "rich_text": [{"type": "text", "text": {"content": "Publicar 1 video en IG/TikTok"}}],
+        "checked": false
+      }
+    },
+    {
+      "object": "block",
+      "type": "to_do",
+      "to_do": {
+        "rich_text": [{"type": "text", "text": {"content": "Revisar DMs y comentarios en Manychat"}}],
+        "checked": false
+      }
+    },
+    {
+      "object": "block",
+      "type": "to_do",
+      "to_do": {
+        "rich_text": [{"type": "text", "text": {"content": "Agregar 10 empresas nuevas al CRM"}}],
+        "checked": false
+      }
+    },
+    {
+      "object": "block",
+      "type": "to_do",
+      "to_do": {
+        "rich_text": [{"type": "text", "text": {"content": "Realizar 20 llamadas de cold calling"}}],
+        "checked": false
+      }
+    },
+    {
+      "object": "block",
+      "type": "to_do",
+      "to_do": {
+        "rich_text": [{"type": "text", "text": {"content": "Actualizar estados en CRM"}}],
+        "checked": false
+      }
+    },
+    {
+      "object": "block",
+      "type": "quote",
+      "quote": {
+        "rich_text": [{"type": "text", "text": {"content": "Meta semanal: 100 llamadas | 5 R1 agendadas"}}]
+      }
+    },
+    {
+      "object": "block",
+      "type": "divider",
+      "divider": {}
+    },
+    {
+      "object": "block",
+      "type": "heading_2",
+      "heading_2": {
+        "rich_text": [{"type": "text", "text": {"content": "2️⃣ VENTAS - Pipeline Acciones"}}]
+      }
+    },
+    {
+      "object": "block",
+      "type": "heading_3",
+      "heading_3": {
+        "rich_text": [{"type": "text", "text": {"content": "ANTES DE R1 (15 min)"}}]
+      }
+    },
+    {
+      "object": "block",
+      "type": "to_do",
+      "to_do": {
+        "rich_text": [{"type": "text", "text": {"content": "Buscar empresa en Google Maps"}}],
+        "checked": false
+      }
+    },
+    {
+      "object": "block",
+      "type": "to_do",
+      "to_do": {
+        "rich_text": [{"type": "text", "text": {"content": "Contar empleados (LinkedIn/Instagram)"}}],
+        "checked": false
+      }
+    },
+    {
+      "object": "block",
+      "type": "to_do",
+      "to_do": {
+        "rich_text": [{"type": "text", "text": {"content": "Verificar redes sociales y web"}}],
+        "checked": false
+      }
+    },
+    {
+      "object": "block",
+      "type": "to_do",
+      "to_do": {
+        "rich_text": [{"type": "text", "text": {"content": "Identificar pain points del nicho"}}],
+        "checked": false
+      }
+    },
+    {
+      "object": "block",
+      "type": "heading_3",
+      "heading_3": {
+        "rich_text": [{"type": "text", "text": {"content": "SCRIPT R1 (20-45 min)"}}]
+      }
+    },
+    {
+      "object": "block",
+      "type": "numbered_list_item",
+      "numbered_list_item": {
+        "rich_text": [{"type": "text", "text": {"content": "APERTURA: Hola [nombre], Luis de LM Automations. Tengo 2 minutos?"}}]
+      }
+    },
+    {
+      "object": "block",
+      "type": "numbered_list_item",
+      "numbered_list_item": {
+        "rich_text": [{"type": "text", "text": {"content": "MARCO: Te ayudo a escalar tu operación mediante automatizaciones. ¿Te interesa?"}}]
+      }
+    },
+    {
+      "object": "block",
+      "type": "numbered_list_item",
+      "numbered_list_item": {
+        "rich_text": [{"type": "text", "text": {"content": "DIAGNÓSTICO: ¿Qué proceso te consume más tiempo actualmente?"}}]
+      }
+    },
+    {
+      "object": "block",
+      "type": "numbered_list_item",
+      "numbered_list_item": {
+        "rich_text": [{"type": "text", "text": {"content": "CIERRE: Agendar R2 o marcar como no interesado"}}]
+      }
+    },
+    {
+      "object": "block",
+      "type": "divider",
+      "divider": {}
+    },
+    {
+      "object": "block",
+      "type": "heading_2",
+      "heading_2": {
+        "rich_text": [{"type": "text", "text": {"content": "3️⃣ ENTREGA - Template Proyecto"}}]
+      }
+    },
+    {
+      "object": "block",
+      "type": "heading_3",
+      "heading_3": {
+        "rich_text": [{"type": "text", "text": {"content": "SEMANA 1-2: Auditoría"}}]
+      }
+    },
+    {
+      "object": "block",
+      "type": "to_do",
+      "to_do": {
+        "rich_text": [{"type": "text", "text": {"content": "Kickoff con cliente (30 min)"}}],
+        "checked": false
+      }
+    },
+    {
+      "object": "block",
+      "type": "to_do",
+      "to_do": {
+        "rich_text": [{"type": "text", "text": {"content": "Mapear proceso actual"}}],
+        "checked": false
+      }
+    },
+    {
+      "object": "block",
+      "type": "to_do",
+      "to_do": {
+        "rich_text": [{"type": "text", "text": {"content": "Identificar herramientas a integrar"}}],
+        "checked": false
+      }
+    },
+    {
+      "object": "block",
+      "type": "to_do",
+      "to_do": {
+        "rich_text": [{"type": "text", "text": {"content": "Presentar propuesta y costo"}}],
+        "checked": false
+      }
+    },
+    {
+      "object": "block",
+      "type": "heading_3",
+      "heading_3": {
+        "rich_text": [{"type": "text", "text": {"content": "SEMANA 3: Implementación"}}]
+      }
+    },
+    {
+      "object": "block",
+      "type": "to_do",
+      "to_do": {
+        "rich_text": [{"type": "text", "text": {"content": "Construir en n8n/Make"}}],
+        "checked": false
+      }
+    },
+    {
+      "object": "block",
+      "type": "to_do",
+      "to_do": {
+        "rich_text": [{"type": "text", "text": {"content": "Pruebas internas"}}],
+        "checked": false
+      }
+    },
+    {
+      "object": "block",
+      "type": "to_do",
+      "to_do": {
+        "rich_text": [{"type": "text", "text": {"content": "Capacitación cliente (1h)"}}],
+        "checked": false
+      }
+    },
+    {
+      "object": "block",
+      "type": "to_do",
+      "to_do": {
+        "rich_text": [{"type": "text", "text": {"content": "Entregar documentación"}}],
+        "checked": false
+      }
+    },
+    {
+      "object": "block",
+      "type": "divider",
+      "divider": {}
+    },
+    {
+      "object": "block",
+      "type": "heading_2",
+      "heading_2": {
+        "rich_text": [{"type": "text", "text": {"content": "4️⃣ GESTIÓN - Métricas Semanales"}}]
+      }
+    },
+    {
+      "object": "block",
+      "type": "to_do",
+      "to_do": {
+        "rich_text": [{"type": "text", "text": {"content": "Contar leads generados"}}],
+        "checked": false
+      }
+    },
+    {
+      "object": "block",
+      "type": "to_do",
+      "to_do": {
+        "rich_text": [{"type": "text", "text": {"content": "Revisar conversión R1 → R2"}}],
+        "checked": false
+      }
+    },
+    {
+      "object": "block",
+      "type": "to_do",
+      "to_do": {
+        "rich_text": [{"type": "text", "text": {"content": "Verificar proyectos en entrega"}}],
+        "checked": false
+      }
+    },
+    {
+      "object": "block",
+      "type": "to_do",
+      "to_do": {
+        "rich_text": [{"type": "text", "text": {"content": "Actualizar pipeline Manychat"}}],
+        "checked": false
+      }
+    },
+    {
+      "object": "block",
+      "type": "quote",
+      "quote": {
+        "rich_text": [{"type": "text", "text": {"content": "KPIs: Llamadas | R1 | R2 | Propuestas | Cerrados | Ingresos"}}]
+      }
+    }
+  ]
+}

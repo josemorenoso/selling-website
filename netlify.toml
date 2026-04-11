@@ -1,0 +1,25 @@
+[[headers]]
+  for = "/*"
+  [headers.values]
+    # Evita que la página sea embebida en iframes (clickjacking)
+    X-Frame-Options = "DENY"
+
+    # Evita que el navegador adivine el content-type (MIME sniffing)
+    X-Content-Type-Options = "nosniff"
+
+    # Controla qué información de referrer se envía a sitios externos
+    Referrer-Policy = "strict-origin-when-cross-origin"
+
+    # Deshabilita features del navegador que no usas
+    Permissions-Policy = "camera=(), microphone=(), geolocation=(), payment=()"
+
+    # Fuerza HTTPS por 1 año (solo activo una vez que tengas dominio con HTTPS)
+    Strict-Transport-Security = "max-age=31536000; includeSubDomains"
+
+    # Content Security Policy
+    # - script-src: permite scripts inline (tailwind config + JS propio) + CDNs usados
+    # - style-src: permite estilos inline + Google Fonts
+    # - font-src: permite fuentes de Google
+    # - img-src: permite imágenes locales y data URIs (SVG inline)
+    # - frame-ancestors: nadie puede embeber este sitio
+    Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.tailwindcss.com https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: blob:; connect-src 'self'; frame-src 'none'; frame-ancestors 'none'; base-uri 'self'"

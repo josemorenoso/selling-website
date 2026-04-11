@@ -1,0 +1,451 @@
+element.style {
+}
+body {
+    --tw-bg-opacity: 1;
+    --tw-text-opacity: 1;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    -webkit-tap-highlight-color: transparent;
+    background-color: rgb(0 0 0 / var(--tw-bg-opacity));
+    color: rgb(255 255 255 / var(--tw-text-opacity));
+    font-family: brother-1816, brother-1816-fallback, ui-sans-serif, system-ui, sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol, Noto Color Emoji;
+    font-size: 16px;
+    line-height: 1.5;
+    min-width: 320px;
+}
+body {
+    line-height: inherit;
+    margin: 0;
+}
+* {
+    scrollbar-color: auto;
+    scrollbar-width: auto;
+}
+*, :after, :before {
+    border: 0 solid;
+    box-sizing: border-box;
+}
+*, :after, :before {
+    --tw-border-spacing-x: 0;
+    --tw-border-spacing-y: 0;
+    --tw-translate-x: 0;
+    --tw-translate-y: 0;
+    --tw-rotate: 0;
+    --tw-skew-x: 0;
+    --tw-skew-y: 0;
+    --tw-scale-x: 1;
+    --tw-scale-y: 1;
+    --tw-pan-x: ;
+    --tw-pan-y: ;
+    --tw-pinch-zoom: ;
+    --tw-scroll-snap-strictness: proximity;
+    --tw-gradient-from-position: ;
+    --tw-gradient-via-position: ;
+    --tw-gradient-to-position: ;
+    --tw-ordinal: ;
+    --tw-slashed-zero: ;
+    --tw-numeric-figure: ;
+    --tw-numeric-spacing: ;
+    --tw-numeric-fraction: ;
+    --tw-ring-inset: ;
+    --tw-ring-offset-width: 0px;
+    --tw-ring-offset-color: #fff;
+    --tw-ring-color: rgba(59, 130, 246, .5);
+    --tw-ring-offset-shadow: 0 0 #0000;
+    --tw-ring-shadow: 0 0 #0000;
+    --tw-shadow: 0 0 #0000;
+    --tw-shadow-colored: 0 0 #0000;
+    --tw-blur: ;
+    --tw-brightness: ;
+    --tw-contrast: ;
+    --tw-grayscale: ;
+    --tw-hue-rotate: ;
+    --tw-invert: ;
+    --tw-saturate: ;
+    --tw-sepia: ;
+    --tw-drop-shadow: ;
+    --tw-backdrop-blur: ;
+    --tw-backdrop-brightness: ;
+    --tw-backdrop-contrast: ;
+    --tw-backdrop-grayscale: ;
+    --tw-backdrop-hue-rotate: ;
+    --tw-backdrop-invert: ;
+    --tw-backdrop-opacity: ;
+    --tw-backdrop-saturate: ;
+    --tw-backdrop-sepia: ;
+    --tw-contain-size: ;
+    --tw-contain-layout: ;
+    --tw-contain-paint: ;
+Show all properties (1 more)
+}
+user agent stylesheet
+body {
+    display: block;
+    margin: 8px;
+}
+:root {
+    --mly-tw-border-spacing-x: 0;
+    --mly-tw-border-spacing-y: 0;
+    --mly-tw-translate-x: 0;
+    --mly-tw-translate-y: 0;
+    --mly-tw-rotate: 0;
+    --mly-tw-skew-x: 0;
+    --mly-tw-skew-y: 0;
+    --mly-tw-scale-x: 1;
+    --mly-tw-scale-y: 1;
+    --mly-tw-pan-x: ;
+    --mly-tw-pan-y: ;
+    --mly-tw-pinch-zoom: ;
+    --mly-tw-scroll-snap-strictness: proximity;
+    --mly-tw-gradient-from-position: ;
+    --mly-tw-gradient-via-position: ;
+    --mly-tw-gradient-to-position: ;
+    --mly-tw-ordinal: ;
+    --mly-tw-slashed-zero: ;
+    --mly-tw-numeric-figure: ;
+    --mly-tw-numeric-spacing: ;
+    --mly-tw-numeric-fraction: ;
+    --mly-tw-ring-inset: ;
+    --mly-tw-ring-offset-width: 0px;
+    --mly-tw-ring-offset-color: #fff;
+    --mly-tw-ring-color: rgba(59, 130, 246, .5);
+    --mly-tw-ring-offset-shadow: 0 0 #0000;
+    --mly-tw-ring-shadow: 0 0 #0000;
+    --mly-tw-shadow: 0 0 #0000;
+    --mly-tw-shadow-colored: 0 0 #0000;
+    --mly-tw-blur: ;
+    --mly-tw-brightness: ;
+    --mly-tw-contrast: ;
+    --mly-tw-grayscale: ;
+    --mly-tw-hue-rotate: ;
+    --mly-tw-invert: ;
+    --mly-tw-saturate: ;
+    --mly-tw-sepia: ;
+    --mly-tw-drop-shadow: ;
+    --mly-tw-backdrop-blur: ;
+    --mly-tw-backdrop-brightness: ;
+    --mly-tw-backdrop-contrast: ;
+    --mly-tw-backdrop-grayscale: ;
+    --mly-tw-backdrop-hue-rotate: ;
+    --mly-tw-backdrop-invert: ;
+    --mly-tw-backdrop-opacity: ;
+    --mly-tw-backdrop-saturate: ;
+    --mly-tw-backdrop-sepia: ;
+    --mly-tw-contain-size: ;
+    --mly-tw-contain-layout: ;
+    --mly-tw-contain-paint: ;
+Show all properties (1 more)
+}
+:root {
+    --placeholder-color: #adb5bd;
+    --bg-color: #fff;
+    --variable-icon-size: 12px;
+    --variable-icon-gap: 4px;
+    --color-token-tag: #00c951;
+    --color-meta-string: #2b7fff;
+    --color-attribute: #ad46ff;
+    --color-tag: #313233;
+    --color-meta: #313233d6;
+}
+:root {
+    color-scheme: dark;
+}
+:host, html {
+    -webkit-text-size-adjust: 100%;
+    font-feature-settings: normal;
+    -webkit-tap-highlight-color: transparent;
+    font-family: brother-1816, brother-1816-fallback, ui-sans-serif, system-ui, sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol, Noto Color Emoji;
+    font-variation-settings: normal;
+    line-height: 1.5;
+    -moz-tab-size: 4;
+    -o-tab-size: 4;
+    tab-size: 4;
+}
+*, :after, :before {
+    --tw-border-spacing-x: 0;
+    --tw-border-spacing-y: 0;
+    --tw-translate-x: 0;
+    --tw-translate-y: 0;
+    --tw-rotate: 0;
+    --tw-skew-x: 0;
+    --tw-skew-y: 0;
+    --tw-scale-x: 1;
+    --tw-scale-y: 1;
+    --tw-pan-x: ;
+    --tw-pan-y: ;
+    --tw-pinch-zoom: ;
+    --tw-scroll-snap-strictness: proximity;
+    --tw-gradient-from-position: ;
+    --tw-gradient-via-position: ;
+    --tw-gradient-to-position: ;
+    --tw-ordinal: ;
+    --tw-slashed-zero: ;
+    --tw-numeric-figure: ;
+    --tw-numeric-spacing: ;
+    --tw-numeric-fraction: ;
+    --tw-ring-inset: ;
+    --tw-ring-offset-width: 0px;
+    --tw-ring-offset-color: #fff;
+    --tw-ring-color: rgba(59, 130, 246, .5);
+    --tw-ring-offset-shadow: 0 0 #0000;
+    --tw-ring-shadow: 0 0 #0000;
+    --tw-shadow: 0 0 #0000;
+    --tw-shadow-colored: 0 0 #0000;
+    --tw-blur: ;
+    --tw-brightness: ;
+    --tw-contrast: ;
+    --tw-grayscale: ;
+    --tw-hue-rotate: ;
+    --tw-invert: ;
+    --tw-saturate: ;
+    --tw-sepia: ;
+    --tw-drop-shadow: ;
+    --tw-backdrop-blur: ;
+    --tw-backdrop-brightness: ;
+    --tw-backdrop-contrast: ;
+    --tw-backdrop-grayscale: ;
+    --tw-backdrop-hue-rotate: ;
+    --tw-backdrop-invert: ;
+    --tw-backdrop-opacity: ;
+    --tw-backdrop-saturate: ;
+    --tw-backdrop-sepia: ;
+    --tw-contain-size: ;
+    --tw-contain-layout: ;
+    --tw-contain-paint: ;
+Show all properties (1 more)
+}
+:after, :before {
+    --tw-content: "";
+}
+*, :after, :before {
+    border: 0 solid;
+    box-sizing: border-box;
+}
+*, :after, :before {
+    --tw-border-spacing-x: 0;
+    --tw-border-spacing-y: 0;
+    --tw-translate-x: 0;
+    --tw-translate-y: 0;
+    --tw-rotate: 0;
+    --tw-skew-x: 0;
+    --tw-skew-y: 0;
+    --tw-scale-x: 1;
+    --tw-scale-y: 1;
+    --tw-pan-x: ;
+    --tw-pan-y: ;
+    --tw-pinch-zoom: ;
+    --tw-scroll-snap-strictness: proximity;
+    --tw-gradient-from-position: ;
+    --tw-gradient-via-position: ;
+    --tw-gradient-to-position: ;
+    --tw-ordinal: ;
+    --tw-slashed-zero: ;
+    --tw-numeric-figure: ;
+    --tw-numeric-spacing: ;
+    --tw-numeric-fraction: ;
+    --tw-ring-inset: ;
+    --tw-ring-offset-width: 0px;
+    --tw-ring-offset-color: #fff;
+    --tw-ring-color: rgba(59, 130, 246, .5);
+    --tw-ring-offset-shadow: 0 0 #0000;
+    --tw-ring-shadow: 0 0 #0000;
+    --tw-shadow: 0 0 #0000;
+    --tw-shadow-colored: 0 0 #0000;
+    --tw-blur: ;
+    --tw-brightness: ;
+    --tw-contrast: ;
+    --tw-grayscale: ;
+    --tw-hue-rotate: ;
+    --tw-invert: ;
+    --tw-saturate: ;
+    --tw-sepia: ;
+    --tw-drop-shadow: ;
+    --tw-backdrop-blur: ;
+    --tw-backdrop-brightness: ;
+    --tw-backdrop-contrast: ;
+    --tw-backdrop-grayscale: ;
+    --tw-backdrop-hue-rotate: ;
+    --tw-backdrop-invert: ;
+    --tw-backdrop-opacity: ;
+    --tw-backdrop-saturate: ;
+    --tw-backdrop-sepia: ;
+    --tw-contain-size: ;
+    --tw-contain-layout: ;
+    --tw-contain-paint: ;
+Show all properties (1 more)
+}
+:after, :before {
+    --tw-content: "";
+}
+*, :after, :before {
+    border: 0 solid;
+    box-sizing: border-box;
+}
+*, :after, :before {
+    --tw-border-spacing-x: 0;
+    --tw-border-spacing-y: 0;
+    --tw-translate-x: 0;
+    --tw-translate-y: 0;
+    --tw-rotate: 0;
+    --tw-skew-x: 0;
+    --tw-skew-y: 0;
+    --tw-scale-x: 1;
+    --tw-scale-y: 1;
+    --tw-pan-x: ;
+    --tw-pan-y: ;
+    --tw-pinch-zoom: ;
+    --tw-scroll-snap-strictness: proximity;
+    --tw-gradient-from-position: ;
+    --tw-gradient-via-position: ;
+    --tw-gradient-to-position: ;
+    --tw-ordinal: ;
+    --tw-slashed-zero: ;
+    --tw-numeric-figure: ;
+    --tw-numeric-spacing: ;
+    --tw-numeric-fraction: ;
+    --tw-ring-inset: ;
+    --tw-ring-offset-width: 0px;
+    --tw-ring-offset-color: #fff;
+    --tw-ring-color: rgba(59, 130, 246, .5);
+    --tw-ring-offset-shadow: 0 0 #0000;
+    --tw-ring-shadow: 0 0 #0000;
+    --tw-shadow: 0 0 #0000;
+    --tw-shadow-colored: 0 0 #0000;
+    --tw-blur: ;
+    --tw-brightness: ;
+    --tw-contrast: ;
+    --tw-grayscale: ;
+    --tw-hue-rotate: ;
+    --tw-invert: ;
+    --tw-saturate: ;
+    --tw-sepia: ;
+    --tw-drop-shadow: ;
+    --tw-backdrop-blur: ;
+    --tw-backdrop-brightness: ;
+    --tw-backdrop-contrast: ;
+    --tw-backdrop-grayscale: ;
+    --tw-backdrop-hue-rotate: ;
+    --tw-backdrop-invert: ;
+    --tw-backdrop-opacity: ;
+    --tw-backdrop-saturate: ;
+    --tw-backdrop-sepia: ;
+    --tw-contain-size: ;
+    --tw-contain-layout: ;
+    --tw-contain-paint: ;
+Show all properties (1 more)
+}
+::backdrop {
+    --mly-tw-border-spacing-x: 0;
+    --mly-tw-border-spacing-y: 0;
+    --mly-tw-translate-x: 0;
+    --mly-tw-translate-y: 0;
+    --mly-tw-rotate: 0;
+    --mly-tw-skew-x: 0;
+    --mly-tw-skew-y: 0;
+    --mly-tw-scale-x: 1;
+    --mly-tw-scale-y: 1;
+    --mly-tw-pan-x: ;
+    --mly-tw-pan-y: ;
+    --mly-tw-pinch-zoom: ;
+    --mly-tw-scroll-snap-strictness: proximity;
+    --mly-tw-gradient-from-position: ;
+    --mly-tw-gradient-via-position: ;
+    --mly-tw-gradient-to-position: ;
+    --mly-tw-ordinal: ;
+    --mly-tw-slashed-zero: ;
+    --mly-tw-numeric-figure: ;
+    --mly-tw-numeric-spacing: ;
+    --mly-tw-numeric-fraction: ;
+    --mly-tw-ring-inset: ;
+    --mly-tw-ring-offset-width: 0px;
+    --mly-tw-ring-offset-color: #fff;
+    --mly-tw-ring-color: rgba(59, 130, 246, .5);
+    --mly-tw-ring-offset-shadow: 0 0 #0000;
+    --mly-tw-ring-shadow: 0 0 #0000;
+    --mly-tw-shadow: 0 0 #0000;
+    --mly-tw-shadow-colored: 0 0 #0000;
+    --mly-tw-blur: ;
+    --mly-tw-brightness: ;
+    --mly-tw-contrast: ;
+    --mly-tw-grayscale: ;
+    --mly-tw-hue-rotate: ;
+    --mly-tw-invert: ;
+    --mly-tw-saturate: ;
+    --mly-tw-sepia: ;
+    --mly-tw-drop-shadow: ;
+    --mly-tw-backdrop-blur: ;
+    --mly-tw-backdrop-brightness: ;
+    --mly-tw-backdrop-contrast: ;
+    --mly-tw-backdrop-grayscale: ;
+    --mly-tw-backdrop-hue-rotate: ;
+    --mly-tw-backdrop-invert: ;
+    --mly-tw-backdrop-opacity: ;
+    --mly-tw-backdrop-saturate: ;
+    --mly-tw-backdrop-sepia: ;
+    --mly-tw-contain-size: ;
+    --mly-tw-contain-layout: ;
+    --mly-tw-contain-paint: ;
+Show all properties (1 more)
+}
+::backdrop {
+    --tw-border-spacing-x: 0;
+    --tw-border-spacing-y: 0;
+    --tw-translate-x: 0;
+    --tw-translate-y: 0;
+    --tw-rotate: 0;
+    --tw-skew-x: 0;
+    --tw-skew-y: 0;
+    --tw-scale-x: 1;
+    --tw-scale-y: 1;
+    --tw-pan-x: ;
+    --tw-pan-y: ;
+    --tw-pinch-zoom: ;
+    --tw-scroll-snap-strictness: proximity;
+    --tw-gradient-from-position: ;
+    --tw-gradient-via-position: ;
+    --tw-gradient-to-position: ;
+    --tw-ordinal: ;
+    --tw-slashed-zero: ;
+    --tw-numeric-figure: ;
+    --tw-numeric-spacing: ;
+    --tw-numeric-fraction: ;
+    --tw-ring-inset: ;
+    --tw-ring-offset-width: 0px;
+    --tw-ring-offset-color: #fff;
+    --tw-ring-color: rgba(59, 130, 246, .5);
+    --tw-ring-offset-shadow: 0 0 #0000;
+    --tw-ring-shadow: 0 0 #0000;
+    --tw-shadow: 0 0 #0000;
+    --tw-shadow-colored: 0 0 #0000;
+    --tw-blur: ;
+    --tw-brightness: ;
+    --tw-contrast: ;
+    --tw-grayscale: ;
+    --tw-hue-rotate: ;
+    --tw-invert: ;
+    --tw-saturate: ;
+    --tw-sepia: ;
+    --tw-drop-shadow: ;
+    --tw-backdrop-blur: ;
+    --tw-backdrop-brightness: ;
+    --tw-backdrop-contrast: ;
+    --tw-backdrop-grayscale: ;
+    --tw-backdrop-hue-rotate: ;
+    --tw-backdrop-invert: ;
+    --tw-backdrop-opacity: ;
+    --tw-backdrop-saturate: ;
+    --tw-backdrop-sepia: ;
+    --tw-contain-size: ;
+    --tw-contain-layout: ;
+    --tw-contain-paint: ;
+Show all properties (1 more)
+}
+<style>
+@font-face {
+    font-family: "brother-1816";
+    src: url(https://use.typekit.net/af/cd8ee9/0000000…/31/l?primer=7cdcb44…&fvd=n1&v=3) format("woff2"), url(https://use.typekit.net/af/cd8ee9/0000000…/31/d?primer=7cdcb44…&fvd=n1&v=3) format("woff"), url(https://use.typekit.net/af/cd8ee9/0000000…/31/a?primer=7cdcb44…&fvd=n1&v=3) format("opentype");
+    font-display: auto;
+    font-style: normal;
+    font-weight: 100;
+    font-stretch: normal;
+}

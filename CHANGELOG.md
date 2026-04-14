@@ -75,3 +75,37 @@
 ### Request original
 > Comienza el rediseño (FASE 2). Stack: GitHub + Vercel. Integración RestaurantQR via iframe embed de demo link.
 > Activar localhost para ver cambios en tiempo real.
+
+---
+
+## [0.3.0] — 2026-04-14
+
+### Added — FASE 3: Hero Glassmorphism + Servicios Expandibles + Secciones Restauradas
+- **Hero glassmorphism 2-column layout** (título grande izq + metrics card compacta der)
+- **Pixel-canvas web component** re-integrado en service cards y card $4,200
+- **Expandable cards** en Automatización (IDC data) y IA para tu Negocio (bento grid)
+- **Bento grid** de agentes IA (Atención al Cliente, Leads, CRM) revelado on click
+- **Sección Instagram** con card flotante (@luisr_a.i)
+- **Sección "El costo de no actuar"** restaurada con diseño detallado del backup
+- Stats en hero card: 2.8 hrs perdidas/empleado/día, 21% facturación que se fuga, $0 cuesta descubrirlo
+
+### Changed
+- `index.html` — Tipografía revertida de Syne a **Inter** para todo el sitio
+- Footer Instagram actualizado de YOUR_HANDLE a @luisr_a.i
+- Services grid: `align-items:start` para que cards no se estiren al expandir una
+
+### Fixed — Bug Fixes Mobile + Desktop
+- **Services cards stretching**: Cards ya no se estiran cuando una se expande (align-items:start)
+- **"El costo de no actuar" mobile overflow**: Font sizes reducidos ($4,200 de 5.75rem→3.5rem, 23h/78% de 3.75rem→2.5rem), grid collapsa a 1 columna, card hero apila verticalmente
+- **RestaurantQR iframe mobile**: Escalado con transform:scale(0.55) para que el contenido sea visible sin zoom extremo
+- **"Quién soy" foto mobile**: Ahora visible en mobile (height:320px) en vez de display:none
+- **Methodology pills ilegibles**: chip-dim cambiado de gris (#5A6A80) a azul legible (#7EB3FF con fondo azul)
+- **Bento grid mobile**: Collapsa a 1 columna, CRM card apila verticalmente
+
+### Archivos afectados
+- `index.html` — Hero, servicios, costo, metodología, about, instagram, pixel-canvas JS
+- `CHANGELOG.md` — Esta entrada
+- `docs/features/home-redesign.md` — Actualizado
+
+### Request original
+> Corregir: cards se estiran al expandir, $4,200 overflow en mobile, iframe zoomed, foto no aparece, pills ilegibles, bento sin armonía en mobile

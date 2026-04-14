@@ -1,5 +1,16 @@
 # Deployment — Luis Moreno Website
 
+## Repositorios Git
+| Remote | URL | Uso |
+|--------|-----|-----|
+| `selling` (principal) | https://github.com/josemorenoso/selling-website.git | Conectado a Vercel — deploy automático |
+| `origin` (legacy) | https://github.com/josemorenoso/My-website.git | Repo original, backup |
+
+## Vercel Project
+- **Dashboard:** https://vercel.com/josemorenosos-projects/selling-website
+- **Deploy:** Automático en push a `main` del repo `selling-website`
+- **Comando push:** `git push selling main`
+
 ## Plataforma
 **Vercel** — Deploy automático desde GitHub
 

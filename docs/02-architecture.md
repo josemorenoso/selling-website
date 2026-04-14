@@ -120,6 +120,12 @@ restaurantqr.html (Demo Dashboard)
 **Decisión:** Migrar deploy de Netlify a GitHub + Vercel
 **Consecuencias:** Config simplificada (`vercel.json`), mismo proveedor que RestaurantQR, cleanUrls automáticos.
 
+### ADR-006: Repo selling-website como principal
+**Fecha:** 2026-04-14
+**Contexto:** Se creó un nuevo repo `selling-website` conectado al proyecto Vercel `selling-website`
+**Decisión:** Usar remote `selling` (github.com/josemorenoso/selling-website) como repo principal de deploy. Remote `origin` (My-website) se mantiene como backup.
+**Consecuencias:** Push con `git push selling main`. Deploy automático en Vercel desde ese repo.
+
 ### ADR-003: Mantener Tailwind CDN
 **Fecha:** 2025-04-13
 **Contexto:** El proyecto original usa Tailwind vía CDN script tag

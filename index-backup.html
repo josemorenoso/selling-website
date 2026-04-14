@@ -1,0 +1,1651 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Luis Moreno — Automatización para Negocios</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: '#2E7BF6',
+            teal: '#00CFFF',
+            surface: '#070E1A',
+            dark: '#040B14',
+          },
+          fontFamily: {
+            sans: ['Inter', 'system-ui', 'sans-serif'],
+            display: ['Inter', 'system-ui', 'sans-serif'],
+          },
+        }
+      }
+    }
+  </script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      background-color: #040B14;
+      color: #E8EDF5;
+      font-family: 'Inter', system-ui, sans-serif;
+      font-size: 16px;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      min-width: 320px;
+      overflow-x: hidden;
+    }
+
+    /* ── DOT GRID BACKGROUND ─────────────────────────────── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        radial-gradient(circle, rgba(46,123,246,0.18) 1px, transparent 1px);
+      background-size: 36px 36px;
+      opacity: 0.35;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* ── GRAIN OVERLAY ───────────────────────────────────── */
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+      opacity: 0.028;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* ── TYPOGRAPHY ──────────────────────────────────────── */
+    .font-display { font-family: 'Inter', system-ui, sans-serif; font-weight: 700; }
+    .h1 {
+      font-family: 'Inter', system-ui, sans-serif;
+      font-weight: 800;
+      letter-spacing: -0.04em;
+      line-height: 1.05;
+      color: #F0F5FF;
+    }
+    .h2 {
+      font-family: 'Inter', system-ui, sans-serif;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      line-height: 1.15;
+      color: #F0F5FF;
+    }
+    .h3 {
+      font-family: 'Inter', system-ui, sans-serif;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      color: #F0F5FF;
+    }
+    .label {
+      font-family: 'Inter', system-ui, sans-serif;
+      font-size: 0.7rem;
+      font-weight: 600;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: #2E7BF6;
+    }
+    .muted { color: #5A6A80; line-height: 1.75; }
+    .dimmed { color: #8A9BB0; line-height: 1.75; }
+
+    /* ── LAYOUT HELPERS ──────────────────────────────────── */
+    .container { max-width: 1120px; margin: 0 auto; padding: 0 1.5rem; position: relative; z-index: 1; }
+    .section { padding: 7rem 0; position: relative; }
+
+    /* ── SCROLL ANIMATIONS ───────────────────────────────── */
+    [data-a] {
+      opacity: 0;
+      transform: translateY(32px);
+      transition: opacity 0.7s cubic-bezier(0.16,1,0.3,1), transform 0.7s cubic-bezier(0.16,1,0.3,1);
+    }
+    [data-a].in { opacity: 1; transform: none; }
+    [data-a][data-d="1"] { transition-delay: 0.08s; }
+    [data-a][data-d="2"] { transition-delay: 0.16s; }
+    [data-a][data-d="3"] { transition-delay: 0.24s; }
+    [data-a][data-d="4"] { transition-delay: 0.32s; }
+
+    /* ── NAVBAR ──────────────────────────────────────────── */
+    #nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      padding: 1.25rem 1.5rem;
+      transition: background 0.4s ease, border-color 0.4s ease;
+    }
+    #nav.scrolled {
+      background: rgba(4,11,20,0.88);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(46,123,246,0.12);
+    }
+    .nav-inner {
+      max-width: 1120px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .nav-logo {
+      font-family: 'Inter', system-ui, sans-serif;
+      font-weight: 800;
+      font-size: 1.1rem;
+      letter-spacing: -0.03em;
+      color: #F0F5FF;
+      text-decoration: none;
+    }
+    .nav-logo span { color: #2E7BF6; }
+
+    /* ── BUTTONS ─────────────────────────────────────────── */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-family: 'Inter', system-ui, sans-serif;
+      font-weight: 600;
+      font-size: 0.9rem;
+      border-radius: 0.5rem;
+      padding: 0.7rem 1.4rem;
+      text-decoration: none;
+      cursor: pointer;
+      border: none;
+      transition: transform 0.18s cubic-bezier(0.16,1,0.3,1), box-shadow 0.18s cubic-bezier(0.16,1,0.3,1), background 0.18s ease;
+    }
+    .btn:focus-visible { outline: 2px solid #2E7BF6; outline-offset: 3px; }
+    .btn:active { transform: scale(0.98) !important; }
+
+    .btn-primary {
+      background: #2E7BF6;
+      color: #fff;
+      box-shadow: 0 0 0 0 rgba(46,123,246,0);
+    }
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 28px rgba(46,123,246,0.5), 0 0 0 1px rgba(46,123,246,0.3);
+    }
+
+    .btn-ghost {
+      background: transparent;
+      color: #B0BFCF;
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+    .btn-ghost:hover {
+      transform: translateY(-1px);
+      background: rgba(255,255,255,0.04);
+      border-color: rgba(255,255,255,0.2);
+      color: #F0F5FF;
+    }
+
+    .btn-lg {
+      font-size: 1rem;
+      padding: 0.875rem 1.75rem;
+    }
+
+    /* ── CARDS ───────────────────────────────────────────── */
+    .card {
+      background: rgba(255,255,255,0.025);
+      border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 1rem;
+      transition: border-color 0.35s ease, box-shadow 0.35s ease, background 0.35s ease;
+    }
+    .card:hover {
+      background: rgba(255,255,255,0.04);
+      border-color: rgba(46,123,246,0.3);
+      box-shadow: 0 0 48px rgba(46,123,246,0.07);
+    }
+    .card-glow {
+      border-color: rgba(46,123,246,0.2);
+      box-shadow: 0 0 60px rgba(46,123,246,0.08), inset 0 1px 0 rgba(255,255,255,0.04);
+    }
+
+    /* ── HERO ────────────────────────────────────────────── */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding-top: 5rem;
+      padding-bottom: 4rem;
+      position: relative;
+      overflow: hidden;
+      text-align: center;
+    }
+    .hero-orb {
+      position: absolute;
+      border-radius: 50%;
+      pointer-events: none;
+      filter: blur(80px);
+    }
+    .hero-orb-1 {
+      width: 700px; height: 500px;
+      top: -80px; right: -120px;
+      background: radial-gradient(ellipse, rgba(46,123,246,0.18) 0%, transparent 70%);
+    }
+    .hero-orb-2 {
+      width: 400px; height: 400px;
+      bottom: 0; left: -60px;
+      background: radial-gradient(ellipse, rgba(0,207,255,0.07) 0%, transparent 70%);
+    }
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.35rem 0.85rem 0.35rem 0.5rem;
+      border-radius: 100px;
+      border: 1px solid rgba(46,123,246,0.25);
+      background: rgba(46,123,246,0.08);
+      font-size: 0.78rem;
+      font-family: 'Inter', system-ui, sans-serif;
+      font-weight: 500;
+      color: #7DAAFF;
+      margin-bottom: 1.75rem;
+    }
+    .hero-badge-dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: #2E7BF6;
+      box-shadow: 0 0 6px #2E7BF6;
+      animation: pulse-dot 2s ease infinite;
+    }
+    @keyframes pulse-dot {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(0.8); }
+    }
+
+    /* ── STAT BAR ────────────────────────────────────────── */
+    .stat-bar {
+      display: flex;
+      justify-content: center;
+      gap: 0;
+      flex-wrap: wrap;
+      align-items: center;
+      width: 100%;
+      margin-top: 3rem;
+      padding: 2rem 0;
+      border-top: 1px solid rgba(255,255,255,0.06);
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+    .stat-bar > div:not(.stat-divider) {
+      flex: 1;
+      min-width: 180px;
+      text-align: center;
+    }
+    .stat-num {
+      font-family: 'Inter', system-ui, sans-serif;
+      font-weight: 800;
+      font-size: 1.75rem;
+      letter-spacing: -0.04em;
+      color: #F0F5FF;
+      font-variant-numeric: tabular-nums;
+    }
+    .stat-label { font-size: 0.8rem; color: #8BAEC5; margin-top: 0.2rem; font-weight: 600; }
+    .stat-divider { width: 1px; height: 40px; background: rgba(255,255,255,0.08); }
+
+    /* ── SECTION INTROS ──────────────────────────────────── */
+    .section-intro { margin-bottom: 4rem; }
+    .section-intro.center { text-align: center; }
+
+    /* ── PROBLEM CARDS ───────────────────────────────────── */
+    .stat-card-num {
+      font-family: 'Inter', system-ui, sans-serif;
+      font-weight: 800;
+      font-size: 3.25rem;
+      letter-spacing: -0.05em;
+      color: #2E7BF6;
+      line-height: 1;
+      margin-bottom: 0.5rem;
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* ── STEPS ───────────────────────────────────────────── */
+    .steps-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0;
+      position: relative;
+    }
+    .steps-grid::before {
+      content: '';
+      position: absolute;
+      top: 1.5rem;
+      left: calc(16.67% + 1.5rem + 8px);
+      right: calc(16.67% + 1.5rem + 8px);
+      height: 1px;
+      background: linear-gradient(to right, rgba(46,123,246,0.5), rgba(46,123,246,0.08));
+      z-index: 0;
+    }
+    @media (max-width: 768px) {
+      .steps-grid { grid-template-columns: 1fr; }
+      .steps-grid::before { display: none; }
+    }
+    .step-num {
+      width: 3rem; height: 3rem;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Inter', system-ui, sans-serif;
+      font-weight: 700;
+      font-size: 1rem;
+      background: #2E7BF6;
+      color: #fff;
+      margin: 0 auto 1.5rem;
+      position: relative;
+      z-index: 1;
+      box-shadow: 0 0 24px rgba(46,123,246,0.45);
+      flex-shrink: 0;
+    }
+
+    /* ── BADGE CHIPS ─────────────────────────────────────── */
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      padding: 0.3rem 0.85rem;
+      border-radius: 100px;
+      font-family: 'Inter', system-ui, sans-serif;
+      font-size: 0.78rem;
+      font-weight: 500;
+    }
+    .chip-blue {
+      background: rgba(46,123,246,0.1);
+      border: 1px solid rgba(46,123,246,0.22);
+      color: #7DAAFF;
+    }
+    .chip-dim {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.09);
+      color: #5A6A80;
+    }
+
+    /* ── PROMISE CARDS ───────────────────────────────────── */
+    .promise-icon {
+      font-size: 1.75rem;
+      margin-bottom: 1rem;
+      display: block;
+    }
+    .promise-title {
+      font-family: 'Inter', system-ui, sans-serif;
+      font-weight: 700;
+      font-size: 1.2rem;
+      letter-spacing: -0.02em;
+      color: #F0F5FF;
+      margin-bottom: 0.6rem;
+    }
+
+    /* ── BENTO GRID ──────────────────────────────────────── */
+    .bento {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      grid-template-rows: auto auto;
+      gap: 1rem;
+    }
+    .bento-wide  { grid-column: span 2; }
+    .bento-tall  { grid-row: span 2; }
+    @media (max-width: 900px) {
+      .bento { grid-template-columns: 1fr; }
+      .bento-wide { grid-column: span 1; }
+      .bento-tall  { grid-row: span 1; }
+    }
+    .bento-card-inner-glow {
+      position: absolute;
+      width: 200px; height: 200px;
+      border-radius: 50%;
+      pointer-events: none;
+      filter: blur(50px);
+    }
+
+    /* ── TECH STACK ──────────────────────────────────────── */
+    .tech-strip {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: center;
+      gap: 2rem;
+    }
+    .tech-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.6rem;
+      transition: opacity 0.2s ease, transform 0.2s ease;
+      cursor: default;
+    }
+    .tech-item:hover { opacity: 0.7; transform: translateY(-2px); }
+    .tech-icon {
+      width: 3rem; height: 3rem;
+      border-radius: 0.75rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Inter', system-ui, sans-serif;
+      font-weight: 700;
+      font-size: 0.875rem;
+      border: 1px solid;
+    }
+    .tech-name { font-size: 0.7rem; color: #5A6A80; font-family: 'DM Sans', system-ui; }
+
+    /* ── PHOTO SECTION ───────────────────────────────────── */
+    .photo-frame {
+      position: relative;
+      border-radius: 1.25rem;
+      overflow: hidden;
+      border: 1px solid rgba(46,123,246,0.2);
+      box-shadow: 0 0 80px rgba(46,123,246,0.1), 0 0 0 1px rgba(46,123,246,0.08);
+    }
+    .photo-frame img {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .photo-frame::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(to top, rgba(4,11,20,0.85) 0%, rgba(4,11,20,0.1) 45%, transparent 70%),
+        linear-gradient(to right, rgba(4,11,20,0.3) 0%, transparent 50%);
+      pointer-events: none;
+    }
+    .photo-tint {
+      position: absolute;
+      inset: 0;
+      background: rgba(46,123,246,0.08);
+      mix-blend-mode: color;
+      pointer-events: none;
+    }
+
+    /* ── GUARANTEE ───────────────────────────────────────── */
+    .guarantee-wrap {
+      background: rgba(46,123,246,0.04);
+      border: 1px solid rgba(46,123,246,0.2);
+      border-radius: 1.5rem;
+      box-shadow:
+        0 0 80px rgba(46,123,246,0.07),
+        inset 0 1px 0 rgba(255,255,255,0.04),
+        inset 0 -1px 0 rgba(46,123,246,0.06);
+      position: relative;
+      overflow: hidden;
+    }
+    .guarantee-wrap::before {
+      content: '';
+      position: absolute;
+      top: -80px; left: 50%;
+      transform: translateX(-50%);
+      width: 400px; height: 200px;
+      background: radial-gradient(ellipse, rgba(46,123,246,0.12) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    /* ── INSTAGRAM ───────────────────────────────────────── */
+    .ig-card {
+      background: rgba(255,255,255,0.02);
+      border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 1.25rem;
+      transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    }
+    .ig-card:hover {
+      border-color: rgba(193,53,132,0.3);
+      box-shadow: 0 0 40px rgba(193,53,132,0.05);
+    }
+
+    /* ── FINAL CTA SECTION ───────────────────────────────── */
+    .final-cta-section {
+      position: relative;
+      overflow: hidden;
+      padding: 9rem 0;
+    }
+    .final-cta-orb {
+      position: absolute;
+      width: 900px; height: 500px;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      background: radial-gradient(ellipse, rgba(46,123,246,0.11) 0%, transparent 65%);
+      pointer-events: none;
+      filter: blur(40px);
+    }
+
+    /* ── FOOTER ──────────────────────────────────────────── */
+    .footer {
+      border-top: 1px solid rgba(255,255,255,0.05);
+      padding: 2rem 1.5rem;
+    }
+    .footer-inner {
+      max-width: 1120px;
+      margin: 0 auto;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+    .footer-link {
+      font-size: 0.8rem;
+      color: #5A6A80;
+      text-decoration: none;
+      transition: color 0.2s ease;
+    }
+    .footer-link:hover { color: #B0BFCF; }
+
+    /* ── SECTION DIVIDERS ────────────────────────────────── */
+    .section-alt { background: linear-gradient(to bottom, transparent, rgba(46,123,246,0.025), transparent); }
+
+    /* ── RESPONSIVE ──────────────────────────────────────── */
+    @media (max-width: 768px) {
+      .section { padding: 5rem 0; }
+      .hero { padding-top: 6rem; padding-bottom: 3rem; }
+      .stat-bar { gap: 0; }
+      .stat-bar > div:not(.stat-divider) { min-width: 140px; }
+      .stat-divider { display: none; }
+      .about-grid { grid-template-columns: 1fr !important; }
+      .about-photo { display: none; }
+    }
+
+    /* ── MOUNTAIN SCENE BACKGROUND ──────────────────────── */
+    #mountain-canvas {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+      pointer-events: none;
+      opacity: 0.18;
+    }
+
+    /* ── STAR BUTTON ─────────────────────────────────────── */
+    .btn-star {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.4rem;
+      padding: 0.65rem 1.4rem;
+      border-radius: 2rem;
+      font-family: 'Inter', system-ui, sans-serif;
+      font-weight: 600;
+      font-size: 0.9rem;
+      text-decoration: none;
+      cursor: pointer;
+      overflow: hidden;
+      isolation: isolate;
+      transition: transform 0.2s cubic-bezier(0.16,1,0.3,1), box-shadow 0.2s ease, filter 0.2s ease;
+      background: linear-gradient(135deg, #1a4fd6 0%, #2E7BF6 60%, #60a5fa 100%);
+      border: 1.5px solid rgba(96,165,250,0.35);
+      --light-color: #ffffff;
+      --light-width: 110px;
+      --duration: 3;
+    }
+    .btn-star.btn-star-lg {
+      font-size: 1rem;
+      padding: 0.9rem 1.8rem;
+    }
+    .btn-star.btn-star-xl {
+      font-size: 1.05rem;
+      padding: 1rem 2.25rem;
+    }
+    .btn-star.btn-star-sm {
+      font-size: 0.8rem;
+      padding: 0.45rem 1rem;
+    }
+    .btn-star:hover {
+      transform: translateY(-2px);
+      filter: brightness(1.12);
+      box-shadow: 0 8px 32px rgba(46,123,246,0.5), 0 0 0 1px rgba(96,165,250,0.3);
+    }
+    .btn-star:active { transform: scale(0.98); }
+    .btn-star:focus-visible { outline: 2px solid rgba(255,255,255,0.4); outline-offset: 3px; }
+
+    .star-light {
+      position: absolute;
+      aspect-ratio: 1 / 1;
+      background: radial-gradient(ellipse at center, var(--light-color) 0%, transparent 65%);
+      width: var(--light-width);
+      animation: star-btn calc(var(--duration) * 1s) linear infinite;
+      pointer-events: none;
+      z-index: 2;
+      opacity: 0.65;
+    }
+    .star-border-wrap {
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      overflow: hidden;
+      z-index: 3;
+      pointer-events: none;
+    }
+    .star-border-wrap svg {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+    }
+    .btn-star-text {
+      position: relative;
+      z-index: 10;
+      color: #ffffff;
+    }
+    @keyframes star-btn {
+      0%   { offset-distance: 0%; }
+      100% { offset-distance: 100%; }
+    }
+
+    /* ── PROMISE HERO CARD ───────────────────────────────── */
+    .card-hero {
+      position: relative;
+      overflow: hidden;
+    }
+    .card-hero:hover {
+      border-color: #0ea5e9 !important;
+      box-shadow: 0 0 56px rgba(14,165,233,0.18), 0 0 0 1px rgba(14,165,233,0.25) !important;
+    }
+    .card-hero .card-content {
+      position: relative;
+      z-index: 2;
+    }
+
+    /* ── PROMISE SMALL CARDS ─────────────────────────────── */
+    .card-small {
+      transition: border-color 0.35s ease, box-shadow 0.35s ease, background 0.35s ease;
+    }
+    .card-small:hover {
+      background: rgba(255,255,255,0.06) !important;
+      border-color: rgba(14,165,233,0.22) !important;
+      box-shadow: 0 0 28px rgba(14,165,233,0.06) !important;
+    }
+
+    /* ── PROMISE METRIC ──────────────────────────────────── */
+    .promise-metric {
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: #0ea5e9;
+      letter-spacing: 0.03em;
+      margin-bottom: 0.55rem;
+      display: block;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ── MOUNTAIN SCENE BACKGROUND ──────────────────────── -->
+  <div id="mountain-canvas"></div>
+
+  <!-- ══════════════════════════════════════════════════════ -->
+  <!-- NAVBAR                                                  -->
+  <!-- ══════════════════════════════════════════════════════ -->
+  <nav id="nav">
+    <div class="nav-inner">
+      <a href="#" class="nav-logo">Luis<span>.</span>Moreno</a>
+      <a href="https://calendly.com/luismorenoai" target="_blank" rel="noopener noreferrer" class="btn-star" data-star-btn>
+        <span class="star-light"></span>
+        <span class="star-border-wrap" aria-hidden="true">
+          <svg width="100%" height="100%" preserveAspectRatio="none" viewBox="0 0 100 40" fill="none" xmlns="http://www.w3.org/2000/svg"><g clip-path="url(#sb1)"><path d="M32.34 26.68C32.34 26.3152 32.0445 26.02 31.68 26.02C31.3155 26.02 31.02 26.3152 31.02 26.68C31.02 27.0448 31.3155 27.34 31.68 27.34C32.0445 27.34 32.34 27.0448 32.34 26.68Z" fill="rgba(255,255,255,0.2)"/><path fill-rule="evenodd" clip-rule="evenodd" d="M56.1 3.96C56.4645 3.96 56.76 4.25519 56.76 4.62C56.76 4.98481 56.4645 5.28 56.1 5.28C55.9131 5.28 55.7443 5.20201 55.624 5.07762C55.5632 5.01446 55.5147 4.93904 55.4829 4.8559C55.4552 4.78243 55.44 4.70315 55.44 4.62C55.44 4.5549 55.4494 4.49174 55.4668 4.43244C55.4906 4.35188 55.5292 4.27775 55.5795 4.21329C55.7004 4.05926 55.8885 3.96 56.1 3.96ZM40.26 17.16C40.6245 17.16 40.92 17.4552 40.92 17.82C40.92 18.1848 40.6245 18.48 40.26 18.48C39.8955 18.48 39.6 18.1848 39.6 17.82C39.6 17.4552 39.8955 17.16 40.26 17.16ZM74.58 5.28C74.7701 5.28 74.9413 5.36057 75.0618 5.48882C75.094 5.52557 75.1359 5.58357 75.1595 5.62353C75.1906 5.68928 75.24 5.85106 75.24 5.94C75.24 6.1585 75.1336 6.3525 74.9699 6.47238C74.7247 6.58775 74.6538 6.6 74.58 6.6C74.2156 6.6 73.92 6.30481 73.92 5.94C73.92 5.87684 73.929 5.8156 73.9455 5.7576C74.0032 5.61903 74.0657 5.50688 74.2728 5.35541C74.3647 5.30707 74.4691 5.28 74.58 5.28ZM21.66 33.52C22.0245 33.52 22.32 33.8152 22.32 34.18C22.32 34.5448 22.0245 34.84 21.66 34.84C21.2955 34.84 21 34.5448 21 34.18C21 33.8152 21.2955 33.52 21.66 33.52ZM8.16 32.86C8.16 32.4952 7.8645 32.2 7.5 32.2C7.1355 32.2 6.84 32.4952 6.84 32.86C6.84 33.2248 7.1355 33.52 7.5 33.52C7.8645 33.52 8.16 33.2248 8.16 32.86ZM7.5 23.68C7.8645 23.68 8.16 23.9752 8.16 24.34C8.16 24.7048 7.8645 25 7.5 25C7.1355 25 6.84 24.7048 6.84 24.34C6.84 23.9752 7.1355 23.68 7.5 23.68ZM5.66 11.84C6.0245 11.84 6.32001 12.1352 6.32001 12.5C6.32001 12.8648 6.0245 13.16 5.66 13.16C5.2955 13.16 5 12.8648 5 12.5C5 12.1352 5.2955 11.84 5.66 11.84ZM35.16 35.5C35.16 35.1352 34.8645 34.84 34.5 34.84C34.1355 34.84 33.84 35.1352 33.84 35.5C33.84 35.8648 34.1355 36.16 34.5 36.16C34.8645 36.16 35.16 35.8648 35.16 35.5ZM53.5 36.18C53.8645 36.18 54.16 36.4752 54.16 36.84C54.16 37.2048 53.8645 37.5 53.5 37.5C53.1355 37.5 52.84 37.2048 52.84 36.84C52.84 36.4752 53.1355 36.18 53.5 36.18ZM48.5 28.66C48.5 28.2952 48.2045 28 47.84 28C47.4755 28 47.18 28.2952 47.18 28.66C47.18 29.0248 47.4755 29.32 47.84 29.32C48.2045 29.32 48.5 29.0248 48.5 28.66ZM60.34 27.34C60.7045 27.34 61 27.6352 61 28C61 28.3648 60.7045 28.66 60.34 28.66C59.9755 28.66 59.68 28.3648 59.68 28C59.68 27.6352 59.9755 27.34 60.34 27.34ZM56.284 16.5C56.284 16.1352 55.9885 15.84 55.624 15.84C55.2595 15.84 54.964 16.1352 54.964 16.5C54.964 16.8648 55.2595 17.16 55.624 17.16C55.9885 17.16 56.284 16.8648 56.284 16.5ZM46.2 7.26C46.2 6.89519 45.9045 6.6 45.54 6.6C45.1755 6.6 44.88 6.89519 44.88 7.26C44.88 7.62481 45.1755 7.92 45.54 7.92C45.9045 7.92 46.2 7.62481 46.2 7.26ZM33 9.34C33 8.9752 32.7045 8.68 32.34 8.68C31.9755 8.68 31.68 8.9752 31.68 9.34C31.68 9.7048 31.9755 10 32.34 10C32.7045 10 33 9.7048 33 9.34ZM16 4.8559C16.3645 4.8559 16.66 5.1511 16.66 5.5159C16.66 5.8807 16.3645 6.1759 16 6.1759C15.6355 6.1759 15.34 5.8807 15.34 5.5159C15.34 5.1511 15.6355 4.8559 16 4.8559ZM69.66 21.16C69.66 20.7952 69.3645 20.5 69 20.5C68.6355 20.5 68.34 20.7952 68.34 21.16C68.34 21.5248 68.6355 21.82 69 21.82C69.3645 21.82 69.66 21.5248 69.66 21.16ZM80.52 15.18C80.52 14.8152 80.2245 14.52 79.86 14.52C79.4956 14.52 79.2 14.8152 79.2 15.18C79.2 15.5448 79.4956 15.84 79.86 15.84C80.2245 15.84 80.52 15.5448 80.52 15.18ZM85.66 24.34C86.0245 24.34 86.32 24.6352 86.32 25C86.32 25.3648 86.0245 25.66 85.66 25.66C85.2955 25.66 85 25.3648 85 25C85 24.6352 85.2955 24.34 85.66 24.34ZM91.32 10C91.32 9.6352 91.0245 9.34 90.66 9.34C90.2955 9.34 90 9.6352 90 10C90 10.3648 90.2955 10.66 90.66 10.66C91.0245 10.66 91.32 10.3648 91.32 10ZM138.6 0H0V46.2H138.6V0ZM92.64 34.84C92.64 34.4752 91.98 34.18 91.98 34.18C91.98 34.18 91.32 34.4752 91.32 34.84C91.32 35.2048 91.6155 35.5 91.98 35.5C92.3445 35.5 92.64 35.2048 92.64 34.84Z" fill="rgba(255,255,255,0.1)"/></g><defs><clipPath id="sb1"><rect width="100" height="40" fill="white"/></clipPath></defs></svg>
+        </span>
+        <span class="btn-star-text">Agendar Llamada →</span>
+      </a>
+    </div>
+  </nav>
+
+  <!-- ══════════════════════════════════════════════════════ -->
+  <!-- HERO                                                    -->
+  <!-- ══════════════════════════════════════════════════════ -->
+  <section class="hero">
+    <div class="hero-orb hero-orb-1"></div>
+    <div class="hero-orb hero-orb-2"></div>
+    <div class="container" style="padding-top:2rem; padding-bottom:2rem;">
+      <div id="hero-grid" style="display:flex; flex-direction:column; align-items:center; max-width:720px; margin:0 auto;">
+
+        <!-- Text content (centered) -->
+        <div style="width:100%;">
+          <div class="hero-badge" data-a style="display:inline-flex;">
+            <span class="hero-badge-dot"></span>
+            Automatización Done For You
+          </div>
+
+          <h1 class="h1" style="font-size: clamp(2.4rem, 5vw, 4rem); margin-bottom: 1.5rem;" data-a data-d="1">
+            Tu negocio debería<br>
+            trabajar para ti —<br>
+            <span style="color: #2E7BF6;">no al revés.</span>
+          </h1>
+
+          <p class="dimmed" style="font-size: 1.1rem; max-width: 560px; margin: 0 auto 2rem;" data-a data-d="2">
+            Implemento sistemas de automatización con IA que eliminan el trabajo repetitivo de tu equipo. Tú enfocas tu energía en crecer — el sistema trabaja por ti.
+          </p>
+
+          <div style="display:flex; flex-wrap:wrap; gap:0.75rem; justify-content:center;" data-a data-d="3">
+            <a href="https://calendly.com/luismorenoai" target="_blank" rel="noopener noreferrer" class="btn-star btn-star-lg" data-star-btn>
+              <span class="star-light"></span>
+              <span class="star-border-wrap" aria-hidden="true">
+                <svg width="100%" height="100%" preserveAspectRatio="none" viewBox="0 0 100 40" fill="none" xmlns="http://www.w3.org/2000/svg"><g clip-path="url(#sb2)"><path d="M32.34 26.68C32.34 26.3152 32.0445 26.02 31.68 26.02C31.3155 26.02 31.02 26.3152 31.02 26.68C31.02 27.0448 31.3155 27.34 31.68 27.34C32.0445 27.34 32.34 27.0448 32.34 26.68Z" fill="rgba(255,255,255,0.2)"/><path fill-rule="evenodd" clip-rule="evenodd" d="M56.1 3.96C56.4645 3.96 56.76 4.25519 56.76 4.62C56.76 4.98481 56.4645 5.28 56.1 5.28C55.9131 5.28 55.7443 5.20201 55.624 5.07762C55.5632 5.01446 55.5147 4.93904 55.4829 4.8559C55.4552 4.78243 55.44 4.70315 55.44 4.62C55.44 4.5549 55.4494 4.49174 55.4668 4.43244C55.4906 4.35188 55.5292 4.27775 55.5795 4.21329C55.7004 4.05926 55.8885 3.96 56.1 3.96ZM40.26 17.16C40.6245 17.16 40.92 17.4552 40.92 17.82C40.92 18.1848 40.6245 18.48 40.26 18.48C39.8955 18.48 39.6 18.1848 39.6 17.82C39.6 17.4552 39.8955 17.16 40.26 17.16ZM74.58 5.28C74.7701 5.28 74.9413 5.36057 75.0618 5.48882C75.094 5.52557 75.1359 5.58357 75.1595 5.62353C75.1906 5.68928 75.24 5.85106 75.24 5.94C75.24 6.1585 75.1336 6.3525 74.9699 6.47238C74.7247 6.58775 74.6538 6.6 74.58 6.6C74.2156 6.6 73.92 6.30481 73.92 5.94C73.92 5.87684 73.929 5.8156 73.9455 5.7576C74.0032 5.61903 74.0657 5.50688 74.2728 5.35541C74.3647 5.30707 74.4691 5.28 74.58 5.28ZM21.66 33.52C22.0245 33.52 22.32 33.8152 22.32 34.18C22.32 34.5448 22.0245 34.84 21.66 34.84C21.2955 34.84 21 34.5448 21 34.18C21 33.8152 21.2955 33.52 21.66 33.52ZM8.16 32.86C8.16 32.4952 7.8645 32.2 7.5 32.2C7.1355 32.2 6.84 32.4952 6.84 32.86C6.84 33.2248 7.1355 33.52 7.5 33.52C7.8645 33.52 8.16 33.2248 8.16 32.86ZM7.5 23.68C7.8645 23.68 8.16 23.9752 8.16 24.34C8.16 24.7048 7.8645 25 7.5 25C7.1355 25 6.84 24.7048 6.84 24.34C6.84 23.9752 7.1355 23.68 7.5 23.68ZM5.66 11.84C6.0245 11.84 6.32001 12.1352 6.32001 12.5C6.32001 12.8648 6.0245 13.16 5.66 13.16C5.2955 13.16 5 12.8648 5 12.5C5 12.1352 5.2955 11.84 5.66 11.84ZM35.16 35.5C35.16 35.1352 34.8645 34.84 34.5 34.84C34.1355 34.84 33.84 35.1352 33.84 35.5C33.84 35.8648 34.1355 36.16 34.5 36.16C34.8645 36.16 35.16 35.8648 35.16 35.5ZM53.5 36.18C53.8645 36.18 54.16 36.4752 54.16 36.84C54.16 37.2048 53.8645 37.5 53.5 37.5C53.1355 37.5 52.84 37.2048 52.84 36.84C52.84 36.4752 53.1355 36.18 53.5 36.18ZM48.5 28.66C48.5 28.2952 48.2045 28 47.84 28C47.4755 28 47.18 28.2952 47.18 28.66C47.18 29.0248 47.4755 29.32 47.84 29.32C48.2045 29.32 48.5 29.0248 48.5 28.66ZM60.34 27.34C60.7045 27.34 61 27.6352 61 28C61 28.3648 60.7045 28.66 60.34 28.66C59.9755 28.66 59.68 28.3648 59.68 28C59.68 27.6352 59.9755 27.34 60.34 27.34ZM56.284 16.5C56.284 16.1352 55.9885 15.84 55.624 15.84C55.2595 15.84 54.964 16.1352 54.964 16.5C54.964 16.8648 55.2595 17.16 55.624 17.16C55.9885 17.16 56.284 16.8648 56.284 16.5ZM46.2 7.26C46.2 6.89519 45.9045 6.6 45.54 6.6C45.1755 6.6 44.88 6.89519 44.88 7.26C44.88 7.62481 45.1755 7.92 45.54 7.92C45.9045 7.92 46.2 7.62481 46.2 7.26ZM33 9.34C33 8.9752 32.7045 8.68 32.34 8.68C31.9755 8.68 31.68 8.9752 31.68 9.34C31.68 9.7048 31.9755 10 32.34 10C32.7045 10 33 9.7048 33 9.34ZM16 4.8559C16.3645 4.8559 16.66 5.1511 16.66 5.5159C16.66 5.8807 16.3645 6.1759 16 6.1759C15.6355 6.1759 15.34 5.8807 15.34 5.5159C15.34 5.1511 15.6355 4.8559 16 4.8559ZM69.66 21.16C69.66 20.7952 69.3645 20.5 69 20.5C68.6355 20.5 68.34 20.7952 68.34 21.16C68.34 21.5248 68.6355 21.82 69 21.82C69.3645 21.82 69.66 21.5248 69.66 21.16ZM80.52 15.18C80.52 14.8152 80.2245 14.52 79.86 14.52C79.4956 14.52 79.2 14.8152 79.2 15.18C79.2 15.5448 79.4956 15.84 79.86 15.84C80.2245 15.84 80.52 15.5448 80.52 15.18ZM85.66 24.34C86.0245 24.34 86.32 24.6352 86.32 25C86.32 25.3648 86.0245 25.66 85.66 25.66C85.2955 25.66 85 25.3648 85 25C85 24.6352 85.2955 24.34 85.66 24.34ZM91.32 10C91.32 9.6352 91.0245 9.34 90.66 9.34C90.2955 9.34 90 9.6352 90 10C90 10.3648 90.2955 10.66 90.66 10.66C91.0245 10.66 91.32 10.3648 91.32 10ZM138.6 0H0V46.2H138.6V0ZM92.64 34.84C92.64 34.4752 91.98 34.18 91.98 34.18C91.98 34.18 91.32 34.4752 91.32 34.84C91.32 35.2048 91.6155 35.5 91.98 35.5C92.3445 35.5 92.64 35.2048 92.64 34.84Z" fill="rgba(255,255,255,0.1)"/></g><defs><clipPath id="sb2"><rect width="100" height="40" fill="white"/></clipPath></defs></svg>
+              </span>
+              <span class="btn-star-text">Agendar Auditoría Gratuita (20 min) →</span>
+            </a>
+            <a href="#metodologia" class="btn btn-ghost btn-lg">
+              Ver cómo funciona ↓
+            </a>
+          </div>
+
+        </div>
+
+      </div><!-- end hero-grid -->
+
+      <!-- Stat bar — full width below the grid -->
+      <div class="stat-bar" data-a data-d="4">
+        <div>
+          <div class="stat-num"><span id="c-hero">0</span>+ hrs/sem</div>
+          <div class="stat-label">recuperadas por cliente</div>
+        </div>
+        <div class="stat-divider"></div>
+        <div>
+          <div class="stat-num">3 semanas</div>
+          <div class="stat-label">implementación completa</div>
+        </div>
+        <div class="stat-divider"></div>
+        <div>
+          <div class="stat-num">&lt; 30 días</div>
+          <div class="stat-label">el sistema se paga solo</div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+
+  <!-- ══════════════════════════════════════════════════════ -->
+  <!-- OPERANDO CON — logo ticker                             -->
+  <!-- ══════════════════════════════════════════════════════ -->
+  <style>
+    @keyframes marquee { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+    .mq-track {
+      display: flex;
+      align-items: center;
+      width: max-content;
+      will-change: transform;
+      animation: marquee 36s linear infinite;
+    }
+    .mq-track:hover { animation-play-state: paused; }
+    .mq-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.6rem;
+      padding: 0 3rem;
+      cursor: default;
+      transition: opacity 0.25s ease;
+    }
+    .mq-item:hover { opacity: 1 !important; }
+    .mq-icon {
+      height: 28px;
+      width: auto;
+      display: block;
+      filter: brightness(0) invert(1);
+      opacity: 0.38;
+      transition: opacity 0.25s ease;
+    }
+    .mq-item:hover .mq-icon { opacity: 0.85; }
+    .mq-name {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.65rem;
+      font-weight: 700;
+      color: rgba(255,255,255,0.3);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      white-space: nowrap;
+      transition: color 0.25s ease;
+    }
+    .mq-item:hover .mq-name { color: rgba(255,255,255,0.7); }
+    .mq-sep {
+      color: rgba(255,255,255,0.07);
+      font-size: 1.4rem;
+      line-height: 1;
+      flex-shrink: 0;
+      user-select: none;
+    }
+  </style>
+  <section style="padding:2.75rem 0; background:rgba(3,8,18,0.55); border-top:1px solid rgba(255,255,255,0.05); border-bottom:1px solid rgba(255,255,255,0.05);">
+    <p style="text-align:center; font-size:0.62rem; font-weight:700; letter-spacing:0.22em; color:#3A5A78; text-transform:uppercase; margin:0 0 1.75rem;">Operando con</p>
+    <div style="overflow:hidden; -webkit-mask-image:linear-gradient(to right,transparent,black 6%,black 94%,transparent); mask-image:linear-gradient(to right,transparent,black 6%,black 94%,transparent);">
+      <div class="mq-track">
+        <div class="mq-item"><img src="public/logos/n8n.svg" alt="n8n" class="mq-icon"><span class="mq-name">n8n</span></div>
+        <span class="mq-sep">|</span>
+        <div class="mq-item"><img src="public/logos/notion.svg" alt="Notion" class="mq-icon"><span class="mq-name">Notion</span></div>
+        <span class="mq-sep">|</span>
+        <div class="mq-item"><img src="public/logos/claude.svg" alt="Claude" class="mq-icon"><span class="mq-name">Claude AI</span></div>
+        <span class="mq-sep">|</span>
+        <div class="mq-item"><img src="public/logos/github.svg" alt="GitHub" class="mq-icon"><span class="mq-name">GitHub</span></div>
+        <span class="mq-sep">|</span>
+        <div class="mq-item"><img src="public/logos/langchain.svg" alt="LangChain" class="mq-icon"><span class="mq-name">LangChain</span></div>
+        <span class="mq-sep">|</span>
+        <div class="mq-item"><img src="public/logos/mcp.svg" alt="MCP" class="mq-icon"><span class="mq-name">MCP</span></div>
+        <span class="mq-sep">|</span>
+        <div class="mq-item"><img src="public/logos/antigravity-color.svg" alt="Antigravity" class="mq-icon" style="filter:opacity(0.42);"><span class="mq-name">Antigravity</span></div>
+        <span class="mq-sep">|</span>
+        <div class="mq-item"><img src="public/logos/n8n.svg" alt="n8n" class="mq-icon"><span class="mq-name">n8n</span></div>
+        <span class="mq-sep">|</span>
+        <div class="mq-item"><img src="public/logos/notion.svg" alt="Notion" class="mq-icon"><span class="mq-name">Notion</span></div>
+        <span class="mq-sep">|</span>
+        <div class="mq-item"><img src="public/logos/claude.svg" alt="Claude" class="mq-icon"><span class="mq-name">Claude AI</span></div>
+        <span class="mq-sep">|</span>
+        <div class="mq-item"><img src="public/logos/github.svg" alt="GitHub" class="mq-icon"><span class="mq-name">GitHub</span></div>
+        <span class="mq-sep">|</span>
+        <div class="mq-item"><img src="public/logos/langchain.svg" alt="LangChain" class="mq-icon"><span class="mq-name">LangChain</span></div>
+        <span class="mq-sep">|</span>
+        <div class="mq-item"><img src="public/logos/mcp.svg" alt="MCP" class="mq-icon"><span class="mq-name">MCP</span></div>
+        <span class="mq-sep">|</span>
+        <div class="mq-item"><img src="public/logos/antigravity-color.svg" alt="Antigravity" class="mq-icon" style="filter:opacity(0.42);"><span class="mq-name">Antigravity</span></div>
+        <span class="mq-sep">|</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════ -->
+  <!-- PROBLEM AGITATION                                       -->
+  <!-- ══════════════════════════════════════════════════════ -->
+  <section class="section section-alt">
+    <div class="container">
+      <div class="section-intro center" data-a>
+        <div class="label" style="margin-bottom:1rem;">El costo de no actuar</div>
+        <h2 class="h2" style="font-size: clamp(1.9rem, 4.5vw, 3rem); margin-bottom: 1rem; max-width:620px; margin-left:auto; margin-right:auto;">
+          Cada día sin automatizar<br>te cuesta más de lo que crees
+        </h2>
+        <p class="muted" style="max-width:480px; margin:0 auto; color:#A0B4C8;">
+          Los negocios con procesos manuales no pierden tiempo — pierden dinero, talento y ventaja competitiva.
+        </p>
+      </div>
+
+      <div style="display:grid; grid-template-columns: 1fr 1fr; gap:1rem; margin-bottom:3rem;">
+
+        <!-- Card $4,200 — protagonista, fila completa -->
+        <div class="card card-hero" style="grid-column: 1 / -1; padding:3rem 3.25rem; position:relative; overflow:hidden; display:flex; align-items:center; gap:3.5rem;" data-a data-d="1">
+          <pixel-canvas
+            data-gap="8"
+            data-speed="25"
+            data-colors="#e0f2fe,#7dd3fc,#0ea5e9"
+            data-variant="default"
+            style="position:absolute; inset:0; pointer-events:none; width:100%; height:100%; z-index:1; opacity:0; transition:opacity 0.4s ease;"
+          ></pixel-canvas>
+          <!-- número + label -->
+          <div style="flex-shrink:0; text-align:center; position:relative; z-index:2;">
+            <div style="font-size:5.75rem; font-family:'Inter',system-ui,sans-serif; font-weight:900; letter-spacing:-0.05em; color:#5BA3FF; line-height:1; font-variant-numeric:tabular-nums;">$<span id="c-cost">0</span></div>
+            <div class="h3" style="font-size:1rem; margin-top:0.6rem; white-space:nowrap;">de pérdida mensual promedio en ineficiencia operativa</div>
+          </div>
+          <!-- separador vertical -->
+          <div style="width:1px; align-self:stretch; background:rgba(255,255,255,0.1); flex-shrink:0; position:relative; z-index:2;"></div>
+          <!-- descripción + fuente -->
+          <div style="flex:1; min-width:0; position:relative; z-index:2;">
+            <p style="font-size:0.975rem; line-height:1.8; margin-bottom:1rem; color:#B8CCDE;">No es una proyección. Es lo que ya salió de tu cuenta este mes — pagado en salarios para hacer lo que un sistema haría por $0.</p>
+            <p style="font-size:0.78rem; color:#7A9AB8; letter-spacing:0.02em;">Fuente: Zapier + Salesforce Research, 2023</p>
+          </div>
+        </div>
+
+        <!-- Card 23h -->
+        <div class="card" style="padding:2.5rem;" data-a data-d="2">
+          <!-- número + label -->
+          <div style="margin-bottom:1.25rem;">
+            <div style="font-size:3.75rem; font-family:'Inter',system-ui,sans-serif; font-weight:900; letter-spacing:-0.05em; color:#5BA3FF; line-height:1; font-variant-numeric:tabular-nums;"><span id="c-hours">0</span>h</div>
+            <div class="h3" style="font-size:1rem; margin-top:0.5rem;">horas semanales perdidas en tareas repetitivas</div>
+          </div>
+          <!-- separador horizontal -->
+          <div style="height:1px; background:rgba(255,255,255,0.08); margin-bottom:1.25rem;"></div>
+          <!-- descripción + fuente -->
+          <p style="font-size:0.9rem; line-height:1.75; margin-bottom:1rem; color:#A0B4C8;">Tu equipo dedica casi 3 días a la semana únicamente a tareas repetitivas — horas que ya pagaste y no generan nada.</p>
+          <p style="font-size:0.78rem; color:#7A9AB8; letter-spacing:0.02em;">Fuente: Salesforce, 2023</p>
+        </div>
+
+        <!-- Card 78% -->
+        <div class="card" style="padding:2.5rem;" data-a data-d="3">
+          <!-- número + label -->
+          <div style="margin-bottom:1.25rem;">
+            <div style="font-size:3.75rem; font-family:'Inter',system-ui,sans-serif; font-weight:900; letter-spacing:-0.05em; color:#5BA3FF; line-height:1; font-variant-numeric:tabular-nums;"><span id="c-pct">0</span>%</div>
+            <div class="h3" style="font-size:1rem; margin-top:0.5rem;">de empresas que operan en manualmente</div>
+          </div>
+          <!-- separador horizontal -->
+          <div style="height:1px; background:rgba(255,255,255,0.08); margin-bottom:1.25rem;"></div>
+          <!-- descripción + fuente -->
+          <p style="font-size:0.9rem; line-height:1.75; margin-bottom:1rem; color:#A0B4C8;">El 78% de tus competidores todavía opera en manual. Eso no es una estadística — es tu ventana de oportunidad. Y se está cerrando.</p>
+          <p style="font-size:0.78rem; color:#7A9AB8; letter-spacing:0.02em;">Fuente: BID — Banco Interamericano de Desarrollo, 2023</p>
+        </div>
+
+      </div>
+
+      <div style="margin-top:48px; text-align:center;" data-a>
+        <a href="https://calendly.com/luismorenoai" target="_blank" rel="noopener noreferrer"
+           style="display:inline-block; background:#2E7BF6; color:#fff; font-size:18px; font-weight:700; padding:16px 32px; border-radius:8px; text-decoration:none; transition:filter 0.2s;"
+           onmouseover="this.style.filter='brightness(1.1)'" onmouseout="this.style.filter='brightness(1)'">
+          Quiero dejar de perder $4,200/mes → Agendar llamada
+        </a>
+      </div>
+
+      <div style="text-align:center;" data-a>
+        <p class="dimmed" style="margin-bottom:1.5rem; color:#B0C4D8;">La pregunta no es si puedes permitirte automatizar — es si puedes permitirte <em>no</em> hacerlo.</p>
+        <a href="https://calendly.com/luismorenoai" target="_blank" rel="noopener noreferrer" class="btn btn-primary" style="font-weight:700; letter-spacing:0.01em;">
+          Ver cómo recupero ese tiempo →
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════ -->
+  <!-- METHODOLOGY                                             -->
+  <!-- ══════════════════════════════════════════════════════ -->
+  <section class="section" id="metodologia">
+    <div class="container">
+      <div class="section-intro center" data-a>
+        <div class="label" style="margin-bottom:1rem;">El sistema</div>
+        <h2 class="h2" style="font-size: clamp(1.9rem, 4.5vw, 3rem); margin-bottom:1rem;">Cómo lo hacemos</h2>
+        <p class="muted" style="max-width:420px; margin:0 auto;">
+          Modelo Done For You. Tú no aprendes herramientas — yo construyo, implemento y entreno.
+        </p>
+      </div>
+
+      <div class="steps-grid" style="margin-bottom:2.5rem;" data-a>
+        <div style="padding:2rem; text-align:center;">
+          <div class="step-num">1</div>
+          <h3 class="h3" style="font-size:1.05rem; margin-bottom:0.65rem;">Identificar Procesos</h3>
+          <p class="muted" style="font-size:0.875rem;">Auditoría Express de 20 minutos. Mapeamos qué tareas consumen más tiempo y tienen mayor impacto al automatizarse.</p>
+        </div>
+        <div style="padding:2rem; text-align:center;">
+          <div class="step-num">2</div>
+          <h3 class="h3" style="font-size:1.05rem; margin-bottom:0.65rem;">Documentar Flujos</h3>
+          <p class="muted" style="font-size:0.875rem;">Diseño el blueprint completo: entradas, salidas, reglas de negocio y puntos de control humano donde se necesiten.</p>
+        </div>
+        <div style="padding:2rem; text-align:center;">
+          <div class="step-num">3</div>
+          <h3 class="h3" style="font-size:1.05rem; margin-bottom:0.65rem;">Implementar y Capacitar</h3>
+          <p class="muted" style="font-size:0.875rem;">Construyo el sistema en tu infraestructura, lo pruebo en producción real y entreno a tu equipo para operarlo.</p>
+        </div>
+      </div>
+
+      <div style="display:flex; flex-wrap:wrap; justify-content:center; gap:0.6rem; margin-bottom:2.5rem;" data-a>
+        <span class="chip chip-blue">Done For You</span>
+        <span class="chip chip-dim">Sin curva de aprendizaje</span>
+        <span class="chip chip-dim">Sin fricción</span>
+        <span class="chip chip-dim">Auditoría 100% gratuita</span>
+        <span class="chip chip-dim">Implementación en 3 semanas</span>
+      </div>
+
+      <div style="text-align:center;" data-a>
+        <a href="https://calendly.com/luismorenoai" target="_blank" rel="noopener noreferrer" class="btn btn-primary btn-lg">
+          Empieza con la Auditoría Express Gratuita →
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════ -->
+  <!-- UNSTOPPABLE PROMISE                                     -->
+  <!-- ══════════════════════════════════════════════════════ -->
+  <section class="section section-alt">
+    <div class="container">
+      <div class="section-intro center" data-a>
+        <div class="label" style="margin-bottom:1rem;">La promesa</div>
+        <h2 class="h2" style="font-size: clamp(1.9rem, 4.5vw, 3rem); margin-bottom:1rem;">Lo que obtienes</h2>
+        <p class="muted" style="max-width:420px; margin:0 auto;">
+          No prometo tecnología. Prometo transformación medible en tu operación.
+        </p>
+      </div>
+
+      <div style="display:grid; grid-template-columns: 1fr 1fr; gap:1rem;">
+
+        <!-- Card izquierda — protagonista, ocupa toda la altura -->
+        <div class="card card-hero" style="padding:2.75rem; display:flex; flex-direction:column; justify-content:center;" data-a data-d="1">
+          <pixel-canvas
+            data-gap="8"
+            data-speed="25"
+            data-colors="#e0f2fe,#7dd3fc,#0ea5e9"
+            data-variant="default"
+            style="position:absolute; inset:0; pointer-events:none; width:100%; height:100%; z-index:1; opacity:0; transition:opacity 0.4s ease;"
+          ></pixel-canvas>
+          <div class="card-content">
+            <span class="promise-icon" style="font-size:2.25rem; margin-bottom:1.5rem;">⏱</span>
+            <div class="promise-title" style="font-size:1.45rem; margin-bottom:1.25rem; color:#E8F0FA;">Recupera 10+ horas a tu semana</div>
+            <p style="font-size:1rem; line-height:1.8; color:#B8CCDE;">Automatizando tus procesos repetitivos, tu equipo deja de invertir tiempo en tareas que no generan valor — y empieza a dedicarlo a lo que realmente hace crecer el negocio.</p>
+          </div>
+        </div>
+
+        <!-- Columna derecha — 3 cards apiladas -->
+        <div style="display:flex; flex-direction:column; gap:1rem;">
+
+          <div class="card card-small" style="padding:2rem; flex:1;" data-a data-d="2">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#0ea5e9" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom:0.85rem; display:block;"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 1-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+            <div class="promise-title" style="margin-bottom:0.35rem; color:#E8F0FA;">Un paso más hacia la independencia total</div>
+            <span class="promise-metric">+23h recuperadas/semana</span>
+            <p style="font-size:0.9rem; line-height:1.75; color:#A8BECE;">Identificamos tus procesos repetitivos y los automatizamos para que tu equipo opere con menos fricción, menos dependencia de personas clave y más autonomía real.</p>
+          </div>
+
+          <div class="card card-small" style="padding:2rem; flex:1;" data-a data-d="3">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#0ea5e9" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom:0.85rem; display:block;"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+            <div class="promise-title" style="margin-bottom:0.35rem; color:#E8F0FA;">Implementación en 3 semanas</div>
+            <span class="promise-metric">21 días al sistema en producción</span>
+            <p style="font-size:0.9rem; line-height:1.75; color:#A8BECE;">Sin meses de consultoría ni proyectos que nunca terminan. En 21 días tienes el sistema corriendo en producción.</p>
+          </div>
+
+          <div class="card card-small" style="padding:2rem; flex:1;" data-a data-d="4">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#0ea5e9" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom:0.85rem; display:block;"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>
+            <div class="promise-title" style="margin-bottom:0.35rem; color:#E8F0FA;">El sistema se paga solo</div>
+            <span class="promise-metric">ROI positivo en menos de 30 días</span>
+            <p style="font-size:0.9rem; line-height:1.75; color:#A8BECE;">En menos de 30 días, el tiempo recuperado y los errores eliminados generan más valor del que requirió la inversión.</p>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════ -->
+  <!-- SERVICES BENTO GRID                                     -->
+  <!-- ══════════════════════════════════════════════════════ -->
+  <section class="section">
+    <div class="container">
+      <div class="section-intro center" data-a>
+        <div class="label" style="margin-bottom:1rem;">Servicios</div>
+        <h2 class="h2" style="font-size: clamp(1.9rem, 4.5vw, 3rem); margin-bottom:1rem;">Qué construyo para ti</h2>
+        <p class="muted" style="max-width:460px; margin:0 auto;">
+          Sistemas de IA y automatización que corren en infraestructura real — no en herramientas de arrastrar y soltar.
+        </p>
+      </div>
+
+      <div class="bento">
+
+        <!-- ① AI Atención al Cliente — tall left, spans 2 rows -->
+        <div class="card bento-tall" style="padding:2.25rem; position:relative; overflow:hidden; min-height:280px; display:flex; flex-direction:column; justify-content:space-between;" data-a data-d="1">
+          <!-- background glow -->
+          <div style="position:absolute; bottom:-60px; right:-60px; width:260px; height:260px; background:radial-gradient(circle, rgba(46,123,246,0.18) 0%, transparent 70%); filter:blur(50px); pointer-events:none;"></div>
+          <!-- top -->
+          <div>
+            <div style="display:inline-flex; align-items:center; gap:0.45rem; background:rgba(46,123,246,0.12); border:1px solid rgba(46,123,246,0.25); border-radius:99px; padding:0.3rem 0.75rem; margin-bottom:1.5rem;">
+              <span style="width:7px; height:7px; border-radius:50%; background:#2E7BF6; box-shadow:0 0 6px #2E7BF6;"></span>
+              <span style="font-size:0.7rem; color:#7EB3FF; font-weight:600; letter-spacing:0.05em; text-transform:uppercase;">Atención 24/7</span>
+            </div>
+            <h3 class="h3" style="font-size:1.25rem; margin-bottom:0.85rem; line-height:1.3;">Agentes de IA para Atención al Cliente</h3>
+            <p class="muted" style="font-size:0.875rem; line-height:1.7; margin-bottom:2rem;">Responden al instante en WhatsApp, Instagram y web. Califican leads, resuelven FAQs y escalan casos complejos — sin intervención humana.</p>
+          </div>
+          <!-- stats row -->
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.75rem; margin-bottom:1.75rem;">
+            <div style="background:rgba(46,123,246,0.07); border:1px solid rgba(46,123,246,0.15); border-radius:10px; padding:0.85rem;">
+              <div style="font-size:1.4rem; font-weight:800; color:#7EB3FF; margin-bottom:0.2rem;">98%</div>
+              <div style="font-size:0.72rem; color:#5A7A9A;">tasa de respuesta</div>
+            </div>
+            <div style="background:rgba(0,207,255,0.06); border:1px solid rgba(0,207,255,0.12); border-radius:10px; padding:0.85rem;">
+              <div style="font-size:1.4rem; font-weight:800; color:#67E8F9; margin-bottom:0.2rem;">&lt;3s</div>
+              <div style="font-size:0.72rem; color:#5A7A9A;">tiempo respuesta</div>
+            </div>
+          </div>
+          <!-- chips -->
+          <div style="display:flex; gap:0.45rem; flex-wrap:wrap;">
+            <span class="chip chip-blue">WhatsApp</span>
+            <span class="chip chip-blue">Instagram</span>
+            <span class="chip chip-blue">Web Chat</span>
+          </div>
+        </div>
+
+        <!-- ② Automatización Interna — top right, 1col -->
+        <div class="card" style="padding:2rem; position:relative; overflow:hidden; min-height:200px; display:flex; flex-direction:column; justify-content:space-between;" data-a data-d="2">
+          <div style="position:absolute; top:-40px; left:-40px; width:180px; height:180px; background:radial-gradient(circle, rgba(0,207,255,0.1) 0%, transparent 70%); filter:blur(35px); pointer-events:none;"></div>
+          <div>
+            <div style="width:40px; height:40px; border-radius:10px; background:rgba(0,207,255,0.1); border:1px solid rgba(0,207,255,0.2); display:flex; align-items:center; justify-content:center; font-size:1.2rem; margin-bottom:1.25rem;">⚙️</div>
+            <h3 class="h3" style="font-size:1.05rem; margin-bottom:0.6rem;">Automatización Interna</h3>
+            <p class="muted" style="font-size:0.825rem; line-height:1.65;">Facturas, reportes, notificaciones y sincronización entre herramientas — sin tocar nada manualmente.</p>
+          </div>
+          <div style="margin-top:1.25rem; display:flex; align-items:center; gap:0.5rem;">
+            <span style="font-size:0.72rem; color:#5A7A9A;">Integra con</span>
+            <span style="font-size:0.72rem; color:#7EB3FF; font-weight:600;">Slack · Notion · Drive · Sheets</span>
+          </div>
+        </div>
+
+        <!-- ③ Lead Gen — top right (col 3) -->
+        <div class="card" style="padding:2rem; position:relative; overflow:hidden; min-height:200px; display:flex; flex-direction:column; justify-content:space-between;" data-a data-d="3">
+          <div style="position:absolute; bottom:-40px; right:-40px; width:180px; height:180px; background:radial-gradient(circle, rgba(46,123,246,0.1) 0%, transparent 70%); filter:blur(35px); pointer-events:none;"></div>
+          <div>
+            <div style="width:40px; height:40px; border-radius:10px; background:rgba(46,123,246,0.1); border:1px solid rgba(46,123,246,0.2); display:flex; align-items:center; justify-content:center; font-size:1.2rem; margin-bottom:1.25rem;">🎯</div>
+            <h3 class="h3" style="font-size:1.05rem; margin-bottom:0.6rem;">Generación de Leads</h3>
+            <p class="muted" style="font-size:0.825rem; line-height:1.65;">El agente encuentra prospectos en LinkedIn y Google Maps, los contacta y los entrega listos para venta.</p>
+          </div>
+          <div style="margin-top:1.25rem; display:flex; gap:0.4rem; flex-wrap:wrap;">
+            <span style="font-size:0.7rem; background:rgba(46,123,246,0.1); border:1px solid rgba(46,123,246,0.2); color:#7EB3FF; padding:0.25rem 0.6rem; border-radius:99px;">LinkedIn</span>
+            <span style="font-size:0.7rem; background:rgba(46,123,246,0.1); border:1px solid rgba(46,123,246,0.2); color:#7EB3FF; padding:0.25rem 0.6rem; border-radius:99px;">Google Maps</span>
+          </div>
+        </div>
+
+        <!-- ④ CRM — bottom wide, spans 2 cols -->
+        <div class="card bento-wide" style="padding:2rem; position:relative; overflow:hidden; min-height:170px; display:flex; align-items:center; gap:2.5rem;" data-a data-d="4">
+          <div style="position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); width:400px; height:150px; background:radial-gradient(ellipse, rgba(0,207,255,0.07) 0%, transparent 70%); filter:blur(30px); pointer-events:none;"></div>
+          <!-- icon -->
+          <div style="flex-shrink:0; width:56px; height:56px; border-radius:14px; background:linear-gradient(135deg, rgba(0,207,255,0.15), rgba(46,123,246,0.15)); border:1px solid rgba(0,207,255,0.2); display:flex; align-items:center; justify-content:center; font-size:1.6rem;">📊</div>
+          <!-- text -->
+          <div style="flex:1; min-width:0;">
+            <h3 class="h3" style="font-size:1.1rem; margin-bottom:0.5rem;">CRM y Seguimiento Automático</h3>
+            <p class="muted" style="font-size:0.875rem; line-height:1.6;">Ningún lead se enfría. El sistema califica, recuerda y convierte — en piloto automático, sin que muevas un dedo.</p>
+          </div>
+          <!-- stat pill -->
+          <div style="flex-shrink:0; text-align:center; padding:1rem 1.5rem; background:rgba(0,207,255,0.06); border:1px solid rgba(0,207,255,0.12); border-radius:14px;">
+            <div style="font-size:1.6rem; font-weight:800; color:#67E8F9; line-height:1;">3×</div>
+            <div style="font-size:0.7rem; color:#5A7A9A; margin-top:0.25rem; white-space:nowrap;">más conversiones</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════ -->
+  <!-- ABOUT LUIS                                              -->
+  <!-- ══════════════════════════════════════════════════════ -->
+  <section class="section">
+    <div class="container">
+      <div class="about-grid" style="display:grid; grid-template-columns: 1fr 1fr; gap:4rem; align-items:center;">
+
+        <!-- Photo -->
+        <div class="about-photo" data-a>
+          <div class="photo-frame" style="height:520px; max-width:420px;">
+            <img src="public/images/luis-moreno.jpg" alt="Luis Moreno — Automatización para Negocios" loading="eager">
+            <div class="photo-tint"></div>
+          </div>
+        </div>
+
+        <!-- Text -->
+        <div data-a data-d="1">
+          <div class="label" style="margin-bottom:1rem;">Quién está detrás del sistema</div>
+          <h2 class="h2" style="font-size: clamp(2rem, 4vw, 2.75rem); margin-bottom:1.5rem;">Luis Moreno</h2>
+          <div class="dimmed" style="line-height:1.8; font-size:0.975rem;">
+            <p style="margin-bottom:1rem;">Soy un ingeniero de automatización especializado en construir sistemas de IA que reemplazan trabajo manual en negocios de 5 a 50 personas.</p>
+            <p style="margin-bottom:1rem;">No vendo herramientas — construyo infraestructura real. Mis sistemas corren en servidores VPS propios, con lógica de negocio diseñada para cada cliente, no plantillas genéricas.</p>
+            <p style="margin-bottom:1rem;">Trabajo con n8n, GoHighLevel, Supabase y CrewAI para crear flujos que tus competidores tardarán años en alcanzar.</p>
+            <p style="color:#B0BFCF;">Si tu negocio depende de que tú estés presente para funcionar, eso tiene solución. Y se llama automatización.</p>
+          </div>
+          <div style="margin-top:2rem;">
+            <a href="https://calendly.com/luismorenoai" target="_blank" rel="noopener noreferrer" class="btn btn-primary btn-lg">
+              Hablar con Luis →
+            </a>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════ -->
+  <!-- GUARANTEE                                               -->
+  <!-- ══════════════════════════════════════════════════════ -->
+  <section class="section section-alt">
+    <div class="container">
+      <div class="guarantee-wrap" style="padding:4rem 3rem; text-align:center; position:relative; z-index:1;" data-a>
+        <div style="font-size:3rem; margin-bottom:1.25rem; position:relative; z-index:1;">🛡</div>
+        <div class="label" style="margin-bottom:1rem; position:relative; z-index:1;">Garantía absoluta</div>
+        <h2 class="h2" style="font-size: clamp(1.75rem, 3.5vw, 2.5rem); margin-bottom:1.25rem; position:relative; z-index:1;">
+          Garantía de Devolución del 100%
+        </h2>
+        <p class="dimmed" style="max-width:520px; margin:0 auto 1rem; font-size:1.05rem; line-height:1.75; position:relative; z-index:1;">
+          Si implemento el sistema y no ves los resultados prometidos, te devuelvo cada centavo.
+        </p>
+        <p style="color:#F0F5FF; font-family:'Syne',system-ui,sans-serif; font-weight:700; font-size:1.2rem; margin-bottom:0.5rem; position:relative; z-index:1;">
+          Y te quedas con toda la infraestructura instalada.
+        </p>
+        <p class="muted" style="font-size:0.8rem; margin-bottom:2rem; position:relative; z-index:1;">Sin letras pequeñas. Sin asteriscos. Sin excusas.</p>
+        <div style="position:relative; z-index:1;">
+          <a href="https://calendly.com/luismorenoai" target="_blank" rel="noopener noreferrer" class="btn-star btn-star-lg" data-star-btn>
+            <span class="star-light"></span>
+            <span class="star-border-wrap" aria-hidden="true">
+              <svg width="100%" height="100%" preserveAspectRatio="none" viewBox="0 0 100 40" fill="none" xmlns="http://www.w3.org/2000/svg"><g clip-path="url(#sb3)"><path d="M32.34 26.68C32.34 26.3152 32.0445 26.02 31.68 26.02C31.3155 26.02 31.02 26.3152 31.02 26.68C31.02 27.0448 31.3155 27.34 31.68 27.34C32.0445 27.34 32.34 27.0448 32.34 26.68Z" fill="rgba(255,255,255,0.2)"/><path fill-rule="evenodd" clip-rule="evenodd" d="M56.1 3.96C56.4645 3.96 56.76 4.25519 56.76 4.62C56.76 4.98481 56.4645 5.28 56.1 5.28C55.9131 5.28 55.7443 5.20201 55.624 5.07762C55.5632 5.01446 55.5147 4.93904 55.4829 4.8559C55.4552 4.78243 55.44 4.70315 55.44 4.62C55.44 4.5549 55.4494 4.49174 55.4668 4.43244C55.4906 4.35188 55.5292 4.27775 55.5795 4.21329C55.7004 4.05926 55.8885 3.96 56.1 3.96ZM40.26 17.16C40.6245 17.16 40.92 17.4552 40.92 17.82C40.92 18.1848 40.6245 18.48 40.26 18.48C39.8955 18.48 39.6 18.1848 39.6 17.82C39.6 17.4552 39.8955 17.16 40.26 17.16ZM74.58 5.28C74.7701 5.28 74.9413 5.36057 75.0618 5.48882C75.094 5.52557 75.1359 5.58357 75.1595 5.62353C75.1906 5.68928 75.24 5.85106 75.24 5.94C75.24 6.1585 75.1336 6.3525 74.9699 6.47238C74.7247 6.58775 74.6538 6.6 74.58 6.6C74.2156 6.6 73.92 6.30481 73.92 5.94C73.92 5.87684 73.929 5.8156 73.9455 5.7576C74.0032 5.61903 74.0657 5.50688 74.2728 5.35541C74.3647 5.30707 74.4691 5.28 74.58 5.28ZM21.66 33.52C22.0245 33.52 22.32 33.8152 22.32 34.18C22.32 34.5448 22.0245 34.84 21.66 34.84C21.2955 34.84 21 34.5448 21 34.18C21 33.8152 21.2955 33.52 21.66 33.52ZM8.16 32.86C8.16 32.4952 7.8645 32.2 7.5 32.2C7.1355 32.2 6.84 32.4952 6.84 32.86C6.84 33.2248 7.1355 33.52 7.5 33.52C7.8645 33.52 8.16 33.2248 8.16 32.86ZM7.5 23.68C7.8645 23.68 8.16 23.9752 8.16 24.34C8.16 24.7048 7.8645 25 7.5 25C7.1355 25 6.84 24.7048 6.84 24.34C6.84 23.9752 7.1355 23.68 7.5 23.68ZM5.66 11.84C6.0245 11.84 6.32001 12.1352 6.32001 12.5C6.32001 12.8648 6.0245 13.16 5.66 13.16C5.2955 13.16 5 12.8648 5 12.5C5 12.1352 5.2955 11.84 5.66 11.84ZM35.16 35.5C35.16 35.1352 34.8645 34.84 34.5 34.84C34.1355 34.84 33.84 35.1352 33.84 35.5C33.84 35.8648 34.1355 36.16 34.5 36.16C34.8645 36.16 35.16 35.8648 35.16 35.5ZM53.5 36.18C53.8645 36.18 54.16 36.4752 54.16 36.84C54.16 37.2048 53.8645 37.5 53.5 37.5C53.1355 37.5 52.84 37.2048 52.84 36.84C52.84 36.4752 53.1355 36.18 53.5 36.18ZM48.5 28.66C48.5 28.2952 48.2045 28 47.84 28C47.4755 28 47.18 28.2952 47.18 28.66C47.18 29.0248 47.4755 29.32 47.84 29.32C48.2045 29.32 48.5 29.0248 48.5 28.66ZM60.34 27.34C60.7045 27.34 61 27.6352 61 28C61 28.3648 60.7045 28.66 60.34 28.66C59.9755 28.66 59.68 28.3648 59.68 28C59.68 27.6352 59.9755 27.34 60.34 27.34ZM56.284 16.5C56.284 16.1352 55.9885 15.84 55.624 15.84C55.2595 15.84 54.964 16.1352 54.964 16.5C54.964 16.8648 55.2595 17.16 55.624 17.16C55.9885 17.16 56.284 16.8648 56.284 16.5ZM46.2 7.26C46.2 6.89519 45.9045 6.6 45.54 6.6C45.1755 6.6 44.88 6.89519 44.88 7.26C44.88 7.62481 45.1755 7.92 45.54 7.92C45.9045 7.92 46.2 7.62481 46.2 7.26ZM33 9.34C33 8.9752 32.7045 8.68 32.34 8.68C31.9755 8.68 31.68 8.9752 31.68 9.34C31.68 9.7048 31.9755 10 32.34 10C32.7045 10 33 9.7048 33 9.34ZM16 4.8559C16.3645 4.8559 16.66 5.1511 16.66 5.5159C16.66 5.8807 16.3645 6.1759 16 6.1759C15.6355 6.1759 15.34 5.8807 15.34 5.5159C15.34 5.1511 15.6355 4.8559 16 4.8559ZM69.66 21.16C69.66 20.7952 69.3645 20.5 69 20.5C68.6355 20.5 68.34 20.7952 68.34 21.16C68.34 21.5248 68.6355 21.82 69 21.82C69.3645 21.82 69.66 21.5248 69.66 21.16ZM80.52 15.18C80.52 14.8152 80.2245 14.52 79.86 14.52C79.4956 14.52 79.2 14.8152 79.2 15.18C79.2 15.5448 79.4956 15.84 79.86 15.84C80.2245 15.84 80.52 15.5448 80.52 15.18ZM85.66 24.34C86.0245 24.34 86.32 24.6352 86.32 25C86.32 25.3648 86.0245 25.66 85.66 25.66C85.2955 25.66 85 25.3648 85 25C85 24.6352 85.2955 24.34 85.66 24.34ZM91.32 10C91.32 9.6352 91.0245 9.34 90.66 9.34C90.2955 9.34 90 9.6352 90 10C90 10.3648 90.2955 10.66 90.66 10.66C91.0245 10.66 91.32 10.3648 91.32 10ZM138.6 0H0V46.2H138.6V0ZM92.64 34.84C92.64 34.4752 91.98 34.18 91.98 34.18C91.98 34.18 91.32 34.4752 91.32 34.84C91.32 35.2048 91.6155 35.5 91.98 35.5C92.3445 35.5 92.64 35.2048 92.64 34.84Z" fill="rgba(255,255,255,0.1)"/></g><defs><clipPath id="sb3"><rect width="100" height="40" fill="white"/></clipPath></defs></svg>
+            </span>
+            <span class="btn-star-text">Agendar sin riesgo →</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════ -->
+  <!-- INSTAGRAM                                               -->
+  <!-- ══════════════════════════════════════════════════════ -->
+  <section class="section">
+    <div class="container" style="text-align:center;" data-a>
+      <div class="label" style="margin-bottom:1rem;">En tiempo real</div>
+      <h2 class="h2" style="font-size: clamp(1.75rem, 3.5vw, 2.5rem); margin-bottom:1rem;">
+        Sígueme para ver el trabajo en vivo
+      </h2>
+      <p class="muted" style="max-width:420px; margin:0 auto 2.5rem;">
+        Comparto casos reales, implementaciones y resultados de clientes en Instagram.
+      </p>
+      <a href="https://instagram.com/YOUR_HANDLE" target="_blank" rel="noopener noreferrer" class="ig-card"
+         style="display:inline-block; padding:2.5rem 3rem; text-decoration:none; max-width:320px; width:100%;">
+        <div style="width:3.5rem; height:3.5rem; border-radius:1rem; display:flex; align-items:center; justify-content:center; margin:0 auto 1rem; background:linear-gradient(135deg,#f09433 0%,#e6683c 25%,#dc2743 50%,#cc2366 75%,#bc1888 100%);">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="white">
+            <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 1 0 0 12.324 6.162 6.162 0 0 0 0-12.324zM12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm6.406-11.845a1.44 1.44 0 1 0 0 2.881 1.44 1.44 0 0 0 0-2.881z"/>
+          </svg>
+        </div>
+        <div style="color:#F0F5FF; font-family:'Syne',system-ui,sans-serif; font-weight:700; margin-bottom:0.25rem;">@YOUR_HANDLE</div>
+        <div class="muted" style="font-size:0.8rem; margin-bottom:1.25rem;">Ver perfil en Instagram</div>
+        <div style="display:inline-flex; align-items:center; gap:0.4rem; padding:0.55rem 1.25rem; border-radius:0.5rem; font-size:0.8rem; font-family:'Syne',system-ui,sans-serif; font-weight:600; color:#fff; background:linear-gradient(135deg,#f09433,#dc2743,#bc1888);">
+          Seguir →
+        </div>
+      </a>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════ -->
+  <!-- FINAL CTA                                               -->
+  <!-- ══════════════════════════════════════════════════════ -->
+  <section class="final-cta-section">
+    <div class="final-cta-orb"></div>
+    <div class="container" style="text-align:center; position:relative; z-index:1;" data-a>
+      <div class="label" style="margin-bottom:1.25rem;">Cero riesgo</div>
+      <h2 class="h1" style="font-size: clamp(2.5rem, 6.5vw, 4.5rem); margin-bottom:1.25rem;">
+        ¿Listo para recuperar<br>tu tiempo?
+      </h2>
+      <p class="dimmed" style="font-size:1.1rem; margin-bottom:0.75rem; max-width:480px; margin-left:auto; margin-right:auto;">
+        20 minutos de auditoría gratuita. Sin compromisos. Sin presión de ventas.
+      </p>
+      <p style="color:#7DAAFF; font-family:'Syne',system-ui,sans-serif; font-weight:600; margin-bottom:2.5rem; font-size:0.975rem;">
+        Si no veo cómo ayudarte, te lo digo directo.
+      </p>
+      <a href="https://calendly.com/luismorenoai" target="_blank" rel="noopener noreferrer" class="btn-star btn-star-xl" data-star-btn>
+        <span class="star-light"></span>
+        <span class="star-border-wrap" aria-hidden="true">
+          <svg width="100%" height="100%" preserveAspectRatio="none" viewBox="0 0 100 40" fill="none" xmlns="http://www.w3.org/2000/svg"><g clip-path="url(#sb4)"><path d="M32.34 26.68C32.34 26.3152 32.0445 26.02 31.68 26.02C31.3155 26.02 31.02 26.3152 31.02 26.68C31.02 27.0448 31.3155 27.34 31.68 27.34C32.0445 27.34 32.34 27.0448 32.34 26.68Z" fill="rgba(255,255,255,0.2)"/><path fill-rule="evenodd" clip-rule="evenodd" d="M56.1 3.96C56.4645 3.96 56.76 4.25519 56.76 4.62C56.76 4.98481 56.4645 5.28 56.1 5.28C55.9131 5.28 55.7443 5.20201 55.624 5.07762C55.5632 5.01446 55.5147 4.93904 55.4829 4.8559C55.4552 4.78243 55.44 4.70315 55.44 4.62C55.44 4.5549 55.4494 4.49174 55.4668 4.43244C55.4906 4.35188 55.5292 4.27775 55.5795 4.21329C55.7004 4.05926 55.8885 3.96 56.1 3.96ZM40.26 17.16C40.6245 17.16 40.92 17.4552 40.92 17.82C40.92 18.1848 40.6245 18.48 40.26 18.48C39.8955 18.48 39.6 18.1848 39.6 17.82C39.6 17.4552 39.8955 17.16 40.26 17.16ZM74.58 5.28C74.7701 5.28 74.9413 5.36057 75.0618 5.48882C75.094 5.52557 75.1359 5.58357 75.1595 5.62353C75.1906 5.68928 75.24 5.85106 75.24 5.94C75.24 6.1585 75.1336 6.3525 74.9699 6.47238C74.7247 6.58775 74.6538 6.6 74.58 6.6C74.2156 6.6 73.92 6.30481 73.92 5.94C73.92 5.87684 73.929 5.8156 73.9455 5.7576C74.0032 5.61903 74.0657 5.50688 74.2728 5.35541C74.3647 5.30707 74.4691 5.28 74.58 5.28ZM21.66 33.52C22.0245 33.52 22.32 33.8152 22.32 34.18C22.32 34.5448 22.0245 34.84 21.66 34.84C21.2955 34.84 21 34.5448 21 34.18C21 33.8152 21.2955 33.52 21.66 33.52ZM8.16 32.86C8.16 32.4952 7.8645 32.2 7.5 32.2C7.1355 32.2 6.84 32.4952 6.84 32.86C6.84 33.2248 7.1355 33.52 7.5 33.52C7.8645 33.52 8.16 33.2248 8.16 32.86ZM7.5 23.68C7.8645 23.68 8.16 23.9752 8.16 24.34C8.16 24.7048 7.8645 25 7.5 25C7.1355 25 6.84 24.7048 6.84 24.34C6.84 23.9752 7.1355 23.68 7.5 23.68ZM5.66 11.84C6.0245 11.84 6.32001 12.1352 6.32001 12.5C6.32001 12.8648 6.0245 13.16 5.66 13.16C5.2955 13.16 5 12.8648 5 12.5C5 12.1352 5.2955 11.84 5.66 11.84ZM35.16 35.5C35.16 35.1352 34.8645 34.84 34.5 34.84C34.1355 34.84 33.84 35.1352 33.84 35.5C33.84 35.8648 34.1355 36.16 34.5 36.16C34.8645 36.16 35.16 35.8648 35.16 35.5ZM53.5 36.18C53.8645 36.18 54.16 36.4752 54.16 36.84C54.16 37.2048 53.8645 37.5 53.5 37.5C53.1355 37.5 52.84 37.2048 52.84 36.84C52.84 36.4752 53.1355 36.18 53.5 36.18ZM48.5 28.66C48.5 28.2952 48.2045 28 47.84 28C47.4755 28 47.18 28.2952 47.18 28.66C47.18 29.0248 47.4755 29.32 47.84 29.32C48.2045 29.32 48.5 29.0248 48.5 28.66ZM60.34 27.34C60.7045 27.34 61 27.6352 61 28C61 28.3648 60.7045 28.66 60.34 28.66C59.9755 28.66 59.68 28.3648 59.68 28C59.68 27.6352 59.9755 27.34 60.34 27.34ZM56.284 16.5C56.284 16.1352 55.9885 15.84 55.624 15.84C55.2595 15.84 54.964 16.1352 54.964 16.5C54.964 16.8648 55.2595 17.16 55.624 17.16C55.9885 17.16 56.284 16.8648 56.284 16.5ZM46.2 7.26C46.2 6.89519 45.9045 6.6 45.54 6.6C45.1755 6.6 44.88 6.89519 44.88 7.26C44.88 7.62481 45.1755 7.92 45.54 7.92C45.9045 7.92 46.2 7.62481 46.2 7.26ZM33 9.34C33 8.9752 32.7045 8.68 32.34 8.68C31.9755 8.68 31.68 8.9752 31.68 9.34C31.68 9.7048 31.9755 10 32.34 10C32.7045 10 33 9.7048 33 9.34ZM16 4.8559C16.3645 4.8559 16.66 5.1511 16.66 5.5159C16.66 5.8807 16.3645 6.1759 16 6.1759C15.6355 6.1759 15.34 5.8807 15.34 5.5159C15.34 5.1511 15.6355 4.8559 16 4.8559ZM69.66 21.16C69.66 20.7952 69.3645 20.5 69 20.5C68.6355 20.5 68.34 20.7952 68.34 21.16C68.34 21.5248 68.6355 21.82 69 21.82C69.3645 21.82 69.66 21.5248 69.66 21.16ZM80.52 15.18C80.52 14.8152 80.2245 14.52 79.86 14.52C79.4956 14.52 79.2 14.8152 79.2 15.18C79.2 15.5448 79.4956 15.84 79.86 15.84C80.2245 15.84 80.52 15.5448 80.52 15.18ZM85.66 24.34C86.0245 24.34 86.32 24.6352 86.32 25C86.32 25.3648 86.0245 25.66 85.66 25.66C85.2955 25.66 85 25.3648 85 25C85 24.6352 85.2955 24.34 85.66 24.34ZM91.32 10C91.32 9.6352 91.0245 9.34 90.66 9.34C90.2955 9.34 90 9.6352 90 10C90 10.3648 90.2955 10.66 90.66 10.66C91.0245 10.66 91.32 10.3648 91.32 10ZM138.6 0H0V46.2H138.6V0ZM92.64 34.84C92.64 34.4752 91.98 34.18 91.98 34.18C91.98 34.18 91.32 34.4752 91.32 34.84C91.32 35.2048 91.6155 35.5 91.98 35.5C92.3445 35.5 92.64 35.2048 92.64 34.84Z" fill="rgba(255,255,255,0.1)"/></g><defs><clipPath id="sb4"><rect width="100" height="40" fill="white"/></clipPath></defs></svg>
+        </span>
+        <span class="btn-star-text">Agendar Auditoría Gratuita →</span>
+      </a>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════ -->
+  <!-- FOOTER                                                  -->
+  <!-- ══════════════════════════════════════════════════════ -->
+  <footer class="footer">
+    <div class="footer-inner">
+      <span class="nav-logo" style="font-size:0.95rem;">Luis<span style="color:#2E7BF6;">.</span>Moreno</span>
+      <span style="font-size:0.78rem; color:#3A4A5A;">© 2026 Luis Moreno. Todos los derechos reservados.</span>
+      <div style="display:flex; gap:1.25rem;">
+        <a href="https://instagram.com/YOUR_HANDLE" target="_blank" rel="noopener noreferrer" class="footer-link">Instagram</a>
+        <a href="https://calendly.com/luismorenoai" target="_blank" rel="noopener noreferrer" class="btn-star btn-star-sm" data-star-btn>
+          <span class="star-light"></span>
+          <span class="star-border-wrap" aria-hidden="true">
+            <svg width="100%" height="100%" preserveAspectRatio="none" viewBox="0 0 100 40" fill="none" xmlns="http://www.w3.org/2000/svg"><g clip-path="url(#sb5)"><path d="M32.34 26.68C32.34 26.3152 32.0445 26.02 31.68 26.02C31.3155 26.02 31.02 26.3152 31.02 26.68C31.02 27.0448 31.3155 27.34 31.68 27.34C32.0445 27.34 32.34 27.0448 32.34 26.68Z" fill="rgba(255,255,255,0.2)"/><path fill-rule="evenodd" clip-rule="evenodd" d="M56.1 3.96C56.4645 3.96 56.76 4.25519 56.76 4.62C56.76 4.98481 56.4645 5.28 56.1 5.28C55.9131 5.28 55.7443 5.20201 55.624 5.07762C55.5632 5.01446 55.5147 4.93904 55.4829 4.8559C55.4552 4.78243 55.44 4.70315 55.44 4.62C55.44 4.5549 55.4494 4.49174 55.4668 4.43244C55.4906 4.35188 55.5292 4.27775 55.5795 4.21329C55.7004 4.05926 55.8885 3.96 56.1 3.96ZM40.26 17.16C40.6245 17.16 40.92 17.4552 40.92 17.82C40.92 18.1848 40.6245 18.48 40.26 18.48C39.8955 18.48 39.6 18.1848 39.6 17.82C39.6 17.4552 39.8955 17.16 40.26 17.16ZM74.58 5.28C74.7701 5.28 74.9413 5.36057 75.0618 5.48882C75.094 5.52557 75.1359 5.58357 75.1595 5.62353C75.1906 5.68928 75.24 5.85106 75.24 5.94C75.24 6.1585 75.1336 6.3525 74.9699 6.47238C74.7247 6.58775 74.6538 6.6 74.58 6.6C74.2156 6.6 73.92 6.30481 73.92 5.94C73.92 5.87684 73.929 5.8156 73.9455 5.7576C74.0032 5.61903 74.0657 5.50688 74.2728 5.35541C74.3647 5.30707 74.4691 5.28 74.58 5.28ZM21.66 33.52C22.0245 33.52 22.32 33.8152 22.32 34.18C22.32 34.5448 22.0245 34.84 21.66 34.84C21.2955 34.84 21 34.5448 21 34.18C21 33.8152 21.2955 33.52 21.66 33.52ZM8.16 32.86C8.16 32.4952 7.8645 32.2 7.5 32.2C7.1355 32.2 6.84 32.4952 6.84 32.86C6.84 33.2248 7.1355 33.52 7.5 33.52C7.8645 33.52 8.16 33.2248 8.16 32.86ZM7.5 23.68C7.8645 23.68 8.16 23.9752 8.16 24.34C8.16 24.7048 7.8645 25 7.5 25C7.1355 25 6.84 24.7048 6.84 24.34C6.84 23.9752 7.1355 23.68 7.5 23.68ZM5.66 11.84C6.0245 11.84 6.32001 12.1352 6.32001 12.5C6.32001 12.8648 6.0245 13.16 5.66 13.16C5.2955 13.16 5 12.8648 5 12.5C5 12.1352 5.2955 11.84 5.66 11.84ZM35.16 35.5C35.16 35.1352 34.8645 34.84 34.5 34.84C34.1355 34.84 33.84 35.1352 33.84 35.5C33.84 35.8648 34.1355 36.16 34.5 36.16C34.8645 36.16 35.16 35.8648 35.16 35.5ZM53.5 36.18C53.8645 36.18 54.16 36.4752 54.16 36.84C54.16 37.2048 53.8645 37.5 53.5 37.5C53.1355 37.5 52.84 37.2048 52.84 36.84C52.84 36.4752 53.1355 36.18 53.5 36.18ZM48.5 28.66C48.5 28.2952 48.2045 28 47.84 28C47.4755 28 47.18 28.2952 47.18 28.66C47.18 29.0248 47.4755 29.32 47.84 29.32C48.2045 29.32 48.5 29.0248 48.5 28.66ZM60.34 27.34C60.7045 27.34 61 27.6352 61 28C61 28.3648 60.7045 28.66 60.34 28.66C59.9755 28.66 59.68 28.3648 59.68 28C59.68 27.6352 59.9755 27.34 60.34 27.34ZM56.284 16.5C56.284 16.1352 55.9885 15.84 55.624 15.84C55.2595 15.84 54.964 16.1352 54.964 16.5C54.964 16.8648 55.2595 17.16 55.624 17.16C55.9885 17.16 56.284 16.8648 56.284 16.5ZM46.2 7.26C46.2 6.89519 45.9045 6.6 45.54 6.6C45.1755 6.6 44.88 6.89519 44.88 7.26C44.88 7.62481 45.1755 7.92 45.54 7.92C45.9045 7.92 46.2 7.62481 46.2 7.26ZM33 9.34C33 8.9752 32.7045 8.68 32.34 8.68C31.9755 8.68 31.68 8.9752 31.68 9.34C31.68 9.7048 31.9755 10 32.34 10C32.7045 10 33 9.7048 33 9.34ZM16 4.8559C16.3645 4.8559 16.66 5.1511 16.66 5.5159C16.66 5.8807 16.3645 6.1759 16 6.1759C15.6355 6.1759 15.34 5.8807 15.34 5.5159C15.34 5.1511 15.6355 4.8559 16 4.8559ZM69.66 21.16C69.66 20.7952 69.3645 20.5 69 20.5C68.6355 20.5 68.34 20.7952 68.34 21.16C68.34 21.5248 68.6355 21.82 69 21.82C69.3645 21.82 69.66 21.5248 69.66 21.16ZM80.52 15.18C80.52 14.8152 80.2245 14.52 79.86 14.52C79.4956 14.52 79.2 14.8152 79.2 15.18C79.2 15.5448 79.4956 15.84 79.86 15.84C80.2245 15.84 80.52 15.5448 80.52 15.18ZM85.66 24.34C86.0245 24.34 86.32 24.6352 86.32 25C86.32 25.3648 86.0245 25.66 85.66 25.66C85.2955 25.66 85 25.3648 85 25C85 24.6352 85.2955 24.34 85.66 24.34ZM91.32 10C91.32 9.6352 91.0245 9.34 90.66 9.34C90.2955 9.34 90 9.6352 90 10C90 10.3648 90.2955 10.66 90.66 10.66C91.0245 10.66 91.32 10.3648 91.32 10ZM138.6 0H0V46.2H138.6V0ZM92.64 34.84C92.64 34.4752 91.98 34.18 91.98 34.18C91.98 34.18 91.32 34.4752 91.32 34.84C91.32 35.2048 91.6155 35.5 91.98 35.5C92.3445 35.5 92.64 35.2048 92.64 34.84Z" fill="rgba(255,255,255,0.1)"/></g><defs><clipPath id="sb5"><rect width="100" height="40" fill="white"/></clipPath></defs></svg>
+          </span>
+          <span class="btn-star-text">Agendar Llamada</span>
+        </a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ══════════════════════════════════════════════════════ -->
+  <!-- JAVASCRIPT                                              -->
+  <!-- ══════════════════════════════════════════════════════ -->
+  <script>
+    // ── Scroll animations ──────────────────────────────────
+    const animObs = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          e.target.classList.add('in');
+          animObs.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.1 });
+    document.querySelectorAll('[data-a]').forEach(el => animObs.observe(el));
+
+    // ── Navbar scroll ──────────────────────────────────────
+    const nav = document.getElementById('nav');
+    window.addEventListener('scroll', () => {
+      nav.classList.toggle('scrolled', window.scrollY > 50);
+    }, { passive: true });
+
+    // ── Counter animation ──────────────────────────────────
+    function animCount(el, target, duration) {
+      let start = null;
+      const tick = (ts) => {
+        if (!start) start = ts;
+        const p = Math.min((ts - start) / duration, 1);
+        const e = 1 - Math.pow(1 - p, 3);
+        el.textContent = target < 100
+          ? Math.floor(e * target)
+          : (Math.floor(e * target / 100) * 100).toLocaleString();
+        if (p < 1) requestAnimationFrame(tick);
+      };
+      requestAnimationFrame(tick);
+    }
+
+    const ctrObs = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (!e.isIntersecting) return;
+        const id = e.target.id;
+        if (id === 'c-hero')   animCount(e.target, 10, 1600);
+        if (id === 'c-hours')  animCount(e.target, 23, 2000);
+        if (id === 'c-pct')    animCount(e.target, 78, 2000);
+        if (id === 'c-cost')   animCount(e.target, 4200, 2400);
+        ctrObs.unobserve(e.target);
+      });
+    }, { threshold: 0.6 });
+
+    ['c-hero','c-hours','c-pct','c-cost'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) ctrObs.observe(el);
+    });
+
+    // Hero counter fires immediately (already in viewport at load)
+    const heroCounter = document.getElementById('c-hero');
+    if (heroCounter) animCount(heroCounter, 10, 1600);
+
+    // Remove hero counter from ctrObs to avoid double-firing
+    const heroCtr = document.getElementById('c-hero');
+    if (heroCtr) ctrObs.unobserve(heroCtr);
+
+  </script>
+
+  <!-- ── MOUNTAIN SCENE BACKGROUND (Three.js) ──────────────── -->
+  <script>
+    (function () {
+      const container = document.getElementById('mountain-canvas');
+      if (!container || typeof THREE === 'undefined') return;
+
+      const scene = new THREE.Scene();
+      const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 100);
+      camera.position.set(0, 1.5, 3);
+      camera.rotation.x = -0.3;
+
+      const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      container.appendChild(renderer.domElement);
+
+      const geometry = new THREE.PlaneGeometry(12, 8, 128, 128);
+
+      const material = new THREE.ShaderMaterial({
+        side: THREE.DoubleSide,
+        wireframe: false,
+        transparent: true,
+        uniforms: {
+          time: { value: 0 },
+          pointLightPosition: { value: new THREE.Vector3(0, 0, 5) },
+          color: { value: new THREE.Color('#7dd3fc') }
+        },
+        vertexShader: `
+          uniform float time;
+          varying vec3 vNormal;
+          varying vec3 vPosition;
+          vec3 mod289v3(vec3 x){return x-floor(x*(1./289.))*289.;}
+          vec4 mod289v4(vec4 x){return x-floor(x*(1./289.))*289.;}
+          vec4 permute(vec4 x){return mod289v4(((x*34.)+1.)*x);}
+          vec4 taylorInvSqrt(vec4 r){return 1.79284291400159-0.85373472095314*r;}
+          float snoise(vec3 v){
+            const vec2 C=vec2(1./6.,1./3.);
+            const vec4 D=vec4(0.,.5,1.,2.);
+            vec3 i=floor(v+dot(v,C.yyy));
+            vec3 x0=v-i+dot(i,C.xxx);
+            vec3 g=step(x0.yzx,x0.xyz);
+            vec3 l=1.-g;
+            vec3 i1=min(g.xyz,l.zxy);
+            vec3 i2=max(g.xyz,l.zxy);
+            vec3 x1=x0-i1+C.xxx;
+            vec3 x2=x0-i2+C.yyy;
+            vec3 x3=x0-D.yyy;
+            i=mod289v3(i);
+            vec4 p=permute(permute(permute(i.z+vec4(0.,i1.z,i2.z,1.))+i.y+vec4(0.,i1.y,i2.y,1.))+i.x+vec4(0.,i1.x,i2.x,1.));
+            float n_=0.142857142857;
+            vec3 ns=n_*D.wyz-D.xzx;
+            vec4 j=p-49.*floor(p*ns.z*ns.z);
+            vec4 x_=floor(j*ns.z);
+            vec4 y_=floor(j-7.*x_);
+            vec4 x=x_*ns.x+ns.yyyy;
+            vec4 y=y_*ns.x+ns.yyyy;
+            vec4 h=1.-abs(x)-abs(y);
+            vec4 b0=vec4(x.xy,y.xy);
+            vec4 b1=vec4(x.zw,y.zw);
+            vec4 s0=floor(b0)*2.+1.;
+            vec4 s1=floor(b1)*2.+1.;
+            vec4 sh=-step(h,vec4(0.));
+            vec4 a0=b0.xzyw+s0.xzyw*sh.xxyy;
+            vec4 a1=b1.xzyw+s1.xzyw*sh.zzww;
+            vec3 p0=vec3(a0.xy,h.x);
+            vec3 p1=vec3(a0.zw,h.y);
+            vec3 p2=vec3(a1.xy,h.z);
+            vec3 p3=vec3(a1.zw,h.w);
+            vec4 norm=taylorInvSqrt(vec4(dot(p0,p0),dot(p1,p1),dot(p2,p2),dot(p3,p3)));
+            p0*=norm.x;p1*=norm.y;p2*=norm.z;p3*=norm.w;
+            vec4 m=max(0.6-vec4(dot(x0,x0),dot(x1,x1),dot(x2,x2),dot(x3,x3)),0.);
+            m=m*m;
+            return 42.*dot(m*m,vec4(dot(p0,x0),dot(p1,x1),dot(p2,x2),dot(p3,x3)));
+          }
+          void main(){
+            vNormal=normal; vPosition=position;
+            float d=snoise(vec3(position.x*0.8,position.y*0.8-time*0.2,0.))*0.6;
+            d+=snoise(vec3(position.x*1.6,position.y*1.6-time*0.2,0.))*0.3;
+            vec3 np=position+normal*d;
+            gl_Position=projectionMatrix*modelViewMatrix*vec4(np,1.);
+          }
+        `,
+        fragmentShader: `
+          uniform vec3 color;
+          uniform vec3 pointLightPosition;
+          varying vec3 vNormal;
+          varying vec3 vPosition;
+          void main(){
+            vec3 n=normalize(vNormal);
+            vec3 ld=normalize(pointLightPosition-vPosition);
+            float diff=max(dot(n,ld),0.);
+            float fres=pow(1.-dot(n,vec3(0.,0.,1.)),2.);
+            vec3 fc=color*diff+color*fres*0.5;
+            gl_FragColor=vec4(fc,1.);
+          }
+        `
+      });
+
+      const mesh = new THREE.Mesh(geometry, material);
+      mesh.rotation.x = -Math.PI / 2;
+      scene.add(mesh);
+
+      const pointLight = new THREE.PointLight(0xffffff, 1, 100);
+      pointLight.position.set(0, 0, 5);
+      scene.add(pointLight);
+
+      let frameId;
+      function animate(t) {
+        material.uniforms.time.value = t * 0.0003;
+        renderer.render(scene, camera);
+        frameId = requestAnimationFrame(animate);
+      }
+      animate(0);
+
+      window.addEventListener('resize', function () {
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+      });
+
+      window.addEventListener('mousemove', function (e) {
+        const x = (e.clientX / window.innerWidth) * 2 - 1;
+        const y = -(e.clientY / window.innerHeight) * 2 + 1;
+        const pos = new THREE.Vector3(x * 5, 2, 2 - y * 2);
+        pointLight.position.copy(pos);
+        material.uniforms.pointLightPosition.value = pos;
+      });
+    })();
+
+    // ── Star Button: set offset-path per button ─────────────
+    function initStarBtns() {
+      document.querySelectorAll('[data-star-btn]').forEach(function(btn) {
+        var light = btn.querySelector('.star-light');
+        if (!light) return;
+        var w = btn.offsetWidth;
+        var h = btn.offsetHeight;
+        light.style.offsetPath = "path('M 0 0 H " + w + " V " + h + " H 0 V 0')";
+        light.style.offsetDistance = '0%';
+      });
+    }
+    window.addEventListener('load', initStarBtns);
+    window.addEventListener('resize', initStarBtns);
+  </script>
+
+  <!-- ── PIXEL CANVAS WEB COMPONENT ───────────────────────── -->
+  <script>
+  (function () {
+    class Pixel {
+      constructor(canvas, ctx, x, y, color, speed, delay) {
+        this.width = canvas.width;
+        this.height = canvas.height;
+        this.ctx = ctx;
+        this.x = x;
+        this.y = y;
+        this.color = color;
+        this.speed = (Math.random() * 0.8 + 0.1) * speed;
+        this.size = 0;
+        this.sizeStep = Math.random() * 0.4;
+        this.minSize = 0.5;
+        this.maxSizeInteger = 2;
+        this.maxSize = Math.random() * (this.maxSizeInteger - this.minSize) + this.minSize;
+        this.delay = delay;
+        this.counter = 0;
+        this.counterStep = Math.random() * 4 + (this.width + this.height) * 0.01;
+        this.isIdle = false;
+        this.isReverse = false;
+        this.isShimmer = false;
+      }
+      draw() {
+        const off = this.maxSizeInteger * 0.5 - this.size * 0.5;
+        this.ctx.fillStyle = this.color;
+        this.ctx.fillRect(this.x + off, this.y + off, this.size, this.size);
+      }
+      appear() {
+        this.isIdle = false;
+        if (this.counter <= this.delay) { this.counter += this.counterStep; return; }
+        if (this.size >= this.maxSize) this.isShimmer = true;
+        if (this.isShimmer) this.shimmer(); else this.size += this.sizeStep;
+        this.draw();
+      }
+      disappear() {
+        this.isShimmer = false; this.counter = 0;
+        if (this.size <= 0) { this.isIdle = true; return; }
+        this.size -= 0.1;
+        this.draw();
+      }
+      shimmer() {
+        if (this.size >= this.maxSize) this.isReverse = true;
+        else if (this.size <= this.minSize) this.isReverse = false;
+        this.isReverse ? (this.size -= this.speed) : (this.size += this.speed);
+      }
+    }
+
+    class PixelCanvasElement extends HTMLElement {
+      constructor() {
+        super();
+        this._canvas = document.createElement('canvas');
+        this._ctx = this._canvas.getContext('2d');
+        this._pixels = [];
+        this._animation = null;
+        this._timePrev = performance.now();
+        this._interval = 1000 / 60;
+        this._reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        this._initialized = false;
+        this._ro = null;
+        this._parent = null;
+        const shadow = this.attachShadow({ mode: 'open' });
+        const style = document.createElement('style');
+        style.textContent = ':host { display:grid; inline-size:100%; block-size:100%; overflow:hidden; }';
+        shadow.appendChild(style);
+        shadow.appendChild(this._canvas);
+      }
+      get _colors() { return (this.dataset.colors || '#f8fafc,#f1f5f9,#cbd5e1').split(','); }
+      get _gap() { const v = Number(this.dataset.gap) || 5; return Math.max(4, Math.min(50, v)); }
+      get _speed() { const v = Number(this.dataset.speed) || 35; return this._reducedMotion ? 0 : Math.max(0, Math.min(100, v)) * 0.001; }
+      get _variant() { return this.dataset.variant || 'default'; }
+
+      connectedCallback() {
+        if (this._initialized) return;
+        this._initialized = true;
+        this._parent = this.parentElement;
+        requestAnimationFrame(() => {
+          this._handleResize();
+          const ro = new ResizeObserver(() => requestAnimationFrame(() => this._handleResize()));
+          ro.observe(this);
+          this._ro = ro;
+        });
+        this._onEnter = () => this._handleAnimation('appear');
+        this._onLeave = () => this._handleAnimation('disappear');
+        this._parent?.addEventListener('mouseenter', this._onEnter);
+        this._parent?.addEventListener('mouseleave', this._onLeave);
+      }
+      disconnectedCallback() {
+        this._initialized = false;
+        this._ro?.disconnect();
+        this._parent?.removeEventListener('mouseenter', this._onEnter);
+        this._parent?.removeEventListener('mouseleave', this._onLeave);
+        if (this._animation) { cancelAnimationFrame(this._animation); this._animation = null; }
+        this._parent = null;
+      }
+      _handleResize() {
+        if (!this._ctx || !this._initialized) return;
+        const rect = this.getBoundingClientRect();
+        if (!rect.width || !rect.height) return;
+        const dpr = window.devicePixelRatio || 1;
+        this._canvas.width = Math.floor(rect.width) * dpr;
+        this._canvas.height = Math.floor(rect.height) * dpr;
+        this._canvas.style.width = Math.floor(rect.width) + 'px';
+        this._canvas.style.height = Math.floor(rect.height) + 'px';
+        this._ctx.setTransform(1,0,0,1,0,0);
+        this._ctx.scale(dpr, dpr);
+        this._createPixels();
+      }
+      _distToBottomLeft(x, y) {
+        return Math.sqrt(x * x + (this._canvas.height - y) ** 2);
+      }
+      _distToCenter(x, y) {
+        return Math.sqrt((x - this._canvas.width/2)**2 + (y - this._canvas.height/2)**2);
+      }
+      _createPixels() {
+        if (!this._ctx) return;
+        this._pixels = [];
+        for (let x = 0; x < this._canvas.width; x += this._gap) {
+          for (let y = 0; y < this._canvas.height; y += this._gap) {
+            const color = this._colors[Math.floor(Math.random() * this._colors.length)];
+            const delay = this._reducedMotion ? 0 :
+              (this._variant === 'icon' ? this._distToCenter(x, y) : this._distToBottomLeft(x, y));
+            this._pixels.push(new Pixel(this._canvas, this._ctx, x, y, color, this._speed, delay));
+          }
+        }
+      }
+      _handleAnimation(name) {
+        if (this._animation) { cancelAnimationFrame(this._animation); }
+        const animate = () => {
+          this._animation = requestAnimationFrame(animate);
+          const now = performance.now();
+          const passed = now - this._timePrev;
+          if (passed < this._interval) return;
+          this._timePrev = now - (passed % this._interval);
+          if (!this._ctx) return;
+          this._ctx.clearRect(0, 0, this._canvas.width, this._canvas.height);
+          let allIdle = true;
+          for (const p of this._pixels) { p[name](); if (!p.isIdle) allIdle = false; }
+          if (allIdle) { cancelAnimationFrame(this._animation); this._animation = null; }
+        };
+        animate();
+      }
+    }
+
+    if (!customElements.get('pixel-canvas')) {
+      customElements.define('pixel-canvas', PixelCanvasElement);
+    }
+
+    // Show/hide pixel canvas on all hero cards hover
+    document.addEventListener('DOMContentLoaded', function () {
+      document.querySelectorAll('.card-hero').forEach(function (card) {
+        const pc = card.querySelector('pixel-canvas');
+        if (!pc) return;
+        card.addEventListener('mouseenter', () => { pc.style.opacity = '1'; });
+        card.addEventListener('mouseleave', () => { pc.style.opacity = '0'; });
+      });
+    });
+  })();
+  </script>
+
+</body>
+</html>

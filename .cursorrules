@@ -1,0 +1,56 @@
+# ═══════════════════════════════════════════════════════════════
+# LUIS MORENO WEBSITE — REGLAS PARA IA (Método AInnovate v2)
+# ═══════════════════════════════════════════════════════════════
+#
+# ATENCIÓN IA: Este proyecto usa Documentation-Driven Development.
+# ANTES de escribir CUALQUIER línea de código, DEBES:
+#
+# 1. LEER docs/01-project-overview.md (visión, stack, estado)
+# 2. LEER docs/02-architecture.md (estructura, carpetas, convenciones)
+# 3. IDENTIFICAR qué feature se va a modificar
+# 4. LEER el doc de esa feature en docs/features/[feature].md
+# 5. Si NO existe doc para la feature → CREARLO ANTES de codear
+#
+# Si vas a implementar UI → LEER docs/SKILLS.md (invocar frontend-design skill)
+# Si vas a tocar seguridad → LEER docs/03-security.md
+# Si vas a hacer deploy → LEER docs/04-deployment.md
+#
+# Documento completo del método: metodo_ainnovate.md (raíz del proyecto)
+#
+# ═══════════════════════════════════════════════════════════════
+
+# ─── SKILL OBLIGATORIA: FRONTEND-DESIGN ───
+# ANTES de escribir cualquier código frontend, INVOCAR la skill frontend-design.
+# Ver docs/SKILLS.md para detalles.
+
+# ─── LOS 12 MANDAMIENTOS DEL VIBE CODING ───
+#
+# I.    NO ALUCINARÁS — Solo implementar exactamente lo pedido.
+# II.   SEPARARÁS LÓGICA DE ESTILOS — En HTML estático: <style> y <script> separados.
+# III.  DOCUMENTARÁS CADA CAMBIO — Ningún cambio sin documentación.
+# IV.   ACTUALIZARÁS EL CHANGELOG — Cada request → CHANGELOG.md
+# V.    DOCUMENTARÁS LA DB — N/A (sitio estático)
+# VI.   SEGUIRÁS LA ESTRUCTURA — docs/02-architecture.md es sagrada.
+# VII.  USARÁS EL SISTEMA DE ESTILOS — Tailwind config colors son el design system.
+# VIII. PROTEGERÁS CREDENCIALES — Nunca hardcodear secrets.
+# IX.   TIPARÁS TODO — N/A (Vanilla JS, usar JSDoc cuando útil).
+# X.    VALIDARÁS ANTES DE ENTREGAR — Checklist: funciona, responsive, docs, CHANGELOG.
+# XI.   MANTENDRÁS CONSISTENCIA — Seguir convenciones existentes.
+# XII.  COMUNICARÁS CON CLARIDAD — Resumen de acciones al terminar.
+
+# ─── 4 LEYES ───
+# 1. LEER ANTES DE ACTUAR
+# 2. NO ROMPER LO QUE FUNCIONA
+# 3. DOCUMENTACIÓN CONTINUA
+# 4. SEGURIDAD (nunca deploy/push sin confirmación)
+
+# ─── DESIGN SYSTEM ───
+# Colores: brand (#2E7BF6), teal (#00CFFF), surface (#070E1A), dark (#040B14)
+# Fuente: Inter (upgrade planificado para headings)
+# Estilo: Dark mode, dot grid, grain overlay, glassmorphism
+
+# ─── TABLA DE LOOKUP ───
+# index.html                → docs/01-project-overview.md + docs/SKILLS.md
+# restaurantqr.html         → docs/features/restaurantqr-showcase.md + docs/SKILLS.md
+# netlify.toml              → docs/03-security.md + docs/04-deployment.md
+# public/**                 → docs/02-architecture.md

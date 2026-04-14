@@ -2,6 +2,7 @@ node_modules/
 temporary screenshots/
 .tmp/
 .env
+.env.local
 *.log
 
 # Screenshots de referencia/desarrollo
@@ -10,3 +11,7 @@ Captura de pantalla*.png
 
 # Archivos de desarrollo local
 screenshot.mjs
+
+# Old asset folders (migrated to public/)
+Photo of my self.jpg
+stack linear style with the logos/

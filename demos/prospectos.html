@@ -74,12 +74,18 @@
   </div>
 
   <script>
-    // Access check
-    if (sessionStorage.getItem('demo_access') !== 'true') {
-      window.location.href = '/demos/?tool=prospectos';
-    }
+    // Access check — timestamp con TTL 15 min
+    (function checkDemoAccess() {
+      var ts = parseInt(sessionStorage.getItem('demo_access_ts') || '0', 10);
+      var TTL = 15 * 60 * 1000;
+      if (!(ts > 0 && (Date.now() - ts) < TTL)) {
+        window.location.href = '/demos/?tool=prospectos';
+      } else {
+        sessionStorage.setItem('demo_access_ts', String(Date.now()));
+      }
+    })();
 
-    const WEBHOOK_URL = "https://n8n.almojabananet.me/webhook/captador-prospectos"; // ← Luis: reemplazar
+    const WEBHOOK_URL = "https://n8n.almojabananet.me/webhook-test/captador-prospectos";
 
     async function handleSubmit(e) {
       e.preventDefault();
@@ -114,10 +120,14 @@
           successMsg.classList.add('visible');
           form.reset();
         } else {
+          errorMsg.textContent = '✗ Error ' + response.status + ' — el webhook respondió pero sin OK. Revisa el workflow en n8n.';
           errorMsg.classList.add('visible');
+          console.error('[Captador] Response not OK:', response.status, await response.text());
         }
       } catch (err) {
+        errorMsg.textContent = '✗ No se pudo contactar el webhook. Posible causa: CORS bloqueado o workflow inactivo. Revisa consola (F12).';
         errorMsg.classList.add('visible');
+        console.error('[Captador] Fetch failed:', err);
       }
 
       // Reset button

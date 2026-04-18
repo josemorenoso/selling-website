@@ -129,10 +129,16 @@
   </div>
 
   <script type="module">
-    // Access check
-    if (sessionStorage.getItem('demo_access') !== 'true') {
-      window.location.href = '/demos/?tool=hoteles';
-    }
+    // Access check — timestamp con TTL 15 min
+    (function checkDemoAccess() {
+      var ts = parseInt(sessionStorage.getItem('demo_access_ts') || '0', 10);
+      var TTL = 15 * 60 * 1000;
+      if (!(ts > 0 && (Date.now() - ts) < TTL)) {
+        window.location.href = '/demos/?tool=hoteles';
+      } else {
+        sessionStorage.setItem('demo_access_ts', String(Date.now()));
+      }
+    })();
 
     const N8N_CHAT_URL = "https://n8n.almojabananet.me/webhook/7b5ada29-dc7b-44fb-b094-37c753ed69b6/chat"; // ← Luis: reemplazar tras duplicar workflow
 

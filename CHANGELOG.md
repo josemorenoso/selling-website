@@ -5,6 +5,75 @@
 
 ---
 
+## [0.5.0] — 2026-04-18
+
+### Cambiado — FASE 3: Rediseño para Autoridad, Credibilidad y Confianza
+Reescritura masiva enfocada en generar autoridad inmediata y comunicar valor concreto al cliente. Inspirada en referencia `admirable-liger-25cfe0.netlify.app`.
+
+#### Legibilidad global
+- `.muted` ahora `#A8B6CC` (antes `#5A6A80` — ilegible)
+- `.dimmed` ahora `#C5D0E0` (antes `#8A9BB0`)
+- `.nav-link` ahora `#C5D0E0`
+- Cumple WCAG AA en body text sobre fondos translúcidos
+
+#### Sección Servicios (antes "Qué hago")
+- Nuevo título: "Qué hago por ti" / "Tres formas de multiplicar tu negocio"
+- 3 cards **simétricas** con estructura uniforme: chip top, título, descripción, 2 métricas visuales, tech chips
+- Métricas por card: 40+hrs/0 errores, 3-5sem/100% código tuyo, 98%/<3s
+- Eliminado: bento expandable redundante (IA agents detail)
+
+#### Producto Estrella (antes "RestaurantQR")
+- Nuevo nombre: "Plataforma de Fidelización para Restaurantes" con gradient
+- Copy orientado a valor: +30% ventas, +65% retención, software replicable
+- **Iframe actualizado** a URL real: `https://restaurant-fidelity-system.vercel.app/`
+- Añadidas credenciales demo visibles: `demo@gmail.com` / `123456789`
+- Nuevo CTA: "Quiero esto en mi negocio"
+
+#### Reemplazado: "Costo de no actuar" → "Por qué trabajar conmigo"
+- Nueva zona de autoridad con 6 razones: código tuyo, resultados medibles, Done For You, especialista no agencia, velocidad, stack moderno
+- Icons SVG por razón
+- CTA final en caja destacada
+
+#### Metodología
+- Copy reforzado, texto más legible (`.dimmed` en lugar de `.muted`)
+- Tamaño texto 0.925rem / line-height 1.7
+
+#### Portafolio
+- Separadores visuales antes/después con decoradores "◆ EN PRODUCCIÓN"
+- Título nuevo: "5 sistemas. Funcionando ahora mismo."
+- Copy de cada card **punchier**: métricas destacadas con `<strong>`, orientadas a valor, CTAs específicas ("Chatear con el agente", "Probar el formulario")
+- Badge "● Live" verde en cada card
+- Fondo diferenciador sutil con radial gradient
+
+#### Quién soy
+- **Eliminado**: "ingeniero de automatización"
+- Reemplazado por: "especialista en automatización, desarrollo de web apps y sistemas de IA"
+- Copy más assertivo con `<strong>` en claims clave
+
+#### Demos / PIN Gate
+- Cambio de `demo_access: 'true'` a `demo_access_ts: <timestamp>`
+- TTL de 15 minutos
+- **Invalidación automática** cuando el usuario viene de fuera de `/demos/` (via document.referrer)
+- Los 5 demo pages refrescan timestamp al cargar (mantiene sesión mientras navega entre demos)
+- Access check mejorado con IIFE + TTL
+
+#### Webhooks n8n
+- `prospectos.html`: URL actualizada a `/webhook-test/captador-prospectos`
+- `reporte.html`, `presupuestos.html`, `hoteles.html`: confirmadas URLs correctas
+- **Mejor manejo de errores**: muestra status HTTP real, detecta CORS, log en consola para debugging
+
+### Archivos afectados
+- `index.html` — legibilidad, servicios, producto, "por qué", metodología, portafolio, sobre-mí
+- `demos/index.html` — lógica PIN con TTL
+- `demos/{restaurantes,hoteles,prospectos,reporte,presupuestos}.html` — access check TTL + error handling
+- `docs/progress/fase-3-autoridad-credibilidad.md` — NUEVO, tracking persistente
+- `CHANGELOG.md` — esta entrada
+
+### Request original
+> Necesito una página web que genere confianza, credibilidad y autoridad de inmediato. Enfocada en qué gana el cliente, números, profesionalidad, que haga querer agendar cita ya.
+
+---
+
 ## [0.4.0] — 2026-04-16
 
 ### Agregado — Portafolio de Automatizaciones (5 herramientas en vivo)

@@ -28,12 +28,38 @@
 
   <script>
     const DEMO_PIN = "0000"; // ← Luis: cambia este valor por tu PIN real
+    const ACCESS_TTL_MS = 15 * 60 * 1000; // 15 minutos
 
     const params = new URLSearchParams(window.location.search);
     const tool = params.get('tool');
 
-    // Si ya tiene acceso y viene con ?tool= → redirigir directo
-    if (sessionStorage.getItem('demo_access') === 'true' && tool) {
+    // Detectar si venimos desde fuera de /demos/ (referrer) → invalidar acceso
+    // Esto obliga a re-ingresar el PIN cuando el usuario "sale y vuelve"
+    (function invalidateIfExternal() {
+      try {
+        var ref = document.referrer;
+        if (!ref) return; // acceso directo o sin referrer
+        var refUrl = new URL(ref);
+        var sameOrigin = refUrl.origin === window.location.origin;
+        var fromDemos = refUrl.pathname.indexOf('/demos/') === 0;
+        // Si viene de mismo origen pero NO de /demos/ → invalida
+        if (sameOrigin && !fromDemos) {
+          sessionStorage.removeItem('demo_access_ts');
+        }
+      } catch (e) { /* noop */ }
+    })();
+
+    function hasValidAccess() {
+      var ts = parseInt(sessionStorage.getItem('demo_access_ts') || '0', 10);
+      return ts > 0 && (Date.now() - ts) < ACCESS_TTL_MS;
+    }
+
+    function grantAccess() {
+      sessionStorage.setItem('demo_access_ts', String(Date.now()));
+    }
+
+    // Si ya tiene acceso válido y viene con ?tool= → redirigir directo
+    if (hasValidAccess() && tool) {
       window.location.href = '/demos/' + tool + '.html';
     }
 
@@ -47,7 +73,7 @@
       var errorEl = document.getElementById('pin-error');
 
       if (input === DEMO_PIN) {
-        sessionStorage.setItem('demo_access', 'true');
+        grantAccess();
         if (tool) {
           window.location.href = '/demos/' + tool + '.html';
         } else {

@@ -37,10 +37,17 @@
   </div>
 
   <script>
-    // Access check — redirect to PIN gate if no access
-    if (sessionStorage.getItem('demo_access') !== 'true') {
-      window.location.href = '/demos/?tool=restaurantes';
-    }
+    // Access check — redirect to PIN gate if no valid access
+    (function checkDemoAccess() {
+      var ts = parseInt(sessionStorage.getItem('demo_access_ts') || '0', 10);
+      var TTL = 15 * 60 * 1000;
+      if (!(ts > 0 && (Date.now() - ts) < TTL)) {
+        window.location.href = '/demos/?tool=restaurantes';
+      } else {
+        // Refrescar timestamp para mantener sesión activa
+        sessionStorage.setItem('demo_access_ts', String(Date.now()));
+      }
+    })();
   </script>
 </body>
 </html>

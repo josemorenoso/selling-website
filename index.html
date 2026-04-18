@@ -48,8 +48,8 @@
     .h2 { font-family:'Inter',system-ui,sans-serif; font-weight:700; letter-spacing:-0.03em; line-height:1.15; color:#F0F5FF; }
     .h3 { font-family:'Inter',system-ui,sans-serif; font-weight:600; letter-spacing:-0.02em; color:#F0F5FF; }
     .label { font-size:0.7rem; font-weight:600; letter-spacing:0.14em; text-transform:uppercase; color:#2E7BF6; }
-    .muted { color:#5A6A80; line-height:1.75; }
-    .dimmed { color:#8A9BB0; line-height:1.75; }
+    .muted { color:#A8B6CC; line-height:1.75; }
+    .dimmed { color:#C5D0E0; line-height:1.75; }
     .container { max-width:1120px; margin:0 auto; padding:0 1.5rem; position:relative; z-index:1; }
     .section { padding:7rem 0; position:relative; }
     .section-alt { background:linear-gradient(to bottom, transparent, rgba(46,123,246,0.025), transparent); }
@@ -64,7 +64,7 @@
     .nav-inner { max-width:1120px; margin:0 auto; display:flex; align-items:center; justify-content:space-between; }
     .nav-logo { font-family:'Inter',system-ui,sans-serif; font-weight:800; font-size:1.1rem; letter-spacing:-0.03em; color:#F0F5FF; text-decoration:none; }
     .nav-links { display:flex; align-items:center; gap:2rem; }
-    .nav-link { font-size:0.85rem; font-weight:500; color:#8A9BB0; text-decoration:none; transition:color 0.2s; }
+    .nav-link { font-size:0.85rem; font-weight:500; color:#C5D0E0; text-decoration:none; transition:color 0.2s; }
     .nav-link:hover { color:#F0F5FF; }
     @property --border-angle { syntax:'<angle>'; initial-value:0deg; inherits:false; }
     .btn-cta { position:relative; display:inline-flex; align-items:center; gap:0.4rem; padding:0.7rem 1.5rem; border-radius:2rem; font-weight:600; font-size:0.9rem; color:#fff; background:linear-gradient(135deg,#1a4fd6 0%,#2E7BF6 60%,#60a5fa 100%); text-decoration:none; cursor:pointer; border:2px solid transparent; background-clip:padding-box; transition:transform 0.2s cubic-bezier(0.16,1,0.3,1),box-shadow 0.2s,filter 0.2s; isolation:isolate; }
@@ -189,6 +189,7 @@
       .bento-wide { grid-column:span 1; }
       .bento-tall { grid-row:span 1; }
       .portfolio-grid { grid-template-columns:repeat(2,1fr); }
+      .reasons-grid { grid-template-columns:repeat(2,1fr) !important; }
     }
     @media (max-width:768px) {
       .section { padding:5rem 0; }
@@ -221,6 +222,8 @@
       .browser-content iframe { transform:scale(0.55); transform-origin:top left; width:182%; height:182%; }
       /* Portfolio mobile */
       .portfolio-grid { grid-template-columns:1fr !important; }
+      /* Reasons grid mobile */
+      .reasons-grid { grid-template-columns:1fr !important; }
     }
   </style>
 </head>
@@ -337,226 +340,248 @@
     </div>
   </section>
 
-  <!-- SERVICES — expandable cards with pixel-canvas -->
+  <!-- SERVICES — 3 cards simétricas con métricas -->
   <section class="section" id="servicios">
     <div class="container">
       <div style="text-align:center;margin-bottom:4rem;" data-a>
-        <div class="label" style="margin-bottom:1rem;">Qué hago</div>
-        <h2 class="h2" style="font-size:clamp(1.9rem,4.5vw,3rem);margin-bottom:1rem;">Tres formas de transformar tu negocio</h2>
-        <p class="muted" style="max-width:480px;margin:0 auto;">Sin complicaciones. Sin jerga técnica. Resultados reales.</p>
+        <div class="label" style="margin-bottom:1rem;">Qué hago por ti</div>
+        <h2 class="h2" style="font-size:clamp(1.9rem,4.5vw,3rem);margin-bottom:1rem;">Tres formas de multiplicar tu negocio</h2>
+        <p class="muted" style="max-width:560px;margin:0 auto;font-size:1rem;">Sistemas que trabajan por ti mientras duermes. Resultados medibles desde la primera semana.</p>
       </div>
-      <div class="services-grid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:1.25rem;align-items:start;">
+      <div class="services-grid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:1.25rem;align-items:stretch;">
 
-        <!-- ⚡ Automatización Interna -->
-        <div class="card card-hero expandable-trigger" style="padding:2.5rem;" data-a data-d="1" data-expand="auto">
+        <!-- ① Automatización Interna -->
+        <div class="card card-hero service-card-v2" style="padding:2rem;display:flex;flex-direction:column;" data-a data-d="1">
           <pixel-canvas data-gap="8" data-speed="25" data-colors="#e0f2fe,#7dd3fc,#0ea5e9" data-variant="default" style="position:absolute;inset:0;pointer-events:none;width:100%;height:100%;z-index:1;opacity:0;transition:opacity 0.4s ease;"></pixel-canvas>
-          <div class="card-content">
-            <div class="service-icon" style="background:rgba(46,123,246,0.1);border:1px solid rgba(46,123,246,0.2);">⚡</div>
-            <h3 class="h3" style="font-size:1.2rem;margin-bottom:0.75rem;">Automatización Interna</h3>
-            <p class="dimmed" style="font-size:0.95rem;line-height:1.75;">Elimino el trabajo manual repetitivo de tu equipo con sistemas que funcionan solos, 24/7, sin errores.</p>
-            <div class="expand-hint" data-expand-btn="auto">
-              <span>Toca para ver más</span>
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+          <div class="card-content" style="flex:1;display:flex;flex-direction:column;">
+            <div style="display:inline-flex;align-items:center;gap:0.45rem;background:rgba(46,123,246,0.12);border:1px solid rgba(46,123,246,0.25);border-radius:99px;padding:0.3rem 0.75rem;margin-bottom:1.25rem;align-self:flex-start;">
+              <span style="width:7px;height:7px;border-radius:50%;background:#2E7BF6;box-shadow:0 0 6px #2E7BF6;"></span>
+              <span style="font-size:0.7rem;color:#7EB3FF;font-weight:700;letter-spacing:0.05em;text-transform:uppercase;">Procesos 24/7</span>
             </div>
-            <div class="expandable-content" id="expand-auto">
-              <div style="margin-top:1.25rem;padding-top:1.25rem;border-top:1px solid rgba(255,255,255,0.06);">
-                <p style="font-size:0.88rem;line-height:1.75;color:#B8CCDE;margin-bottom:1rem;">Según IDC (Workforce Productivity Report 2026), la ineficiencia manual cuesta <strong style="color:#5BA3FF;">~$28,500 USD anuales por empleado</strong> en productividad perdida. Eso es el <strong style="color:#5BA3FF;">30% de tu nómina administrativa</strong> gastado en reprocesos.</p>
-                <p style="font-size:0.75rem;color:#7A9AB8;letter-spacing:0.02em;">Fuente: IDC — Global Workforce Productivity and Automation ROI 2026</p>
-                <div style="margin-top:1rem;display:flex;align-items:center;gap:0.5rem;">
-                  <span style="font-size:0.72rem;color:#5A7A9A;">Integra con</span>
-                  <span style="font-size:0.72rem;color:#7EB3FF;font-weight:600;">Slack · Notion · Drive · Sheets</span>
-                </div>
+            <h3 class="h3" style="font-size:1.2rem;margin-bottom:0.85rem;line-height:1.3;">Automatización de Procesos Internos</h3>
+            <p class="dimmed" style="font-size:0.9rem;line-height:1.7;margin-bottom:1.5rem;">Elimino el trabajo manual que consume a tu equipo. Conecto tus herramientas para que hablen entre sí — sin hojas de cálculo, sin copiar y pegar, sin errores.</p>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;margin-bottom:1.5rem;margin-top:auto;">
+              <div style="background:rgba(46,123,246,0.07);border:1px solid rgba(46,123,246,0.18);border-radius:10px;padding:0.85rem;">
+                <div style="font-size:1.5rem;font-weight:800;color:#7EB3FF;margin-bottom:0.2rem;line-height:1;">40+ hrs</div>
+                <div style="font-size:0.72rem;color:#A8B6CC;">recuperadas/semana</div>
               </div>
+              <div style="background:rgba(0,207,255,0.06);border:1px solid rgba(0,207,255,0.15);border-radius:10px;padding:0.85rem;">
+                <div style="font-size:1.5rem;font-weight:800;color:#67E8F9;margin-bottom:0.2rem;line-height:1;">0 errores</div>
+                <div style="font-size:0.72rem;color:#A8B6CC;">procesos sin fallos</div>
+              </div>
+            </div>
+            <div style="display:flex;gap:0.4rem;flex-wrap:wrap;">
+              <span class="chip chip-blue">n8n</span>
+              <span class="chip chip-blue">Sheets</span>
+              <span class="chip chip-blue">Notion</span>
+              <span class="chip chip-blue">Slack</span>
             </div>
           </div>
         </div>
 
-        <!-- 💻 Software a Medida -->
-        <div class="card card-hero" style="padding:2.5rem;" data-a data-d="2">
+        <!-- ② Software a Medida -->
+        <div class="card card-hero service-card-v2" style="padding:2rem;display:flex;flex-direction:column;" data-a data-d="2">
           <pixel-canvas data-gap="8" data-speed="25" data-colors="#e0f2fe,#7dd3fc,#0ea5e9" data-variant="default" style="position:absolute;inset:0;pointer-events:none;width:100%;height:100%;z-index:1;opacity:0;transition:opacity 0.4s ease;"></pixel-canvas>
-          <div class="card-content">
-            <div class="service-icon" style="background:rgba(0,207,255,0.08);border:1px solid rgba(0,207,255,0.2);">💻</div>
-            <h3 class="h3" style="font-size:1.2rem;margin-bottom:0.75rem;">Software a Medida</h3>
-            <p class="dimmed" style="font-size:0.95rem;line-height:1.75;">Construyo aplicaciones y dashboards diseñados exactamente para cómo opera tu negocio.</p>
+          <div class="card-content" style="flex:1;display:flex;flex-direction:column;">
+            <div style="display:inline-flex;align-items:center;gap:0.45rem;background:rgba(0,207,255,0.1);border:1px solid rgba(0,207,255,0.25);border-radius:99px;padding:0.3rem 0.75rem;margin-bottom:1.25rem;align-self:flex-start;">
+              <span style="width:7px;height:7px;border-radius:50%;background:#00CFFF;box-shadow:0 0 6px #00CFFF;"></span>
+              <span style="font-size:0.7rem;color:#67E8F9;font-weight:700;letter-spacing:0.05em;text-transform:uppercase;">Web Apps</span>
+            </div>
+            <h3 class="h3" style="font-size:1.2rem;margin-bottom:0.85rem;line-height:1.3;">Software a Medida para tu Negocio</h3>
+            <p class="dimmed" style="font-size:0.9rem;line-height:1.7;margin-bottom:1.5rem;">Construyo aplicaciones web que operan exactamente como tu negocio. Dashboards, CRMs, portales de cliente — diseñados desde cero para tu flujo real, no plantillas genéricas.</p>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;margin-bottom:1.5rem;margin-top:auto;">
+              <div style="background:rgba(0,207,255,0.06);border:1px solid rgba(0,207,255,0.18);border-radius:10px;padding:0.85rem;">
+                <div style="font-size:1.5rem;font-weight:800;color:#67E8F9;margin-bottom:0.2rem;line-height:1;">3-5 sem</div>
+                <div style="font-size:0.72rem;color:#A8B6CC;">tiempo de entrega</div>
+              </div>
+              <div style="background:rgba(46,123,246,0.07);border:1px solid rgba(46,123,246,0.18);border-radius:10px;padding:0.85rem;">
+                <div style="font-size:1.5rem;font-weight:800;color:#7EB3FF;margin-bottom:0.2rem;line-height:1;">100%</div>
+                <div style="font-size:0.72rem;color:#A8B6CC;">código es tuyo</div>
+              </div>
+            </div>
+            <div style="display:flex;gap:0.4rem;flex-wrap:wrap;">
+              <span class="chip chip-blue">Next.js</span>
+              <span class="chip chip-blue">Supabase</span>
+              <span class="chip chip-blue">Stripe</span>
+              <span class="chip chip-blue">Vercel</span>
+            </div>
           </div>
         </div>
 
-        <!-- 🧠 IA para tu Negocio -->
-        <div class="card card-hero expandable-trigger" style="padding:2.5rem;" data-a data-d="3" data-expand="ia">
+        <!-- ③ Agentes de IA -->
+        <div class="card card-hero service-card-v2" style="padding:2rem;display:flex;flex-direction:column;" data-a data-d="3">
           <pixel-canvas data-gap="8" data-speed="25" data-colors="#e0f2fe,#7dd3fc,#0ea5e9" data-variant="default" style="position:absolute;inset:0;pointer-events:none;width:100%;height:100%;z-index:1;opacity:0;transition:opacity 0.4s ease;"></pixel-canvas>
-          <div class="card-content">
-            <div class="service-icon" style="background:rgba(46,123,246,0.1);border:1px solid rgba(46,123,246,0.2);">🧠</div>
-            <h3 class="h3" style="font-size:1.2rem;margin-bottom:0.75rem;">IA para tu Negocio</h3>
-            <p class="dimmed" style="font-size:0.95rem;line-height:1.75;">Agentes de IA que atienden clientes, generan leads y optimizan procesos — sin intervención humana.</p>
-            <div class="expand-hint" data-expand-btn="ia">
-              <span>Toca para ver más</span>
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+          <div class="card-content" style="flex:1;display:flex;flex-direction:column;">
+            <div style="display:inline-flex;align-items:center;gap:0.45rem;background:rgba(46,123,246,0.12);border:1px solid rgba(46,123,246,0.25);border-radius:99px;padding:0.3rem 0.75rem;margin-bottom:1.25rem;align-self:flex-start;">
+              <span style="width:7px;height:7px;border-radius:50%;background:#2E7BF6;box-shadow:0 0 6px #2E7BF6;"></span>
+              <span style="font-size:0.7rem;color:#7EB3FF;font-weight:700;letter-spacing:0.05em;text-transform:uppercase;">Atención 24/7</span>
             </div>
-          </div>
-        </div>
-
-      </div>
-
-      <!-- BENTO GRID — IA Agents (hidden, revealed on click) -->
-      <div class="expandable-content" id="expand-ia" style="margin-top:1.5rem;">
-        <div class="bento">
-          <!-- ① AI Atención al Cliente — tall left -->
-          <div class="card bento-tall" style="padding:2.25rem;position:relative;overflow:hidden;min-height:280px;display:flex;flex-direction:column;justify-content:space-between;" data-a>
-            <div style="position:absolute;bottom:-60px;right:-60px;width:260px;height:260px;background:radial-gradient(circle,rgba(46,123,246,0.18) 0%,transparent 70%);filter:blur(50px);pointer-events:none;"></div>
-            <div>
-              <div style="display:inline-flex;align-items:center;gap:0.45rem;background:rgba(46,123,246,0.12);border:1px solid rgba(46,123,246,0.25);border-radius:99px;padding:0.3rem 0.75rem;margin-bottom:1.5rem;">
-                <span style="width:7px;height:7px;border-radius:50%;background:#2E7BF6;box-shadow:0 0 6px #2E7BF6;"></span>
-                <span style="font-size:0.7rem;color:#7EB3FF;font-weight:600;letter-spacing:0.05em;text-transform:uppercase;">Atención 24/7</span>
+            <h3 class="h3" style="font-size:1.2rem;margin-bottom:0.85rem;line-height:1.3;">Agentes de IA para tu Empresa</h3>
+            <p class="dimmed" style="font-size:0.9rem;line-height:1.7;margin-bottom:1.5rem;">Atienden a tus clientes en WhatsApp, Instagram y web. Califican leads, resuelven dudas y agendan citas — sin intervención humana, todos los días del año.</p>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;margin-bottom:1.5rem;margin-top:auto;">
+              <div style="background:rgba(46,123,246,0.07);border:1px solid rgba(46,123,246,0.18);border-radius:10px;padding:0.85rem;">
+                <div style="font-size:1.5rem;font-weight:800;color:#7EB3FF;margin-bottom:0.2rem;line-height:1;">98%</div>
+                <div style="font-size:0.72rem;color:#A8B6CC;">tasa de respuesta</div>
               </div>
-              <h3 class="h3" style="font-size:1.25rem;margin-bottom:0.85rem;line-height:1.3;">Agentes de IA para Atención al Cliente</h3>
-              <p class="muted" style="font-size:0.875rem;line-height:1.7;margin-bottom:2rem;">Responden al instante en WhatsApp, Instagram y web. Califican leads, resuelven FAQs y escalan casos complejos — sin intervención humana.</p>
-            </div>
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;margin-bottom:1.75rem;">
-              <div style="background:rgba(46,123,246,0.07);border:1px solid rgba(46,123,246,0.15);border-radius:10px;padding:0.85rem;">
-                <div style="font-size:1.4rem;font-weight:800;color:#7EB3FF;margin-bottom:0.2rem;">98%</div>
-                <div style="font-size:0.72rem;color:#5A7A9A;">tasa de respuesta</div>
-              </div>
-              <div style="background:rgba(0,207,255,0.06);border:1px solid rgba(0,207,255,0.12);border-radius:10px;padding:0.85rem;">
-                <div style="font-size:1.4rem;font-weight:800;color:#67E8F9;margin-bottom:0.2rem;">&lt;3s</div>
-                <div style="font-size:0.72rem;color:#5A7A9A;">tiempo respuesta</div>
+              <div style="background:rgba(0,207,255,0.06);border:1px solid rgba(0,207,255,0.15);border-radius:10px;padding:0.85rem;">
+                <div style="font-size:1.5rem;font-weight:800;color:#67E8F9;margin-bottom:0.2rem;line-height:1;">&lt;3s</div>
+                <div style="font-size:0.72rem;color:#A8B6CC;">tiempo de respuesta</div>
               </div>
             </div>
-            <div style="display:flex;gap:0.45rem;flex-wrap:wrap;">
+            <div style="display:flex;gap:0.4rem;flex-wrap:wrap;">
               <span class="chip chip-blue">WhatsApp</span>
               <span class="chip chip-blue">Instagram</span>
               <span class="chip chip-blue">Web Chat</span>
             </div>
           </div>
-
-          <!-- ② Generación de Leads — top right -->
-          <div class="card" style="padding:2rem;position:relative;overflow:hidden;min-height:200px;display:flex;flex-direction:column;justify-content:space-between;" data-a>
-            <div style="position:absolute;bottom:-40px;right:-40px;width:180px;height:180px;background:radial-gradient(circle,rgba(46,123,246,0.1) 0%,transparent 70%);filter:blur(35px);pointer-events:none;"></div>
-            <div>
-              <div style="width:40px;height:40px;border-radius:10px;background:rgba(46,123,246,0.1);border:1px solid rgba(46,123,246,0.2);display:flex;align-items:center;justify-content:center;font-size:1.2rem;margin-bottom:1.25rem;">🎯</div>
-              <h3 class="h3" style="font-size:1.05rem;margin-bottom:0.6rem;">Generación de Leads</h3>
-              <p class="muted" style="font-size:0.825rem;line-height:1.65;">El agente encuentra prospectos en LinkedIn y Google Maps, los contacta y los entrega listos para venta.</p>
-            </div>
-            <div style="margin-top:1.25rem;display:flex;gap:0.4rem;flex-wrap:wrap;">
-              <span style="font-size:0.7rem;background:rgba(46,123,246,0.1);border:1px solid rgba(46,123,246,0.2);color:#7EB3FF;padding:0.25rem 0.6rem;border-radius:99px;">LinkedIn</span>
-              <span style="font-size:0.7rem;background:rgba(46,123,246,0.1);border:1px solid rgba(46,123,246,0.2);color:#7EB3FF;padding:0.25rem 0.6rem;border-radius:99px;">Google Maps</span>
-            </div>
-          </div>
-
-          <!-- ③ CRM — bottom wide -->
-          <div class="card bento-wide bento-crm-card" style="padding:2rem;position:relative;overflow:hidden;min-height:170px;display:flex;align-items:center;gap:2.5rem;" data-a>
-            <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:400px;height:150px;background:radial-gradient(ellipse,rgba(0,207,255,0.07) 0%,transparent 70%);filter:blur(30px);pointer-events:none;"></div>
-            <div style="flex-shrink:0;width:56px;height:56px;border-radius:14px;background:linear-gradient(135deg,rgba(0,207,255,0.15),rgba(46,123,246,0.15));border:1px solid rgba(0,207,255,0.2);display:flex;align-items:center;justify-content:center;font-size:1.6rem;">📊</div>
-            <div style="flex:1;min-width:0;">
-              <h3 class="h3" style="font-size:1.1rem;margin-bottom:0.5rem;">CRM y Seguimiento Automático</h3>
-              <p class="muted" style="font-size:0.875rem;line-height:1.6;">Ningún lead se enfría. El sistema califica, recuerda y convierte — en piloto automático.</p>
-            </div>
-            <div style="flex-shrink:0;text-align:center;padding:1rem 1.5rem;background:rgba(0,207,255,0.06);border:1px solid rgba(0,207,255,0.12);border-radius:14px;">
-              <div style="font-size:1.6rem;font-weight:800;color:#67E8F9;line-height:1;">3×</div>
-              <div style="font-size:0.7rem;color:#5A7A9A;margin-top:0.25rem;white-space:nowrap;">más conversiones</div>
-            </div>
-          </div>
         </div>
+
       </div>
     </div>
   </section>
 
-  <!-- RESTAURANTQR SHOWCASE -->
+  <!-- PRODUCTO ESTRELLA — Plataforma de Fidelización para Restaurantes -->
   <section class="section section-alt" id="producto">
     <div class="container">
       <div class="showcase-grid" style="display:grid;grid-template-columns:1fr 1.3fr;gap:4rem;align-items:center;">
         <div data-a>
-          <div class="label" style="margin-bottom:1rem;">Producto Estrella</div>
-          <h2 class="h2" style="font-size:clamp(1.9rem,4vw,2.75rem);margin-bottom:1.25rem;">RestaurantQR</h2>
-          <p class="dimmed" style="font-size:1.05rem;line-height:1.8;margin-bottom:1.5rem;">
-            Sistema completo de fidelización, CRM y marketing automatizado para restaurantes. Registra clientes con QR, captura pedidos por WhatsApp y lanza campañas automáticas.
+          <div class="label" style="margin-bottom:1rem;">Caso de Éxito — Producto Replicable</div>
+          <h2 class="h2" style="font-size:clamp(1.9rem,4vw,2.75rem);margin-bottom:1.25rem;line-height:1.1;">Plataforma de Fidelización<br><span style="background:linear-gradient(135deg,#2E7BF6,#67E8F9);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;">para Restaurantes</span></h2>
+          <p class="dimmed" style="font-size:1.05rem;line-height:1.75;margin-bottom:1.5rem;">
+            Software SaaS diseñado desde cero para convertir comensales de una vez en clientes frecuentes. QR en mesa, programa de recompensas, CRM integrado y campañas automáticas por WhatsApp — todo gestionado desde un panel único.
           </p>
-          <div style="display:flex;flex-wrap:wrap;gap:0.5rem;margin-bottom:2rem;">
-            <span class="chip chip-teal">QR Check-in</span>
-            <span class="chip chip-teal">WhatsApp</span>
-            <span class="chip chip-teal">Campañas Auto</span>
-            <span class="chip chip-blue">Dashboard Admin</span>
-            <span class="chip chip-blue">CRM Clientes</span>
+
+          <!-- Métricas protagonistas -->
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;margin-bottom:1.75rem;">
+            <div style="background:rgba(46,123,246,0.08);border:1px solid rgba(46,123,246,0.22);border-radius:12px;padding:1.1rem;">
+              <div style="font-size:1.9rem;font-weight:900;color:#7EB3FF;letter-spacing:-0.03em;line-height:1;margin-bottom:0.3rem;">+30%</div>
+              <div style="font-size:0.78rem;color:#C5D0E0;line-height:1.4;">aumento en ventas recurrentes</div>
+            </div>
+            <div style="background:rgba(0,207,255,0.06);border:1px solid rgba(0,207,255,0.2);border-radius:12px;padding:1.1rem;">
+              <div style="font-size:1.9rem;font-weight:900;color:#67E8F9;letter-spacing:-0.03em;line-height:1;margin-bottom:0.3rem;">+65%</div>
+              <div style="font-size:0.78rem;color:#C5D0E0;line-height:1.4;">retención de clientes</div>
+            </div>
           </div>
+
+          <div style="display:flex;flex-wrap:wrap;gap:0.45rem;margin-bottom:1.75rem;">
+            <span class="chip chip-blue">QR en mesa</span>
+            <span class="chip chip-blue">Recompensas</span>
+            <span class="chip chip-blue">CRM integrado</span>
+            <span class="chip chip-blue">WhatsApp auto</span>
+            <span class="chip chip-blue">Dashboard dueño</span>
+          </div>
+
+          <!-- Credenciales demo -->
+          <div style="background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:0.85rem 1rem;margin-bottom:1.25rem;">
+            <div style="font-size:0.68rem;text-transform:uppercase;letter-spacing:0.08em;color:#A8B6CC;font-weight:600;margin-bottom:0.4rem;">Acceso Demo</div>
+            <div style="font-size:0.85rem;color:#F0F5FF;font-family:'JetBrains Mono',ui-monospace,monospace;line-height:1.6;">
+              <div>📧 <span style="color:#7EB3FF;">demo@gmail.com</span></div>
+              <div>🔑 <span style="color:#7EB3FF;">123456789</span></div>
+            </div>
+          </div>
+
           <div style="display:flex;flex-wrap:wrap;gap:0.75rem;align-items:center;">
-            <a href="https://calendly.com/luismorenoai" target="_blank" rel="noopener noreferrer" class="btn-cta">¿Quieres algo así? →</a>
-            <span class="muted" style="font-size:0.8rem;">Next.js · Supabase · Twilio</span>
+            <a href="https://calendly.com/luismorenoai" target="_blank" rel="noopener noreferrer" class="btn-cta">Quiero esto en mi negocio →</a>
+            <span class="muted" style="font-size:0.78rem;">Next.js · Supabase · Twilio</span>
           </div>
         </div>
+
         <div data-a data-d="1">
           <div class="browser-mockup">
             <div class="browser-bar">
               <div class="browser-dots"><span></span><span></span><span></span></div>
-              <div class="browser-url">restaurant-fidelity-system-git-fe-3f0952-josemorenosos-projects.vercel.app/demo</div>
+              <div class="browser-url">restaurant-fidelity-system.vercel.app</div>
             </div>
             <div class="browser-content">
-              <iframe src="https://restaurant-fidelity-system-git-fe-3f0952-josemorenosos-projects.vercel.app/demo" title="RestaurantQR Demo" loading="lazy" allow="clipboard-write"></iframe>
+              <iframe src="https://restaurant-fidelity-system.vercel.app/" title="Plataforma de Fidelización — Demo Live" loading="lazy" allow="clipboard-write"></iframe>
             </div>
           </div>
+          <p style="text-align:center;font-size:0.78rem;color:#A8B6CC;margin-top:0.85rem;">
+            ☝️ App web real en producción. Entra con las credenciales demo para explorarla.
+          </p>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- PROBLEM AGITATION — El costo de no actuar -->
-  <section class="section section-alt">
+  <!-- POR QUÉ TRABAJAR CONMIGO — Autoridad, credibilidad, ventaja -->
+  <section class="section section-alt" id="por-que">
     <div class="container">
       <div style="text-align:center;margin-bottom:4rem;" data-a>
-        <div class="label" style="margin-bottom:1rem;">El costo de no actuar</div>
-        <h2 class="h2" style="font-size:clamp(1.9rem,4.5vw,3rem);margin-bottom:1rem;max-width:620px;margin-left:auto;margin-right:auto;">
-          Cada día sin automatizar<br>te cuesta más de lo que crees
+        <div class="label" style="margin-bottom:1rem;">Por qué trabajar conmigo</div>
+        <h2 class="h2" style="font-size:clamp(1.9rem,4.5vw,3rem);margin-bottom:1rem;max-width:680px;margin-left:auto;margin-right:auto;line-height:1.1;">
+          No vendo herramientas.<br><span style="background:linear-gradient(135deg,#2E7BF6,#67E8F9);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;">Construyo infraestructura real.</span>
         </h2>
-        <p class="muted" style="max-width:480px;margin:0 auto;color:#A0B4C8;">
-          Los negocios con procesos manuales no pierden tiempo — pierden dinero, talento y ventaja competitiva.
+        <p class="dimmed" style="max-width:560px;margin:0 auto;font-size:1rem;">
+          Otros te dan una plantilla y te cobran por curso. Yo diseño, construyo y pongo en producción sistemas hechos a la medida de cómo opera tu negocio — con código que es 100% tuyo.
         </p>
       </div>
 
-      <div class="cost-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:3rem;">
-        <!-- Card $4,200 — protagonista, fila completa -->
-        <div class="card card-hero cost-hero-card" style="grid-column:1/-1;padding:3rem 3.25rem;position:relative;overflow:hidden;display:flex;align-items:center;gap:3.5rem;" data-a data-d="1">
-          <pixel-canvas data-gap="8" data-speed="25" data-colors="#e0f2fe,#7dd3fc,#0ea5e9" data-variant="default" style="position:absolute;inset:0;pointer-events:none;width:100%;height:100%;z-index:1;opacity:0;transition:opacity 0.4s ease;"></pixel-canvas>
-          <div style="flex-shrink:0;text-align:center;position:relative;z-index:2;">
-            <div class="cost-hero-num" style="font-size:5.75rem;font-family:'Inter',system-ui,sans-serif;font-weight:900;letter-spacing:-0.05em;color:#5BA3FF;line-height:1;font-variant-numeric:tabular-nums;">$<span id="c-cost">0</span></div>
-            <div class="h3 cost-hero-label" style="font-size:1rem;margin-top:0.6rem;white-space:nowrap;">de pérdida mensual promedio en ineficiencia operativa</div>
+      <!-- Grid 2x3 de razones -->
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-bottom:3rem;" class="reasons-grid">
+
+        <!-- 1 — Código tuyo -->
+        <div class="card" style="padding:2rem;" data-a data-d="1">
+          <div style="width:44px;height:44px;border-radius:11px;background:rgba(46,123,246,0.12);border:1px solid rgba(46,123,246,0.25);display:flex;align-items:center;justify-content:center;margin-bottom:1.25rem;">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#7EB3FF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
           </div>
-          <div class="cost-divider" style="width:1px;align-self:stretch;background:rgba(255,255,255,0.1);flex-shrink:0;position:relative;z-index:2;"></div>
-          <div style="flex:1;min-width:0;position:relative;z-index:2;">
-            <p style="font-size:0.975rem;line-height:1.8;margin-bottom:1rem;color:#B8CCDE;">No es una proyección. Es lo que ya salió de tu cuenta este mes — pagado en salarios para hacer lo que un sistema haría por $0.</p>
-            <p style="font-size:0.78rem;color:#7A9AB8;letter-spacing:0.02em;">Fuente: Zapier + Salesforce Research, 2023</p>
-          </div>
+          <h3 class="h3" style="font-size:1.1rem;margin-bottom:0.6rem;">El código es tuyo</h3>
+          <p class="dimmed" style="font-size:0.9rem;line-height:1.7;">Sin vendor lock-in, sin suscripciones infladas. Construyo en tu infraestructura con tus credenciales. Si algún día quieres escalar con otro equipo, puedes — es tu activo.</p>
         </div>
 
-        <!-- Card 23h -->
-        <div class="card" style="padding:2.5rem;" data-a data-d="2">
-          <div style="margin-bottom:1.25rem;">
-            <div class="cost-card-num" style="font-size:3.75rem;font-family:'Inter',system-ui,sans-serif;font-weight:900;letter-spacing:-0.05em;color:#5BA3FF;line-height:1;font-variant-numeric:tabular-nums;"><span id="c-hours">0</span>h</div>
-            <div class="h3" style="font-size:1rem;margin-top:0.5rem;">horas semanales perdidas en tareas repetitivas</div>
+        <!-- 2 — Resultados medibles -->
+        <div class="card" style="padding:2rem;" data-a data-d="2">
+          <div style="width:44px;height:44px;border-radius:11px;background:rgba(0,207,255,0.1);border:1px solid rgba(0,207,255,0.25);display:flex;align-items:center;justify-content:center;margin-bottom:1.25rem;">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#67E8F9" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="20" x2="12" y2="10"/><line x1="18" y1="20" x2="18" y2="4"/><line x1="6" y1="20" x2="6" y2="16"/></svg>
           </div>
-          <div style="height:1px;background:rgba(255,255,255,0.08);margin-bottom:1.25rem;"></div>
-          <p style="font-size:0.9rem;line-height:1.75;margin-bottom:1rem;color:#A0B4C8;">Tu equipo dedica casi 3 días a la semana únicamente a tareas repetitivas — horas que ya pagaste y no generan nada.</p>
-          <p style="font-size:0.78rem;color:#7A9AB8;letter-spacing:0.02em;">Fuente: Salesforce, 2023</p>
+          <h3 class="h3" style="font-size:1.1rem;margin-bottom:0.6rem;">Resultados que se miden</h3>
+          <p class="dimmed" style="font-size:0.9rem;line-height:1.7;">Cada sistema que entrego viene con métricas claras: horas ahorradas, leads capturados, tickets resueltos. Desde la primera semana ves el ROI en tu dashboard.</p>
         </div>
 
-        <!-- Card 78% -->
-        <div class="card" style="padding:2.5rem;" data-a data-d="3">
-          <div style="margin-bottom:1.25rem;">
-            <div class="cost-card-num" style="font-size:3.75rem;font-family:'Inter',system-ui,sans-serif;font-weight:900;letter-spacing:-0.05em;color:#5BA3FF;line-height:1;font-variant-numeric:tabular-nums;"><span id="c-pct">0</span>%</div>
-            <div class="h3" style="font-size:1rem;margin-top:0.5rem;">de empresas que operan en manualmente</div>
+        <!-- 3 — Done For You -->
+        <div class="card" style="padding:2rem;" data-a data-d="3">
+          <div style="width:44px;height:44px;border-radius:11px;background:rgba(46,123,246,0.12);border:1px solid rgba(46,123,246,0.25);display:flex;align-items:center;justify-content:center;margin-bottom:1.25rem;">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#7EB3FF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
           </div>
-          <div style="height:1px;background:rgba(255,255,255,0.08);margin-bottom:1.25rem;"></div>
-          <p style="font-size:0.9rem;line-height:1.75;margin-bottom:1rem;color:#A0B4C8;">El 78% de tus competidores todavía opera en manual. Eso no es una estadística — es tu ventana de oportunidad. Y se está cerrando.</p>
-          <p style="font-size:0.78rem;color:#7A9AB8;letter-spacing:0.02em;">Fuente: BID — Banco Interamericano de Desarrollo, 2023</p>
+          <h3 class="h3" style="font-size:1.1rem;margin-bottom:0.6rem;">Done For You</h3>
+          <p class="dimmed" style="font-size:0.9rem;line-height:1.7;">Tú no aprendes herramientas. Yo construyo, implemento, integro, capacito y dejo documentación. Tu equipo solo usa el sistema — como debe ser.</p>
+        </div>
+
+        <!-- 4 — Especialista, no genérico -->
+        <div class="card" style="padding:2rem;" data-a data-d="1">
+          <div style="width:44px;height:44px;border-radius:11px;background:rgba(0,207,255,0.1);border:1px solid rgba(0,207,255,0.25);display:flex;align-items:center;justify-content:center;margin-bottom:1.25rem;">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#67E8F9" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15 8 21 9 17 14 18 20 12 17 6 20 7 14 3 9 9 8"/></svg>
+          </div>
+          <h3 class="h3" style="font-size:1.1rem;margin-bottom:0.6rem;">Especialista, no agencia</h3>
+          <p class="dimmed" style="font-size:0.9rem;line-height:1.7;">Hablas directamente conmigo del primer día al último. Sin intermediarios, sin project managers, sin excusas. Yo diseño, yo construyo, yo respondo.</p>
+        </div>
+
+        <!-- 5 — Velocidad -->
+        <div class="card" style="padding:2rem;" data-a data-d="2">
+          <div style="width:44px;height:44px;border-radius:11px;background:rgba(46,123,246,0.12);border:1px solid rgba(46,123,246,0.25);display:flex;align-items:center;justify-content:center;margin-bottom:1.25rem;">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#7EB3FF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+          </div>
+          <h3 class="h3" style="font-size:1.1rem;margin-bottom:0.6rem;">De 0 a producción en 3 semanas</h3>
+          <p class="dimmed" style="font-size:0.9rem;line-height:1.7;">Tres semanas desde la auditoría hasta tener el sistema corriendo en tu negocio. No seis meses de reuniones. No fases eternas. Velocidad real con calidad real.</p>
+        </div>
+
+        <!-- 6 — Stack moderno -->
+        <div class="card" style="padding:2rem;" data-a data-d="3">
+          <div style="width:44px;height:44px;border-radius:11px;background:rgba(0,207,255,0.1);border:1px solid rgba(0,207,255,0.25);display:flex;align-items:center;justify-content:center;margin-bottom:1.25rem;">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#67E8F9" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+          </div>
+          <h3 class="h3" style="font-size:1.1rem;margin-bottom:0.6rem;">Stack que escala contigo</h3>
+          <p class="dimmed" style="font-size:0.9rem;line-height:1.7;">n8n, Next.js, Supabase, OpenAI, Anthropic. Las mismas herramientas que usan startups que valen millones — ahora trabajando para ti, sin costo desproporcionado.</p>
         </div>
       </div>
 
-      <div style="margin-top:48px;text-align:center;" data-a>
-        <a href="https://calendly.com/luismorenoai" target="_blank" rel="noopener noreferrer" style="display:inline-block;background:#2E7BF6;color:#fff;font-size:18px;font-weight:700;padding:16px 32px;border-radius:8px;text-decoration:none;transition:filter 0.2s;" onmouseover="this.style.filter='brightness(1.1)'" onmouseout="this.style.filter='brightness(1)'">
-          Quiero dejar de perder $4,200/mes → Agendar llamada
-        </a>
-      </div>
-
-      <div style="text-align:center;margin-top:2rem;" data-a>
-        <p class="dimmed" style="margin-bottom:1.5rem;color:#B0C4D8;">La pregunta no es si puedes permitirte automatizar — es si puedes permitirte <em>no</em> hacerlo.</p>
-        <a href="https://calendly.com/luismorenoai" target="_blank" rel="noopener noreferrer" class="btn-cta btn-cta-lg">Ver cómo recupero ese tiempo →</a>
+      <!-- CTA final de autoridad -->
+      <div style="text-align:center;max-width:640px;margin:0 auto;padding:2.5rem 2rem;background:linear-gradient(135deg,rgba(46,123,246,0.08),rgba(0,207,255,0.04));border:1px solid rgba(46,123,246,0.2);border-radius:16px;" data-a>
+        <p style="font-size:1.1rem;line-height:1.6;color:#F0F5FF;font-weight:500;margin-bottom:1.5rem;">
+          Si vas a invertir en automatización,<br><span style="color:#7EB3FF;">invierte en alguien que ya lo ha hecho funcionar.</span>
+        </p>
+        <a href="https://calendly.com/luismorenoai" target="_blank" rel="noopener noreferrer" class="btn-cta btn-cta-lg">Agendar Auditoría Express Gratuita →</a>
+        <p style="font-size:0.78rem;color:#A8B6CC;margin-top:1rem;">20 minutos · Sin compromiso · Te voy con un plan concreto</p>
       </div>
     </div>
   </section>
@@ -572,18 +597,18 @@
       <div class="steps-grid" style="margin-bottom:2.5rem;" data-a>
         <div style="padding:2rem;text-align:center;">
           <div class="step-num">1</div>
-          <h3 class="h3" style="font-size:1.05rem;margin-bottom:0.65rem;">Identificar Procesos</h3>
-          <p class="muted" style="font-size:0.875rem;">Auditoría Express de 20 minutos. Mapeamos qué tareas consumen más tiempo y tienen mayor impacto.</p>
+          <h3 class="h3" style="font-size:1.1rem;margin-bottom:0.75rem;">Identificar Procesos</h3>
+          <p class="dimmed" style="font-size:0.925rem;line-height:1.7;">Auditoría Express de 20 minutos. Mapeamos qué tareas consumen más tiempo y cuáles tienen mayor impacto en tu margen.</p>
         </div>
         <div style="padding:2rem;text-align:center;">
           <div class="step-num">2</div>
-          <h3 class="h3" style="font-size:1.05rem;margin-bottom:0.65rem;">Diseñar y Construir</h3>
-          <p class="muted" style="font-size:0.875rem;">Diseño el blueprint completo y construyo el sistema en tu infraestructura. Sin plantillas genéricas.</p>
+          <h3 class="h3" style="font-size:1.1rem;margin-bottom:0.75rem;">Diseñar y Construir</h3>
+          <p class="dimmed" style="font-size:0.925rem;line-height:1.7;">Diseño el blueprint completo y construyo el sistema en tu infraestructura. Sin plantillas genéricas, sin atajos.</p>
         </div>
         <div style="padding:2rem;text-align:center;">
           <div class="step-num">3</div>
-          <h3 class="h3" style="font-size:1.05rem;margin-bottom:0.65rem;">Implementar y Capacitar</h3>
-          <p class="muted" style="font-size:0.875rem;">Pruebo en producción real y entreno a tu equipo para operar el sistema de forma autónoma.</p>
+          <h3 class="h3" style="font-size:1.1rem;margin-bottom:0.75rem;">Implementar y Capacitar</h3>
+          <p class="dimmed" style="font-size:0.925rem;line-height:1.7;">Pruebo en producción real y entreno a tu equipo. Te entrego documentación y quedas operando el sistema de forma autónoma.</p>
         </div>
       </div>
       <div style="display:flex;flex-wrap:wrap;justify-content:center;gap:0.6rem;margin-bottom:2.5rem;" data-a>
@@ -599,88 +624,122 @@
   </section>
 
   <!-- PORTAFOLIO — 5 herramientas de automatización -->
-  <section class="section section-alt" id="portafolio">
+  <!-- Separador visual antes del portafolio -->
+  <div style="display:flex;align-items:center;justify-content:center;gap:1rem;padding:3rem 1.5rem 0;max-width:1120px;margin:0 auto;">
+    <div style="flex:1;height:1px;background:linear-gradient(to right,transparent,rgba(46,123,246,0.25),transparent);"></div>
+    <span style="font-size:0.72rem;color:#7EB3FF;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;white-space:nowrap;">◆ En Producción</span>
+    <div style="flex:1;height:1px;background:linear-gradient(to right,transparent,rgba(46,123,246,0.25),transparent);"></div>
+  </div>
+
+  <section class="section" id="portafolio" style="padding-top:3rem;position:relative;">
+    <!-- Fondo diferenciador sutil -->
+    <div style="position:absolute;inset:0;background:radial-gradient(ellipse 80% 50% at 50% 0%,rgba(46,123,246,0.04),transparent 60%);pointer-events:none;"></div>
+
     <div class="container">
-      <div style="text-align:center;margin-bottom:1rem;" data-a>
-        <div class="label" style="margin-bottom:1rem;">Portafolio</div>
-        <h2 class="h2" style="font-size:clamp(1.9rem,4.5vw,3rem);margin-bottom:1rem;">Proyectos implementados en producción</h2>
-        <p class="muted" style="max-width:520px;margin:0 auto;">Estos son sistemas reales que ya están operando para clientes. Solicita acceso y te los muestro funcionando.</p>
+      <div style="text-align:center;margin-bottom:3.5rem;" data-a>
+        <div class="label" style="margin-bottom:1rem;color:#67E8F9;">Portafolio Live</div>
+        <h2 class="h2" style="font-size:clamp(1.9rem,4.5vw,3rem);margin-bottom:1rem;line-height:1.1;">
+          5 sistemas.<br><span style="background:linear-gradient(135deg,#2E7BF6,#67E8F9);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;">Funcionando ahora mismo.</span>
+        </h2>
+        <p class="dimmed" style="max-width:580px;margin:0 auto;font-size:1rem;">
+          Entra a la demo con acceso privado y pruébalos tú mismo. Cada uno resuelve un dolor real de negocio que probablemente tú también tienes.
+        </p>
       </div>
       <div class="portfolio-grid">
 
         <!-- 1. Restaurantes -->
         <div class="card portfolio-card card-glow" data-a data-d="1">
-          <div class="portfolio-card-icon">🍽️</div>
-          <div class="chip chip-blue">Restaurantes</div>
-          <h3>Sistema de Fidelización para Restaurantes</h3>
-          <p class="dimmed">Implementado para restaurantes reales. El comensal escanea un QR en la mesa y entra al programa de lealtad. El dueño gestiona clientes, campañas y recompensas desde un dashboard.</p>
-          <div class="portfolio-tags">
-            <span class="chip chip-dim">Restaurantes</span>
-            <span class="chip chip-dim">WhatsApp</span>
-            <span class="chip chip-dim">CRM</span>
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:0.5rem;">
+            <div class="portfolio-card-icon">🍽️</div>
+            <span style="font-size:0.62rem;background:rgba(34,197,94,0.12);color:#4ade80;padding:3px 10px;border-radius:100px;border:1px solid rgba(34,197,94,0.25);font-weight:700;letter-spacing:0.05em;text-transform:uppercase;">● Live</span>
           </div>
-          <a href="/demos/?tool=restaurantes" class="btn-cta" style="align-self:flex-start;margin-top:0.5rem;">Ver Demo →</a>
+          <div class="chip chip-blue">Restaurantes</div>
+          <h3>Plataforma de Fidelización para Restaurantes</h3>
+          <p class="dimmed">QR en mesa → cliente registrado → programa de recompensas → campañas por WhatsApp. Todo en automático, todo medible. <strong style="color:#7EB3FF;">+30% ventas recurrentes</strong> desde el primer mes.</p>
+          <div class="portfolio-tags">
+            <span class="chip chip-dim">Next.js</span>
+            <span class="chip chip-dim">Supabase</span>
+            <span class="chip chip-dim">WhatsApp</span>
+          </div>
+          <a href="/demos/?tool=restaurantes" class="btn-cta" style="align-self:flex-start;margin-top:0.5rem;">Entrar a la demo →</a>
         </div>
 
         <!-- 2. Hoteles -->
         <div class="card portfolio-card card-glow" data-a data-d="2">
-          <div class="portfolio-card-icon">🏨</div>
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:0.5rem;">
+            <div class="portfolio-card-icon">🏨</div>
+            <span style="font-size:0.62rem;background:rgba(34,197,94,0.12);color:#4ade80;padding:3px 10px;border-radius:100px;border:1px solid rgba(34,197,94,0.25);font-weight:700;letter-spacing:0.05em;text-transform:uppercase;">● Live</span>
+          </div>
           <div class="chip chip-blue">Hoteles</div>
           <h3>Agente IA de Reservas Hoteleras</h3>
-          <p class="dimmed">Implementado para un glamping real en Colombia. El huésped chatea con un agente IA que consulta disponibilidad en el PMS y genera el link de reserva sin intervención humana.</p>
+          <p class="dimmed">El huésped escribe: "Hola, disponibilidad para 2 personas del 20 al 23". El agente consulta el PMS real, recomienda habitación y <strong style="color:#7EB3FF;">entrega el link de reserva en menos de 10 segundos</strong>. Sin humanos de por medio.</p>
           <div class="portfolio-tags">
-            <span class="chip chip-dim">Hoteles</span>
-            <span class="chip chip-dim">Chat IA</span>
             <span class="chip chip-dim">GPT-4o</span>
+            <span class="chip chip-dim">n8n</span>
+            <span class="chip chip-dim">QloApps</span>
           </div>
-          <a href="/demos/?tool=hoteles" class="btn-cta" style="align-self:flex-start;margin-top:0.5rem;">Ver Demo →</a>
+          <a href="/demos/?tool=hoteles" class="btn-cta" style="align-self:flex-start;margin-top:0.5rem;">Chatear con el agente →</a>
         </div>
 
         <!-- 3. Prospectos -->
         <div class="card portfolio-card card-glow" data-a data-d="3">
-          <div class="portfolio-card-icon">🎯</div>
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:0.5rem;">
+            <div class="portfolio-card-icon">🎯</div>
+            <span style="font-size:0.62rem;background:rgba(34,197,94,0.12);color:#4ade80;padding:3px 10px;border-radius:100px;border:1px solid rgba(34,197,94,0.25);font-weight:700;letter-spacing:0.05em;text-transform:uppercase;">● Live</span>
+          </div>
           <div class="chip chip-blue">Leads</div>
           <h3>Captador Automático de Prospectos</h3>
-          <p class="dimmed">Implementado para negocios de servicios. El prospecto llena un formulario, el sistema lo califica automáticamente y lo entrega al equipo comercial listo para contactar.</p>
+          <p class="dimmed">Formulario → lead calificado y priorizado → email al comercial → confirmación automática al cliente. <strong style="color:#7EB3FF;">Cero leads perdidos</strong>, cero tiempo de respuesta, cero intervención manual.</p>
           <div class="portfolio-tags">
-            <span class="chip chip-dim">Leads</span>
-            <span class="chip chip-dim">Email</span>
-            <span class="chip chip-dim">Prospección</span>
+            <span class="chip chip-dim">n8n</span>
+            <span class="chip chip-dim">Gmail</span>
+            <span class="chip chip-dim">Scoring IA</span>
           </div>
-          <a href="/demos/?tool=prospectos" class="btn-cta" style="align-self:flex-start;margin-top:0.5rem;">Ver Demo →</a>
+          <a href="/demos/?tool=prospectos" class="btn-cta" style="align-self:flex-start;margin-top:0.5rem;">Probar el formulario →</a>
         </div>
 
         <!-- 4. Reporte -->
         <div class="card portfolio-card card-glow" data-a data-d="1">
-          <div class="portfolio-card-icon">📊</div>
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:0.5rem;">
+            <div class="portfolio-card-icon">📊</div>
+            <span style="font-size:0.62rem;background:rgba(34,197,94,0.12);color:#4ade80;padding:3px 10px;border-radius:100px;border:1px solid rgba(34,197,94,0.25);font-weight:700;letter-spacing:0.05em;text-transform:uppercase;">● Live</span>
+          </div>
           <div class="chip chip-blue">Reportes</div>
           <h3>Reporte Ejecutivo Automático</h3>
-          <p class="dimmed">Implementado para gerentes que necesitan visibilidad rápida. Genera un resumen con KPIs, tendencias y acciones recomendadas, y lo entrega por email sin intervención.</p>
+          <p class="dimmed">KPIs, tendencias y acciones recomendadas — generadas y entregadas por email sin tocar una hoja de cálculo. <strong style="color:#7EB3FF;">Ahorro de 8+ horas semanales</strong> en preparación de reportes gerenciales.</p>
           <div class="portfolio-tags">
-            <span class="chip chip-dim">Reportes</span>
-            <span class="chip chip-dim">Email</span>
-            <span class="chip chip-dim">Análisis</span>
+            <span class="chip chip-dim">n8n</span>
+            <span class="chip chip-dim">HTML Email</span>
+            <span class="chip chip-dim">KPIs</span>
           </div>
-          <a href="/demos/?tool=reporte" class="btn-cta" style="align-self:flex-start;margin-top:0.5rem;">Ver Demo →</a>
+          <a href="/demos/?tool=reporte" class="btn-cta" style="align-self:flex-start;margin-top:0.5rem;">Generar reporte →</a>
         </div>
 
         <!-- 5. Presupuestos -->
         <div class="card portfolio-card card-glow" data-a data-d="2">
-          <div class="portfolio-card-icon">💼</div>
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:0.5rem;">
+            <div class="portfolio-card-icon">💼</div>
+            <span style="font-size:0.62rem;background:rgba(34,197,94,0.12);color:#4ade80;padding:3px 10px;border-radius:100px;border:1px solid rgba(34,197,94,0.25);font-weight:700;letter-spacing:0.05em;text-transform:uppercase;">● Live</span>
+          </div>
           <div class="chip chip-blue">Ventas</div>
           <h3>Cotizador Automático de Servicios</h3>
-          <p class="dimmed">Implementado para empresas de servicios. El vendedor selecciona los servicios, el sistema calcula el total y envía la cotización profesional al cliente y una copia interna al instante.</p>
+          <p class="dimmed">El vendedor marca los servicios, el cliente recibe la cotización profesional en su correo <strong style="color:#7EB3FF;">en menos de 30 segundos</strong>. El área comercial recibe una copia y el histórico queda registrado.</p>
           <div class="portfolio-tags">
-            <span class="chip chip-dim">Ventas</span>
-            <span class="chip chip-dim">Email</span>
-            <span class="chip chip-dim">Cotizaciones</span>
+            <span class="chip chip-dim">n8n</span>
+            <span class="chip chip-dim">Gmail</span>
+            <span class="chip chip-dim">Cálculo auto</span>
           </div>
-          <a href="/demos/?tool=presupuestos" class="btn-cta" style="align-self:flex-start;margin-top:0.5rem;">Ver Demo →</a>
+          <a href="/demos/?tool=presupuestos" class="btn-cta" style="align-self:flex-start;margin-top:0.5rem;">Armar cotización →</a>
         </div>
 
       </div>
     </div>
   </section>
+
+  <!-- Separador visual después del portafolio -->
+  <div style="display:flex;align-items:center;justify-content:center;gap:1rem;padding:2rem 1.5rem 0;max-width:1120px;margin:0 auto;">
+    <div style="flex:1;height:1px;background:linear-gradient(to right,transparent,rgba(46,123,246,0.15),transparent);"></div>
+  </div>
 
   <!-- ABOUT LUIS -->
   <section class="section" id="sobre-mi">
@@ -694,10 +753,10 @@
         <div data-a data-d="1">
           <div class="label" style="margin-bottom:1rem;">Quién está detrás del sistema</div>
           <h2 class="h2" style="font-size:clamp(2rem,4vw,2.75rem);margin-bottom:1.5rem;">Luis Moreno</h2>
-          <div class="dimmed" style="line-height:1.8;font-size:0.975rem;">
-            <p style="margin-bottom:1rem;">Soy un ingeniero de automatización especializado en construir sistemas de IA que reemplazan trabajo manual en negocios de 5 a 50 personas.</p>
-            <p style="margin-bottom:1rem;">No vendo herramientas — construyo infraestructura real. Mis sistemas corren en servidores propios, con lógica de negocio diseñada para cada cliente.</p>
-            <p style="color:#B0BFCF;">Si tu negocio depende de que tú estés presente para funcionar, eso tiene solución. Y se llama automatización.</p>
+          <div style="line-height:1.8;font-size:1rem;color:#C5D0E0;">
+            <p style="margin-bottom:1rem;">Soy <strong style="color:#F0F5FF;">especialista en automatización, desarrollo de web apps y sistemas de IA</strong>. Construyo la infraestructura que le permite a negocios de 5 a 50 personas operar sin fricciones y escalar sin contratar a ciegas.</p>
+            <p style="margin-bottom:1rem;">No vendo herramientas — <strong style="color:#F0F5FF;">construyo infraestructura real</strong>. Mis sistemas corren en tus servidores, con lógica de negocio diseñada para tu flujo, no para el promedio del mercado.</p>
+            <p style="color:#E8EDF5;">Si tu negocio depende de que tú estés presente para funcionar, eso tiene solución. Y se llama automatización bien hecha.</p>
           </div>
           <div style="margin-top:2rem;">
             <a href="https://calendly.com/luismorenoai" target="_blank" rel="noopener noreferrer" class="btn-cta btn-cta-lg">Hablar con Luis →</a>

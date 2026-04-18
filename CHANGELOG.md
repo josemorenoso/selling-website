@@ -5,6 +5,69 @@
 
 ---
 
+## [0.5.1] — 2026-04-18
+
+### Cambiado — FASE 3.1: Feedback de audit y conversión
+Ajustes basados en auditoría directa del usuario para elevar conversión y resolver issues reales.
+
+#### Hero
+- **Stats reemplazados** (los viejos sonaban a "mercado perdiendo", no a autoridad):
+  - `2.8 hrs perdidas/empleado/día` → `3 sem entrega promedio`
+  - `21% facturación que se fuga` → `24/7 operando solo`
+  - `$0 cuesta descubrirlo` → `100% código es tuyo`
+- Main metric superior: `10+ hrs/sem recuperadas` → `Sistema operando / entregado y documentado` (más assertivo)
+- Progress bar: `Satisfacción del cliente 98%` → `Uptime mensual 99.8%` (más técnico y creíble)
+- Tag pill `ACTIVO` → `EN PRODUCCIÓN` (autoridad)
+- **Copy subtítulo comprimido**: "Implemento sistemas de automatización con IA que eliminan el trabajo repetitivo..." → "Automatizo los procesos que te están robando horas. Tu equipo ejecuta, tú diriges — y tu negocio crece sin ti empujándolo"
+- **Fix overflow mobile**: añadidas reglas `@media (max-width:768px)` específicas para `.hero .glass-card`, `.hero .glass-stat-val`, `.hero .glass-stat-label`, `.hero .tag-pill`
+
+#### Servicios
+- **Título corregido**: "Tres formas de multiplicar tu negocio" → "Soluciones que te ofrezco" (más concreto, pedido del user)
+- **Label**: "Qué hago por ti" → "Servicios"
+- **Métricas Agente IA**: `98% tasa respuesta / <3s tiempo respuesta` → `+30% aumento en ventas / 24/7 respondiendo leads` (sincronizado con propuesta de valor real)
+
+#### Producto Estrella
+- **Fix login iframe**: Los browsers bloquean cookies third-party en iframes cross-origin → Supabase no persiste sesión. Solución:
+  - Añadido botón **"Abrir demo en pestaña nueva ↗"** como CTA secundario prominente
+  - Añadido botón **"↗ Abrir"** en la barra del browser-mockup
+  - Disclaimer explicativo bajo el iframe con instrucción clara
+- Copy tech movido a línea inferior más sutil (antes mezclado con CTAs)
+
+#### Fondo — Profundidad Cinematográfica
+- **Gradient mesh direccional** agregado al body (3 radial-gradients posicionados: azul top-left, teal right, azul oscuro bottom)
+- **Dot pattern mejorado**: opacity 0.35 → 0.22, size 36px → 42px, añadido `mask-image` radial para que se disuelva en los bordes
+- **Vignette sutil**: nuevo `.bg-vignette` div con radial-gradient que contiene la mirada al centro
+- **Noise opacity**: 0.028 → 0.035 (más grain, más cine)
+
+#### Jerarquía tipográfica + Armonía
+- Hero `.hero-grid` gap: 2.5rem → 3rem (más respiro entre columnas)
+- `.glass-stat-label`: color `#5A6A80` → `#A8B6CC`, letter-spacing ajustado, añadido `margin-top:2px` y `line-height:1.3`
+- `.tag-pill`: color `#8A9BB0` → `#C5D0E0`, font-weight 600 → 700
+- `"Operando con"` label: color `#5A6A80` → `#A8B6CC` (era casi invisible)
+
+#### Por Qué Trabajar Conmigo — Copy comprimido
+Párrafos largos reducidos a 1-2 frases impactantes con `<strong>` en claims clave. Todos los 6 cards ahora tienen el mismo ritmo tipográfico.
+
+- Fix typo: "Te voy con un plan concreto" → "Sales con un plan concreto"
+
+### Archivos afectados
+- `index.html` — hero stats, servicios, producto estrella, por qué, fondo, responsive
+- `CHANGELOG.md` — esta entrada
+
+### Issues resueltos del feedback
+- ✅ Hero stats raros ("2.8 hrs" etc) → reemplazados por autoridad
+- ✅ Hero se sale en web/mobile → reglas responsive añadidas
+- ✅ Título "3 formas multiplicar" → "Soluciones que te ofrezco"
+- ✅ Agente IA: +30% ventas visible
+- ✅ Login iframe producto → botón alternativo en nueva pestaña (root cause: cookies third-party bloqueadas por browser)
+- ✅ Excesos de letras → copy comprimido en "Por qué"
+- ✅ Fondo plano → mesh gradient + vignette + dot pattern refinado
+
+### Request original
+> Login no funciona en producción. Audita: fondo transparente, jerarquía, armonía, excesos de letra, stats raros del hero. Pon +30% en agente IA. Título "3 formas" es raro → "Soluciones que te ofrezco".
+
+---
+
 ## [0.5.0] — 2026-04-18
 
 ### Cambiado — FASE 3: Rediseño para Autoridad, Credibilidad y Confianza

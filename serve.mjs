@@ -15,7 +15,9 @@ const mime = {
 };
 
 createServer(async (req, res) => {
-  const url = decodeURIComponent(req.url === '/' ? '/index.html' : req.url);
+  let url = decodeURIComponent(req.url.split('?')[0]);
+  if (url === '/') url = '/index.html';
+  if (url.endsWith('/')) url += 'index.html';
   const filePath = join(__dirname, url);
   try {
     const data = await readFile(filePath);

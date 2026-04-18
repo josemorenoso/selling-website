@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Demo — Captador Automático de Clientes</title>
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/demos/shared.css">
+</head>
+<body>
+  <div class="demo-container">
+    <div class="demo-header">
+      <a href="/" class="demo-logo">Luis<span>.</span>Moreno</a>
+      <h1 class="demo-title">Captador Automático de Clientes</h1>
+      <p class="demo-subtitle">Llena el formulario. El lead llega calificado a tu correo y el prospecto recibe confirmación automática.</p>
+      <div class="demo-chips">
+        <span class="demo-chip">Leads</span>
+        <span class="demo-chip">Email</span>
+        <span class="demo-chip">Prospección</span>
+      </div>
+    </div>
+
+    <form id="form-prospectos" onsubmit="return handleSubmit(event)">
+      <div class="form-group">
+        <label class="form-label">Nombre completo <span class="required">*</span></label>
+        <input type="text" name="nombre" class="input-dark" placeholder="Juan Pérez" required>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Email <span class="required">*</span></label>
+        <input type="email" name="email" class="input-dark" placeholder="juan@empresa.com" required>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Teléfono</label>
+        <input type="tel" name="telefono" class="input-dark" placeholder="+52 55 1234 5678">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Empresa / Negocio <span class="required">*</span></label>
+        <input type="text" name="empresa" class="input-dark" placeholder="Mi Empresa S.A." required>
+      </div>
+      <div class="form-group">
+        <label class="form-label">¿Qué necesitas?</label>
+        <select name="servicio" class="input-dark">
+          <option value="">Selecciona una opción</option>
+          <option value="automatizar-ventas">Automatizar ventas</option>
+          <option value="gestionar-clientes">Gestionar clientes</option>
+          <option value="reportes-automaticos">Reportes automáticos</option>
+          <option value="otro">Otro</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Presupuesto estimado</label>
+        <select name="presupuesto" class="input-dark">
+          <option value="">Selecciona un rango</option>
+          <option value="menos-500">Menos de $500</option>
+          <option value="500-1500">$500 - $1,500</option>
+          <option value="1500-5000">$1,500 - $5,000</option>
+          <option value="mas-5000">Más de $5,000</option>
+        </select>
+      </div>
+
+      <button type="submit" class="btn-submit" id="btn-submit">
+        <span id="btn-text">Enviar Lead →</span>
+        <div class="spinner" id="spinner"></div>
+      </button>
+
+      <div class="state-message success-state" id="success-msg">✓ Lead capturado. Revisa tu correo en segundos.</div>
+      <div class="state-message error-state" id="error-msg">✗ Error al enviar. Verifica la conexión con n8n.</div>
+    </form>
+
+    <a href="/demos/" class="btn-back">← Volver al Portafolio</a>
+  </div>
+
+  <script>
+    // Access check
+    if (sessionStorage.getItem('demo_access') !== 'true') {
+      window.location.href = '/demos/?tool=prospectos';
+    }
+
+    const WEBHOOK_URL = "https://n8n.almojabananet.me/webhook/captador-prospectos"; // ← Luis: reemplazar
+
+    async function handleSubmit(e) {
+      e.preventDefault();
+      var form = document.getElementById('form-prospectos');
+      var btn = document.getElementById('btn-submit');
+      var btnText = document.getElementById('btn-text');
+      var spinner = document.getElementById('spinner');
+      var successMsg = document.getElementById('success-msg');
+      var errorMsg = document.getElementById('error-msg');
+
+      // Reset states
+      successMsg.classList.remove('visible');
+      errorMsg.classList.remove('visible');
+
+      // Show loading
+      btn.disabled = true;
+      btnText.textContent = 'Enviando...';
+      spinner.classList.add('visible');
+
+      var formData = new FormData(form);
+      var data = {};
+      formData.forEach(function(value, key) { data[key] = value; });
+
+      try {
+        var response = await fetch(WEBHOOK_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data)
+        });
+
+        if (response.ok) {
+          successMsg.classList.add('visible');
+          form.reset();
+        } else {
+          errorMsg.classList.add('visible');
+        }
+      } catch (err) {
+        errorMsg.classList.add('visible');
+      }
+
+      // Reset button
+      btn.disabled = false;
+      btnText.textContent = 'Enviar Lead →';
+      spinner.classList.remove('visible');
+    }
+  </script>
+</body>
+</html>

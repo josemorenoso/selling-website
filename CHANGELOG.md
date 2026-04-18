@@ -5,6 +5,38 @@
 
 ---
 
+## [0.4.0] — 2026-04-16
+
+### Agregado — Portafolio de Automatizaciones (5 herramientas en vivo)
+- Sección `#portafolio` en `index.html` con 5 cards de herramientas de automatización
+- Nav link "Portafolio" en navbar
+- Sistema de demos protegido por PIN (`/demos/index.html`)
+- CSS compartido para demos (`demos/shared.css`)
+- `demos/restaurantes.html` — iframe del dashboard RestaurantQR real
+- `demos/hoteles.html` — widget chat n8n con agente IA GPT-4o
+- `demos/prospectos.html` — formulario de captación de leads → email
+- `demos/reporte.html` — generador de reportes semanales → email
+- `demos/presupuestos.html` — cotizador dinámico con checkboxes → 2 emails
+- `workflows/captador-prospectos.json` — workflow n8n importable (Webhook → Code → Gmail ×2)
+- `workflows/reporte-negocio.json` — workflow n8n importable (Webhook → Code → Gmail)
+- `workflows/creador-presupuestos.json` — workflow n8n importable (Webhook → Code → Gmail ×2)
+- `workflows/hotel-booking-ai-agent-v3.json` — copiado de existente + _readme
+- `workflows/qloapps-check-availability-v10.json` — copiado de existente + _readme
+- `workflows/qloapps-generate-link-v10.json` — copiado de existente + _readme
+- `docs/features/portfolio.md` — feature doc completo
+
+### Archivos afectados
+- `index.html` — sección #portafolio, nav link, CSS portfolio-grid
+- `demos/` — 6 archivos nuevos (index, shared.css, 5 demo pages)
+- `workflows/` — 6 archivos (3 nuevos, 3 copiados)
+- `docs/features/portfolio.md` — nuevo
+- `CHANGELOG.md` — esta entrada
+
+### Request original
+> Implementar portafolio de automatizaciones con 5 herramientas en vivo, demos protegidas por PIN, workflows n8n importables.
+
+---
+
 ## [0.1.0] — 2025-04-13
 
 ### Added — Setup Inicial (Método AInnovate FASE 1)

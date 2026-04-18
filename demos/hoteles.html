@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Demo — Agente IA de Reservas Hoteleras</title>
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/demos/shared.css">
+  <link href="https://cdn.jsdelivr.net/npm/@n8n/chat/dist/style.css" rel="stylesheet">
+  <style>
+    #n8n-chat { flex: 1; min-height: 400px; }
+    /* Override n8n chat widget theme to match dark design */
+    :root {
+      --chat--color-primary: #2E7BF6;
+      --chat--color-primary-shade-50: #1a4fd6;
+      --chat--color-primary-shade-100: #143fa8;
+      --chat--color-secondary: #040B14;
+      --chat--color-secondary-shade-50: #070E1A;
+      --chat--color-white: #F0F5FF;
+      --chat--color-light: #E8EDF5;
+      --chat--color-light-shade-50: #8A9BB0;
+      --chat--color-medium: #5A6A80;
+      --chat--color-dark: #E8EDF5;
+      --chat--color-disabled: #3A4A5A;
+      --chat--color-typing: #8A9BB0;
+      --chat--border-radius: 0.75rem;
+      --chat--transition-duration: 0.15s;
+      --chat--window--width: 100%;
+      --chat--window--height: 100%;
+      --chat--header-height: auto;
+      --chat--textarea--height: 50px;
+    }
+  </style>
+</head>
+<body>
+  <div class="demo-container demo-container-wide">
+    <div class="demo-header">
+      <a href="/" class="demo-logo">Luis<span>.</span>Moreno</a>
+      <h1 class="demo-title">Agente IA de Reservas Hoteleras</h1>
+      <p class="demo-subtitle">Chat con el agente IA conectado a QloApps. Verifica disponibilidad y genera links de reserva en tiempo real.</p>
+      <div class="demo-chips">
+        <span class="demo-chip">Chat IA</span>
+        <span class="demo-chip">GPT-4o</span>
+        <span class="demo-chip">n8n</span>
+        <span class="demo-chip">QloApps</span>
+      </div>
+    </div>
+
+    <div class="chat-container">
+      <div id="n8n-chat"></div>
+    </div>
+
+    <!-- Workflow Architecture -->
+    <div style="margin-top:2.5rem;">
+      <h2 style="font-size:1.1rem;font-weight:700;color:#F0F5FF;margin-bottom:0.75rem;text-align:center;">Arquitectura del Workflow</h2>
+      <p style="font-size:0.8rem;color:#8A9BB0;text-align:center;margin-bottom:1.25rem;">3 workflows coordinados en n8n — 30+ nodos en producción</p>
+      <div style="display:flex;flex-direction:column;gap:0.75rem;">
+
+        <!-- Main workflow -->
+        <div style="background:rgba(46,123,246,0.06);border:1px solid rgba(46,123,246,0.2);border-radius:0.75rem;padding:1.25rem;">
+          <div style="display:flex;align-items:center;gap:0.5rem;margin-bottom:0.75rem;">
+            <div style="width:8px;height:8px;border-radius:50%;background:#2E7BF6;"></div>
+            <span style="font-size:0.85rem;font-weight:700;color:#F0F5FF;">Hotel Booking AI Agent v3</span>
+            <span style="font-size:0.65rem;background:rgba(34,197,94,0.15);color:#4ade80;padding:2px 8px;border-radius:100px;margin-left:auto;">PRODUCCIÓN</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:0.35rem;flex-wrap:wrap;font-size:0.72rem;color:#8A9BB0;">
+            <span style="background:rgba(255,255,255,0.06);padding:3px 8px;border-radius:4px;">Chat Trigger</span>
+            <span>→</span>
+            <span style="background:rgba(255,255,255,0.06);padding:3px 8px;border-radius:4px;">GPT-4o Agent</span>
+            <span>→</span>
+            <span style="background:rgba(255,255,255,0.06);padding:3px 8px;border-radius:4px;">Redis Memory</span>
+            <span>→</span>
+            <span style="background:rgba(255,255,255,0.06);padding:3px 8px;border-radius:4px;">Postgres Log</span>
+          </div>
+        </div>
+
+        <!-- Sub-workflow 1 -->
+        <div style="background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.08);border-radius:0.75rem;padding:1.25rem;margin-left:1.5rem;">
+          <div style="display:flex;align-items:center;gap:0.5rem;margin-bottom:0.75rem;">
+            <div style="width:8px;height:8px;border-radius:50%;background:#f59e0b;"></div>
+            <span style="font-size:0.85rem;font-weight:700;color:#F0F5FF;">QloApps — Check Availability</span>
+            <span style="font-size:0.65rem;background:rgba(245,158,11,0.15);color:#fbbf24;padding:2px 8px;border-radius:100px;margin-left:auto;">SUB-WORKFLOW</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:0.35rem;flex-wrap:wrap;font-size:0.72rem;color:#8A9BB0;">
+            <span style="background:rgba(255,255,255,0.06);padding:3px 8px;border-radius:4px;">Tool Call</span>
+            <span>→</span>
+            <span style="background:rgba(255,255,255,0.06);padding:3px 8px;border-radius:4px;">HTTP → QloApps API</span>
+            <span>→</span>
+            <span style="background:rgba(255,255,255,0.06);padding:3px 8px;border-radius:4px;">Parse Rooms</span>
+            <span>→</span>
+            <span style="background:rgba(255,255,255,0.06);padding:3px 8px;border-radius:4px;">Return to Agent</span>
+          </div>
+        </div>
+
+        <!-- Sub-workflow 2 -->
+        <div style="background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.08);border-radius:0.75rem;padding:1.25rem;margin-left:1.5rem;">
+          <div style="display:flex;align-items:center;gap:0.5rem;margin-bottom:0.75rem;">
+            <div style="width:8px;height:8px;border-radius:50%;background:#f59e0b;"></div>
+            <span style="font-size:0.85rem;font-weight:700;color:#F0F5FF;">QloApps — Generate Link</span>
+            <span style="font-size:0.65rem;background:rgba(245,158,11,0.15);color:#fbbf24;padding:2px 8px;border-radius:100px;margin-left:auto;">SUB-WORKFLOW</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:0.35rem;flex-wrap:wrap;font-size:0.72rem;color:#8A9BB0;">
+            <span style="background:rgba(255,255,255,0.06);padding:3px 8px;border-radius:4px;">Tool Call</span>
+            <span>→</span>
+            <span style="background:rgba(255,255,255,0.06);padding:3px 8px;border-radius:4px;">Build Params</span>
+            <span>→</span>
+            <span style="background:rgba(255,255,255,0.06);padding:3px 8px;border-radius:4px;">HTTP → QloApps</span>
+            <span>→</span>
+            <span style="background:rgba(255,255,255,0.06);padding:3px 8px;border-radius:4px;">Booking URL</span>
+          </div>
+        </div>
+
+        <!-- Tech stack summary -->
+        <div style="display:flex;gap:0.5rem;flex-wrap:wrap;justify-content:center;margin-top:0.5rem;">
+          <span style="font-size:0.7rem;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);padding:4px 10px;border-radius:100px;color:#8A9BB0;">GPT-4o</span>
+          <span style="font-size:0.7rem;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);padding:4px 10px;border-radius:100px;color:#8A9BB0;">n8n</span>
+          <span style="font-size:0.7rem;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);padding:4px 10px;border-radius:100px;color:#8A9BB0;">QloApps PMS</span>
+          <span style="font-size:0.7rem;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);padding:4px 10px;border-radius:100px;color:#8A9BB0;">Redis</span>
+          <span style="font-size:0.7rem;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);padding:4px 10px;border-radius:100px;color:#8A9BB0;">Postgres</span>
+          <span style="font-size:0.7rem;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);padding:4px 10px;border-radius:100px;color:#8A9BB0;">Supabase</span>
+        </div>
+      </div>
+    </div>
+
+    <a href="/demos/" class="btn-back">← Volver al Portafolio</a>
+  </div>
+
+  <script type="module">
+    // Access check
+    if (sessionStorage.getItem('demo_access') !== 'true') {
+      window.location.href = '/demos/?tool=hoteles';
+    }
+
+    const N8N_CHAT_URL = "https://n8n.almojabananet.me/webhook/7b5ada29-dc7b-44fb-b094-37c753ed69b6/chat"; // ← Luis: reemplazar tras duplicar workflow
+
+    import { createChat } from 'https://cdn.jsdelivr.net/npm/@n8n/chat/dist/chat.bundle.es.js';
+
+    createChat({
+      webhookUrl: N8N_CHAT_URL,
+      target: '#n8n-chat',
+      mode: 'fullscreen',
+      showWelcomeScreen: false,
+      initialMessages: [
+        'Hola 👋 Soy el asistente de Bamboo Glamping. ¿Para cuántas personas y qué fechas tienes en mente?'
+      ],
+      i18n: {
+        en: {
+          title: 'Bamboo Glamping',
+          subtitle: 'Asistente IA de Reservas',
+          inputPlaceholder: 'Escribe tu mensaje...',
+          getStarted: 'Comenzar',
+          closeButtonTooltip: 'Cerrar',
+        },
+      },
+      metadata: {},
+    });
+  </script>
+</body>
+</html>

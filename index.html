@@ -175,11 +175,20 @@
     .ig-card { background:rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.07); border-radius:1.25rem; transition:border-color 0.3s,box-shadow 0.3s; }
     .ig-card:hover { border-color:rgba(193,53,132,0.3); box-shadow:0 0 40px rgba(193,53,132,0.05); }
 
+    /* ── PORTFOLIO GRID ──────────────────────────────── */
+    .portfolio-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:1.5rem; margin-top:3rem; }
+    .portfolio-card { display:flex; flex-direction:column; gap:0.75rem; padding:1.75rem; }
+    .portfolio-card h3 { font-size:1.1rem; font-weight:700; color:#F0F5FF; margin:0; }
+    .portfolio-card p { font-size:0.9rem; line-height:1.6; flex-grow:1; }
+    .portfolio-tags { display:flex; gap:0.5rem; flex-wrap:wrap; }
+    .portfolio-card-icon { font-size:2rem; margin-bottom:0.25rem; }
+
     /* ── RESPONSIVE ────────────────────────────────────── */
     @media (max-width:900px) {
       .bento { grid-template-columns:1fr; }
       .bento-wide { grid-column:span 1; }
       .bento-tall { grid-row:span 1; }
+      .portfolio-grid { grid-template-columns:repeat(2,1fr); }
     }
     @media (max-width:768px) {
       .section { padding:5rem 0; }
@@ -210,6 +219,8 @@
       /* Iframe mobile */
       .browser-content { aspect-ratio:auto !important; height:420px; }
       .browser-content iframe { transform:scale(0.55); transform-origin:top left; width:182%; height:182%; }
+      /* Portfolio mobile */
+      .portfolio-grid { grid-template-columns:1fr !important; }
     }
   </style>
 </head>
@@ -223,6 +234,7 @@
       <div class="nav-links">
         <a href="#servicios" class="nav-link">Servicios</a>
         <a href="#producto" class="nav-link">Producto</a>
+        <a href="#portafolio" class="nav-link">Portafolio</a>
         <a href="#sobre-mi" class="nav-link">Sobre mí</a>
       </div>
       <a href="https://calendly.com/luismorenoai" target="_blank" rel="noopener noreferrer" class="btn-cta">Agendar Llamada →</a>
@@ -582,6 +594,90 @@
       </div>
       <div style="text-align:center;" data-a>
         <a href="https://calendly.com/luismorenoai" target="_blank" rel="noopener noreferrer" class="btn-cta btn-cta-lg">Empieza con la Auditoría Express Gratuita →</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- PORTAFOLIO — 5 herramientas de automatización -->
+  <section class="section section-alt" id="portafolio">
+    <div class="container">
+      <div style="text-align:center;margin-bottom:1rem;" data-a>
+        <div class="label" style="margin-bottom:1rem;">Portafolio</div>
+        <h2 class="h2" style="font-size:clamp(1.9rem,4.5vw,3rem);margin-bottom:1rem;">Proyectos implementados en producción</h2>
+        <p class="muted" style="max-width:520px;margin:0 auto;">Estos son sistemas reales que ya están operando para clientes. Solicita acceso y te los muestro funcionando.</p>
+      </div>
+      <div class="portfolio-grid">
+
+        <!-- 1. Restaurantes -->
+        <div class="card portfolio-card card-glow" data-a data-d="1">
+          <div class="portfolio-card-icon">🍽️</div>
+          <div class="chip chip-blue">Restaurantes</div>
+          <h3>Sistema de Fidelización para Restaurantes</h3>
+          <p class="dimmed">Implementado para restaurantes reales. El comensal escanea un QR en la mesa y entra al programa de lealtad. El dueño gestiona clientes, campañas y recompensas desde un dashboard.</p>
+          <div class="portfolio-tags">
+            <span class="chip chip-dim">Restaurantes</span>
+            <span class="chip chip-dim">WhatsApp</span>
+            <span class="chip chip-dim">CRM</span>
+          </div>
+          <a href="/demos/?tool=restaurantes" class="btn-cta" style="align-self:flex-start;margin-top:0.5rem;">Ver Demo →</a>
+        </div>
+
+        <!-- 2. Hoteles -->
+        <div class="card portfolio-card card-glow" data-a data-d="2">
+          <div class="portfolio-card-icon">🏨</div>
+          <div class="chip chip-blue">Hoteles</div>
+          <h3>Agente IA de Reservas Hoteleras</h3>
+          <p class="dimmed">Implementado para un glamping real en Colombia. El huésped chatea con un agente IA que consulta disponibilidad en el PMS y genera el link de reserva sin intervención humana.</p>
+          <div class="portfolio-tags">
+            <span class="chip chip-dim">Hoteles</span>
+            <span class="chip chip-dim">Chat IA</span>
+            <span class="chip chip-dim">GPT-4o</span>
+          </div>
+          <a href="/demos/?tool=hoteles" class="btn-cta" style="align-self:flex-start;margin-top:0.5rem;">Ver Demo →</a>
+        </div>
+
+        <!-- 3. Prospectos -->
+        <div class="card portfolio-card card-glow" data-a data-d="3">
+          <div class="portfolio-card-icon">🎯</div>
+          <div class="chip chip-blue">Leads</div>
+          <h3>Captador Automático de Prospectos</h3>
+          <p class="dimmed">Implementado para negocios de servicios. El prospecto llena un formulario, el sistema lo califica automáticamente y lo entrega al equipo comercial listo para contactar.</p>
+          <div class="portfolio-tags">
+            <span class="chip chip-dim">Leads</span>
+            <span class="chip chip-dim">Email</span>
+            <span class="chip chip-dim">Prospección</span>
+          </div>
+          <a href="/demos/?tool=prospectos" class="btn-cta" style="align-self:flex-start;margin-top:0.5rem;">Ver Demo →</a>
+        </div>
+
+        <!-- 4. Reporte -->
+        <div class="card portfolio-card card-glow" data-a data-d="1">
+          <div class="portfolio-card-icon">📊</div>
+          <div class="chip chip-blue">Reportes</div>
+          <h3>Reporte Ejecutivo Automático</h3>
+          <p class="dimmed">Implementado para gerentes que necesitan visibilidad rápida. Genera un resumen con KPIs, tendencias y acciones recomendadas, y lo entrega por email sin intervención.</p>
+          <div class="portfolio-tags">
+            <span class="chip chip-dim">Reportes</span>
+            <span class="chip chip-dim">Email</span>
+            <span class="chip chip-dim">Análisis</span>
+          </div>
+          <a href="/demos/?tool=reporte" class="btn-cta" style="align-self:flex-start;margin-top:0.5rem;">Ver Demo →</a>
+        </div>
+
+        <!-- 5. Presupuestos -->
+        <div class="card portfolio-card card-glow" data-a data-d="2">
+          <div class="portfolio-card-icon">💼</div>
+          <div class="chip chip-blue">Ventas</div>
+          <h3>Cotizador Automático de Servicios</h3>
+          <p class="dimmed">Implementado para empresas de servicios. El vendedor selecciona los servicios, el sistema calcula el total y envía la cotización profesional al cliente y una copia interna al instante.</p>
+          <div class="portfolio-tags">
+            <span class="chip chip-dim">Ventas</span>
+            <span class="chip chip-dim">Email</span>
+            <span class="chip chip-dim">Cotizaciones</span>
+          </div>
+          <a href="/demos/?tool=presupuestos" class="btn-cta" style="align-self:flex-start;margin-top:0.5rem;">Ver Demo →</a>
+        </div>
+
       </div>
     </div>
   </section>

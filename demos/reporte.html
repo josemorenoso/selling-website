@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Demo — Reporte Semanal de Negocio</title>
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/demos/shared.css">
+</head>
+<body>
+  <div class="demo-container">
+    <div class="demo-header">
+      <a href="/" class="demo-logo">Luis<span>.</span>Moreno</a>
+      <h1 class="demo-title">Reporte Semanal de Negocio</h1>
+      <p class="demo-subtitle">Genera un reporte ejecutivo con KPIs, tendencias y acciones recomendadas. Llega directo a tu correo.</p>
+      <div class="demo-chips">
+        <span class="demo-chip">Reportes</span>
+        <span class="demo-chip">Email</span>
+        <span class="demo-chip">Análisis</span>
+      </div>
+    </div>
+
+    <form id="form-reporte" onsubmit="return handleSubmit(event)">
+      <div class="form-group">
+        <label class="form-label">Nombre del negocio <span class="required">*</span></label>
+        <input type="text" name="negocio" class="input-dark" placeholder="Mi Restaurante S.A." required>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Período del reporte</label>
+        <select name="periodo" class="input-dark">
+          <option value="ultima-semana">Última semana</option>
+          <option value="ultimo-mes">Último mes</option>
+          <option value="ultimo-trimestre">Último trimestre</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Email para recibir el reporte <span class="required">*</span></label>
+        <input type="email" name="email" class="input-dark" placeholder="tu@email.com" required>
+      </div>
+
+      <button type="submit" class="btn-submit" id="btn-submit">
+        <span id="btn-text">Generar Reporte →</span>
+        <div class="spinner" id="spinner"></div>
+      </button>
+
+      <div class="state-message success-state" id="success-msg">✓ Reporte generado. Revísalo en tu bandeja de entrada.</div>
+      <div class="state-message error-state" id="error-msg">✗ Error al generar. Verifica la conexión con n8n.</div>
+    </form>
+
+    <a href="/demos/" class="btn-back">← Volver al Portafolio</a>
+  </div>
+
+  <script>
+    // Access check
+    if (sessionStorage.getItem('demo_access') !== 'true') {
+      window.location.href = '/demos/?tool=reporte';
+    }
+
+    const WEBHOOK_URL = "https://n8n.almojabananet.me/webhook/reporte-negocio"; // ← Luis: reemplazar
+
+    async function handleSubmit(e) {
+      e.preventDefault();
+      var form = document.getElementById('form-reporte');
+      var btn = document.getElementById('btn-submit');
+      var btnText = document.getElementById('btn-text');
+      var spinner = document.getElementById('spinner');
+      var successMsg = document.getElementById('success-msg');
+      var errorMsg = document.getElementById('error-msg');
+
+      successMsg.classList.remove('visible');
+      errorMsg.classList.remove('visible');
+
+      btn.disabled = true;
+      btnText.textContent = 'Generando...';
+      spinner.classList.add('visible');
+
+      var formData = new FormData(form);
+      var data = {};
+      formData.forEach(function(value, key) { data[key] = value; });
+
+      try {
+        var response = await fetch(WEBHOOK_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data)
+        });
+
+        if (response.ok) {
+          successMsg.classList.add('visible');
+          form.reset();
+        } else {
+          errorMsg.classList.add('visible');
+        }
+      } catch (err) {
+        errorMsg.classList.add('visible');
+      }
+
+      btn.disabled = false;
+      btnText.textContent = 'Generar Reporte →';
+      spinner.classList.remove('visible');
+    }
+  </script>
+</body>
+</html>

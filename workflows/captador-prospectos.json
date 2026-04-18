@@ -1,0 +1,81 @@
+{
+  "_readme": "Credenciales requeridas: Gmail account en n8n. Reemplazar tuemail@gmail.com por tu correo real.",
+  "name": "Captador Automático de Prospectos",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "captador-prospectos",
+        "responseMode": "lastNode",
+        "options": { "allowedOrigins": "*" }
+      },
+      "id": "wh-1",
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [240, 300],
+      "webhookId": "captador-prospectos"
+    },
+    {
+      "parameters": {
+        "jsCode": "const lead = $input.first().json;\nlet score = 0;\nconst pScores = {'menos-500':15,'500-1500':35,'1500-5000':60,'mas-5000':85};\nscore += pScores[lead.presupuesto] || 0;\nif(lead.nombre) score+=5; if(lead.email) score+=5; if(lead.telefono) score+=10;\nif(lead.empresa) score+=5; if(lead.servicio) score+=10; if(lead.presupuesto) score+=10;\nscore = Math.min(score,100);\nlet calidad='Frío ❄️',color='#3b82f6';\nif(score>=70){calidad='Caliente 🔥';color='#ef4444';}\nelse if(score>=40){calidad='Tibio ☀️';color='#f59e0b';}\nconst sMap={'automatizar-ventas':'Automatizar ventas','gestionar-clientes':'Gestionar clientes','reportes-automaticos':'Reportes automáticos','otro':'Otro'};\nconst pMap={'menos-500':'< $500','500-1500':'$500-$1,500','1500-5000':'$1,500-$5,000','mas-5000':'> $5,000'};\nconst servicio = sMap[lead.servicio]||lead.servicio||'No especificado';\nconst presupuesto = pMap[lead.presupuesto]||lead.presupuesto||'No especificado';\nconst htmlLuis = `<div style='font-family:Arial,sans-serif;max-width:600px;margin:0 auto;background:#f8fafc;padding:24px'><div style='background:white;border-radius:12px;padding:32px;box-shadow:0 1px 3px rgba(0,0,0,.1)'><h1 style='margin:0 0 8px;font-size:20px;color:#1e293b'>🎯 Nuevo Prospecto</h1><p style='margin:0 0 20px;font-size:14px;color:#64748b'>Captador Automático</p><div style='background:${color}15;border:1px solid ${color}30;border-radius:8px;padding:12px 16px;margin-bottom:20px'><strong style='color:${color}'>${calidad} — Score: ${score}/100</strong></div><table style='width:100%;border-collapse:collapse'><tr><td style='padding:8px 0;border-bottom:1px solid #e2e8f0;color:#64748b;font-size:13px'>Nombre</td><td style='padding:8px 0;border-bottom:1px solid #e2e8f0;font-weight:600;color:#1e293b'>${lead.nombre||'-'}</td></tr><tr><td style='padding:8px 0;border-bottom:1px solid #e2e8f0;color:#64748b;font-size:13px'>Email</td><td style='padding:8px 0;border-bottom:1px solid #e2e8f0;font-weight:600;color:#1e293b'>${lead.email||'-'}</td></tr><tr><td style='padding:8px 0;border-bottom:1px solid #e2e8f0;color:#64748b;font-size:13px'>Teléfono</td><td style='padding:8px 0;border-bottom:1px solid #e2e8f0;font-weight:600;color:#1e293b'>${lead.telefono||'No proporcionado'}</td></tr><tr><td style='padding:8px 0;border-bottom:1px solid #e2e8f0;color:#64748b;font-size:13px'>Empresa</td><td style='padding:8px 0;border-bottom:1px solid #e2e8f0;font-weight:600;color:#1e293b'>${lead.empresa||'-'}</td></tr><tr><td style='padding:8px 0;border-bottom:1px solid #e2e8f0;color:#64748b;font-size:13px'>Servicio</td><td style='padding:8px 0;border-bottom:1px solid #e2e8f0;font-weight:600;color:#1e293b'>${servicio}</td></tr><tr><td style='padding:8px 0;color:#64748b;font-size:13px'>Presupuesto</td><td style='padding:8px 0;font-weight:600;color:#1e293b'>${presupuesto}</td></tr></table></div></div>`;\nconst htmlReply = `<div style='font-family:Arial,sans-serif;max-width:600px;margin:0 auto;background:#f8fafc;padding:24px'><div style='background:white;border-radius:12px;padding:32px;box-shadow:0 1px 3px rgba(0,0,0,.1)'><h1 style='margin:0 0 8px;font-size:20px;color:#1e293b'>¡Recibimos tu información!</h1><p style='margin:0 0 20px;font-size:15px;color:#475569;line-height:1.6'>Hola <strong>${lead.nombre}</strong>, gracias por tu interés. Hemos registrado tu información correctamente.</p><div style='background:#f0f9ff;border:1px solid #bae6fd;border-radius:8px;padding:16px;margin-bottom:20px'><h3 style='margin:0 0 8px;font-size:15px;color:#0369a1'>Próximos pasos:</h3><ol style='margin:0;padding-left:20px;color:#475569;font-size:14px;line-height:1.8'><li>Revisaremos tu caso en las próximas 24 horas</li><li>Te contactaremos para agendar una auditoría gratuita de 20 min</li><li>Recibirás una propuesta personalizada</li></ol></div><p style='font-size:13px;color:#94a3b8'>— Luis Moreno | Automatización para Negocios</p></div></div>`;\nreturn [{json:{...lead,score,calidad,htmlLuis,htmlReply,asuntoLuis:`[LEAD] Nuevo prospecto: ${lead.nombre} - ${lead.empresa}`,asuntoReply:`Recibimos tu información, ${lead.nombre}`}}];"
+      },
+      "id": "code-1",
+      "name": "Formatear Lead",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [460, 300]
+    },
+    {
+      "parameters": {
+        "sendTo": "=tuemail@gmail.com",
+        "subject": "={{ $json.asuntoLuis }}",
+        "emailType": "html",
+        "message": "={{ $json.htmlLuis }}",
+        "options": {}
+      },
+      "id": "gmail-luis",
+      "name": "Gmail a Luis",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [680, 200],
+      "credentials": { "gmailOAuth2": { "id": "GMAIL_CREDENTIAL_ID", "name": "Gmail account" } }
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $json.email }}",
+        "subject": "={{ $json.asuntoReply }}",
+        "emailType": "html",
+        "message": "={{ $json.htmlReply }}",
+        "options": {}
+      },
+      "id": "gmail-reply",
+      "name": "Gmail Auto-Reply",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [680, 420],
+      "credentials": { "gmailOAuth2": { "id": "GMAIL_CREDENTIAL_ID", "name": "Gmail account" } }
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={ \"success\": true, \"message\": \"Lead capturado correctamente\" }"
+      },
+      "id": "respond-1",
+      "name": "Respond OK",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [900, 300]
+    }
+  ],
+  "connections": {
+    "Webhook": { "main": [[{ "node": "Formatear Lead", "type": "main", "index": 0 }]] },
+    "Formatear Lead": { "main": [[{ "node": "Gmail a Luis", "type": "main", "index": 0 }, { "node": "Gmail Auto-Reply", "type": "main", "index": 0 }]] },
+    "Gmail a Luis": { "main": [[{ "node": "Respond OK", "type": "main", "index": 0 }]] }
+  },
+  "settings": { "executionOrder": "v1" },
+  "staticData": null,
+  "tags": [{ "name": "portafolio" }],
+  "triggerCount": 1,
+  "active": false
+}

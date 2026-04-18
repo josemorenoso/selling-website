@@ -1,0 +1,81 @@
+{
+  "_readme": "Credenciales requeridas: Gmail account en n8n. Reemplazar tuemail@gmail.com por tu correo real.",
+  "name": "Creador de Presupuestos Profesional",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "presupuestos",
+        "responseMode": "lastNode",
+        "options": { "allowedOrigins": "*" }
+      },
+      "id": "wh-1",
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [240, 300],
+      "webhookId": "presupuestos"
+    },
+    {
+      "parameters": {
+        "jsCode": "const data = $input.first().json;\nconst cliente = data.cliente_nombre || 'Cliente';\nconst clienteEmail = data.cliente_email;\nconst servicios = data.servicios || [];\nconst notas = data.notas || '';\n\n// Calcular totales\nlet subtotal = 0;\nservicios.forEach(s => { subtotal += s.precio; });\nconst descuento = subtotal > 2000 ? 0.05 : 0;\nconst montoDescuento = Math.round(subtotal * descuento);\nconst total = subtotal - montoDescuento;\n\n// Fechas\nconst hoy = new Date();\nconst vence = new Date(hoy);\nvence.setDate(vence.getDate() + 15);\nconst formatDate = (d) => d.toLocaleDateString('es-MX',{year:'numeric',month:'long',day:'numeric'});\nconst fechaCot = formatDate(hoy);\nconst fechaVence = formatDate(vence);\n\n// Tabla de servicios HTML\nconst filasServicios = servicios.map(s =>\n  `<tr><td style='padding:10px 12px;border-bottom:1px solid #e2e8f0;font-size:14px;color:#334155'>${s.nombre}</td><td style='padding:10px 12px;border-bottom:1px solid #e2e8f0;font-size:14px;color:#334155;text-align:right;font-weight:600'>$${s.precio.toLocaleString()}</td></tr>`\n).join('');\n\nconst descuentoRow = descuento > 0 ? `<tr><td style='padding:10px 12px;font-size:14px;color:#22c55e'>Descuento (5% por total > $2,000)</td><td style='padding:10px 12px;font-size:14px;color:#22c55e;text-align:right;font-weight:600'>-$${montoDescuento.toLocaleString()}</td></tr>` : '';\n\nconst html = `<div style='font-family:Arial,sans-serif;max-width:640px;margin:0 auto;background:#f8fafc;padding:24px'>\n<div style='background:white;border-radius:12px;padding:32px;box-shadow:0 1px 3px rgba(0,0,0,.1)'>\n<div style='display:flex;align-items:center;justify-content:space-between;margin-bottom:28px'>\n<div><h1 style='margin:0;font-size:22px;color:#1e293b'>Cotización de Servicios</h1><p style='margin:4px 0 0;font-size:14px;color:#64748b'>Luis Moreno — Automatización para Negocios</p></div>\n<div style='text-align:right'><div style='font-size:12px;color:#64748b'>Fecha: ${fechaCot}</div><div style='font-size:12px;color:#64748b'>Válida hasta: ${fechaVence}</div></div>\n</div>\n\n<div style='background:#f0f9ff;border:1px solid #bae6fd;border-radius:8px;padding:16px;margin-bottom:24px'>\n<div style='font-size:13px;color:#64748b;margin-bottom:4px'>Preparado para</div>\n<div style='font-size:16px;font-weight:700;color:#1e293b'>${cliente}</div>\n<div style='font-size:13px;color:#64748b'>${clienteEmail}</div>\n</div>\n\n<table style='width:100%;border-collapse:collapse;margin-bottom:8px'>\n<thead><tr><th style='padding:10px 12px;text-align:left;font-size:12px;color:#64748b;text-transform:uppercase;letter-spacing:0.05em;border-bottom:2px solid #e2e8f0'>Servicio</th><th style='padding:10px 12px;text-align:right;font-size:12px;color:#64748b;text-transform:uppercase;letter-spacing:0.05em;border-bottom:2px solid #e2e8f0'>Precio</th></tr></thead>\n<tbody>${filasServicios}</tbody>\n</table>\n\n${descuentoRow}\n\n<div style='background:#1e293b;border-radius:8px;padding:16px 20px;display:flex;justify-content:space-between;align-items:center;margin-top:16px'>\n<span style='font-size:16px;font-weight:600;color:#e2e8f0'>Total</span>\n<span style='font-size:24px;font-weight:800;color:#ffffff'>$${total.toLocaleString()}</span>\n</div>\n\n${notas ? `<div style='margin-top:20px;padding:16px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px'><div style='font-size:13px;font-weight:600;color:#64748b;margin-bottom:6px'>Notas adicionales</div><div style='font-size:14px;color:#334155;line-height:1.6'>${notas}</div></div>` : ''}\n\n<div style='margin-top:24px;text-align:center'><a href='https://calendly.com/luismorenoai' style='display:inline-block;background:#2E7BF6;color:white;padding:12px 28px;border-radius:8px;text-decoration:none;font-weight:700;font-size:15px'>Agendar Llamada para Iniciar →</a></div>\n\n<div style='margin-top:24px;padding-top:16px;border-top:1px solid #e2e8f0;font-size:12px;color:#94a3b8;text-align:center'>Esta cotización es válida por 15 días. Precios en USD.</div>\n</div></div>`;\n\nreturn [{json:{cliente,clienteEmail,servicios,subtotal,descuento:montoDescuento,total,notas,html,\n  asuntoCliente:`Tu cotización de servicios — Luis Moreno`,\n  asuntoLuis:`[COTIZACIÓN ENVIADA] ${cliente} — $${total.toLocaleString()}`\n}}];"
+      },
+      "id": "code-1",
+      "name": "Calcular Cotización",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [460, 300]
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $json.clienteEmail }}",
+        "subject": "={{ $json.asuntoCliente }}",
+        "emailType": "html",
+        "message": "={{ $json.html }}",
+        "options": {}
+      },
+      "id": "gmail-cliente",
+      "name": "Gmail al Cliente",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [680, 200],
+      "credentials": { "gmailOAuth2": { "id": "GMAIL_CREDENTIAL_ID", "name": "Gmail account" } }
+    },
+    {
+      "parameters": {
+        "sendTo": "=tuemail@gmail.com",
+        "subject": "={{ $json.asuntoLuis }}",
+        "emailType": "html",
+        "message": "={{ $json.html }}",
+        "options": {}
+      },
+      "id": "gmail-luis",
+      "name": "Gmail a Luis",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [680, 420],
+      "credentials": { "gmailOAuth2": { "id": "GMAIL_CREDENTIAL_ID", "name": "Gmail account" } }
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={ \"success\": true, \"message\": \"Cotización enviada correctamente\" }"
+      },
+      "id": "respond-1",
+      "name": "Respond OK",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [900, 300]
+    }
+  ],
+  "connections": {
+    "Webhook": { "main": [[{ "node": "Calcular Cotización", "type": "main", "index": 0 }]] },
+    "Calcular Cotización": { "main": [[{ "node": "Gmail al Cliente", "type": "main", "index": 0 }, { "node": "Gmail a Luis", "type": "main", "index": 0 }]] },
+    "Gmail al Cliente": { "main": [[{ "node": "Respond OK", "type": "main", "index": 0 }]] }
+  },
+  "settings": { "executionOrder": "v1" },
+  "staticData": null,
+  "tags": [{ "name": "portafolio" }],
+  "triggerCount": 1,
+  "active": false
+}

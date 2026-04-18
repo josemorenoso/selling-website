@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Demo — Cotizador Profesional Instantáneo</title>
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/demos/shared.css">
+</head>
+<body>
+  <div class="demo-container">
+    <div class="demo-header">
+      <a href="/" class="demo-logo">Luis<span>.</span>Moreno</a>
+      <h1 class="demo-title">Cotizador Profesional Instantáneo</h1>
+      <p class="demo-subtitle">Selecciona los servicios, el cliente recibe la cotización por correo en segundos. Tú recibes una copia.</p>
+      <div class="demo-chips">
+        <span class="demo-chip">Ventas</span>
+        <span class="demo-chip">Email</span>
+        <span class="demo-chip">Cotizaciones</span>
+      </div>
+    </div>
+
+    <form id="form-presupuestos" onsubmit="return handleSubmit(event)">
+      <div class="form-group">
+        <label class="form-label">Nombre del cliente <span class="required">*</span></label>
+        <input type="text" name="cliente_nombre" class="input-dark" placeholder="María González" required>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Email del cliente <span class="required">*</span></label>
+        <input type="email" name="cliente_email" class="input-dark" placeholder="maria@empresa.com" required>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" style="margin-bottom:0.75rem;">Servicios</label>
+        <div class="checkbox-group" id="services-list">
+          <label class="checkbox-item" onclick="toggleCheck(this)">
+            <input type="checkbox" name="servicios" value="automatizacion-basica" data-price="500">
+            <span class="checkbox-label">Automatización básica de procesos</span>
+            <span class="checkbox-price">$500</span>
+          </label>
+          <label class="checkbox-item" onclick="toggleCheck(this)">
+            <input type="checkbox" name="servicios" value="integracion-crm" data-price="800">
+            <span class="checkbox-label">Integración con CRM</span>
+            <span class="checkbox-price">$800</span>
+          </label>
+          <label class="checkbox-item" onclick="toggleCheck(this)">
+            <input type="checkbox" name="servicios" value="chatbot-ia" data-price="1200">
+            <span class="checkbox-label">Chatbot con IA</span>
+            <span class="checkbox-price">$1,200</span>
+          </label>
+          <label class="checkbox-item" onclick="toggleCheck(this)">
+            <input type="checkbox" name="servicios" value="reportes-automaticos" data-price="600">
+            <span class="checkbox-label">Reportes automáticos</span>
+            <span class="checkbox-price">$600</span>
+          </label>
+          <label class="checkbox-item" onclick="toggleCheck(this)">
+            <input type="checkbox" name="servicios" value="fidelizacion" data-price="2000">
+            <span class="checkbox-label">Sistema de fidelización</span>
+            <span class="checkbox-price">$2,000</span>
+          </label>
+          <label class="checkbox-item" onclick="toggleCheck(this)">
+            <input type="checkbox" name="servicios" value="integracion-personalizada" data-price="1500">
+            <span class="checkbox-label">Integración personalizada</span>
+            <span class="checkbox-price">$1,500</span>
+          </label>
+        </div>
+      </div>
+
+      <div class="total-bar">
+        <span class="total-label">Total estimado</span>
+        <span class="total-value" id="total-display">$0</span>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Notas adicionales</label>
+        <textarea name="notas" class="input-dark" placeholder="Detalles específicos del proyecto..."></textarea>
+      </div>
+
+      <button type="submit" class="btn-submit" id="btn-submit">
+        <span id="btn-text">Enviar Cotización →</span>
+        <div class="spinner" id="spinner"></div>
+      </button>
+
+      <div class="state-message success-state" id="success-msg"></div>
+      <div class="state-message error-state" id="error-msg">✗ Error al enviar. Verifica la conexión con n8n.</div>
+    </form>
+
+    <a href="/demos/" class="btn-back">← Volver al Portafolio</a>
+  </div>
+
+  <script>
+    // Access check
+    if (sessionStorage.getItem('demo_access') !== 'true') {
+      window.location.href = '/demos/?tool=presupuestos';
+    }
+
+    const WEBHOOK_URL = "https://n8n.almojabananet.me/webhook/presupuestos"; // ← Luis: reemplazar
+
+    // Toggle checkbox visual state
+    function toggleCheck(label) {
+      setTimeout(function() {
+        var cb = label.querySelector('input[type="checkbox"]');
+        if (cb.checked) {
+          label.classList.add('checked');
+        } else {
+          label.classList.remove('checked');
+        }
+        updateTotal();
+      }, 0);
+    }
+
+    // Recalculate total in real time
+    function updateTotal() {
+      var checkboxes = document.querySelectorAll('#services-list input[type="checkbox"]');
+      var total = 0;
+      checkboxes.forEach(function(cb) {
+        if (cb.checked) {
+          total += parseInt(cb.getAttribute('data-price'), 10);
+        }
+      });
+      document.getElementById('total-display').textContent = '$' + total.toLocaleString('en-US');
+    }
+
+    async function handleSubmit(e) {
+      e.preventDefault();
+      var form = document.getElementById('form-presupuestos');
+      var btn = document.getElementById('btn-submit');
+      var btnText = document.getElementById('btn-text');
+      var spinner = document.getElementById('spinner');
+      var successMsg = document.getElementById('success-msg');
+      var errorMsg = document.getElementById('error-msg');
+
+      successMsg.classList.remove('visible');
+      errorMsg.classList.remove('visible');
+
+      // Collect services
+      var servicios = [];
+      var total = 0;
+      document.querySelectorAll('#services-list input[type="checkbox"]:checked').forEach(function(cb) {
+        var price = parseInt(cb.getAttribute('data-price'), 10);
+        servicios.push({
+          nombre: cb.closest('.checkbox-item').querySelector('.checkbox-label').textContent.trim(),
+          valor: cb.value,
+          precio: price
+        });
+        total += price;
+      });
+
+      if (servicios.length === 0) {
+        errorMsg.textContent = '✗ Selecciona al menos un servicio.';
+        errorMsg.classList.add('visible');
+        return false;
+      }
+
+      btn.disabled = true;
+      btnText.textContent = 'Enviando...';
+      spinner.classList.add('visible');
+
+      var data = {
+        cliente_nombre: form.cliente_nombre.value,
+        cliente_email: form.cliente_email.value,
+        servicios: servicios,
+        total: total,
+        notas: form.notas.value
+      };
+
+      try {
+        var response = await fetch(WEBHOOK_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data)
+        });
+
+        if (response.ok) {
+          successMsg.textContent = '✓ Cotización enviada a ' + data.cliente_email + '. Tú recibes una copia.';
+          successMsg.classList.add('visible');
+          form.reset();
+          document.querySelectorAll('.checkbox-item').forEach(function(item) { item.classList.remove('checked'); });
+          updateTotal();
+        } else {
+          errorMsg.textContent = '✗ Error al enviar. Verifica la conexión con n8n.';
+          errorMsg.classList.add('visible');
+        }
+      } catch (err) {
+        errorMsg.textContent = '✗ Error al enviar. Verifica la conexión con n8n.';
+        errorMsg.classList.add('visible');
+      }
+
+      btn.disabled = false;
+      btnText.textContent = 'Enviar Cotización →';
+      spinner.classList.remove('visible');
+    }
+  </script>
+</body>
+</html>

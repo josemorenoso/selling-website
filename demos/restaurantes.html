@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Demo — Fidelización para Restaurantes</title>
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/demos/shared.css">
+</head>
+<body>
+  <div class="demo-container demo-container-wide">
+    <div class="demo-header">
+      <a href="/" class="demo-logo">Luis<span>.</span>Moreno</a>
+      <h1 class="demo-title">Fidelización de Clientes para Restaurantes</h1>
+      <p class="demo-subtitle">Dashboard real del sistema de fidelización, CRM y marketing automatizado.</p>
+      <div class="demo-chips">
+        <span class="demo-chip">Restaurantes</span>
+        <span class="demo-chip">WhatsApp</span>
+        <span class="demo-chip">CRM</span>
+      </div>
+    </div>
+
+    <div class="browser-mockup">
+      <div class="browser-bar">
+        <div class="browser-dots"><span></span><span></span><span></span></div>
+        <div class="browser-url">restaurant-fidelity-system.vercel.app</div>
+      </div>
+      <div class="browser-content">
+        <iframe src="https://restaurant-fidelity-system.vercel.app" title="RestaurantQR Demo" loading="lazy" allow="clipboard-write"></iframe>
+      </div>
+    </div>
+
+    <a href="/demos/" class="btn-back">← Volver al Portafolio</a>
+  </div>
+
+  <script>
+    // Access check — redirect to PIN gate if no access
+    if (sessionStorage.getItem('demo_access') !== 'true') {
+      window.location.href = '/demos/?tool=restaurantes';
+    }
+  </script>
+</body>
+</html>

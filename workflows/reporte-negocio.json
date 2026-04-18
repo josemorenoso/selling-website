@@ -1,0 +1,66 @@
+{
+  "_readme": "Credenciales requeridas: Gmail account en n8n. Reemplazar tuemail@gmail.com por tu correo real.",
+  "name": "Reporte Semanal de Negocio",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "reporte-negocio",
+        "responseMode": "lastNode",
+        "options": { "allowedOrigins": "*" }
+      },
+      "id": "wh-1",
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [240, 300],
+      "webhookId": "reporte-negocio"
+    },
+    {
+      "parameters": {
+        "jsCode": "const data = $input.first().json;\nconst negocio = data.negocio || 'Mi Negocio';\nconst periodo = data.periodo || 'ultima-semana';\nconst email = data.email;\nconst periodoMap = {'ultima-semana':'Última Semana','ultimo-mes':'Último Mes','ultimo-trimestre':'Último Trimestre'};\nconst periodoLabel = periodoMap[periodo] || periodo;\n\n// Datos de demostración realistas\nconst r = (min,max) => Math.floor(Math.random()*(max-min+1))+min;\nconst ventas = r(15000,85000);\nconst ventasAnt = r(12000,80000);\nconst cambio = (((ventas-ventasAnt)/ventasAnt)*100).toFixed(1);\nconst cambioSign = cambio >= 0 ? '+' : '';\nconst cambioColor = cambio >= 0 ? '#22c55e' : '#ef4444';\nconst clientes = r(40,200);\nconst ticketProm = r(150,800);\nconst topProducto = ['Servicio Premium','Consultoría Express','Plan Mensual','Paquete Anual','Setup Inicial'][r(0,4)];\nconst satisfaccion = r(85,99);\n\nconst acciones = [\n  {icon:'📈',text:`Ventas ${cambioSign}${cambio}% vs período anterior — ${cambio>=0?'mantener estrategia actual':'revisar pricing y canales de adquisición'}`},\n  {icon:'🎯',text:`Top producto: ${topProducto} (${r(30,60)}% del revenue) — considerar bundle o upsell`},\n  {icon:'👥',text:`${clientes} clientes activos con ticket promedio $${ticketProm.toLocaleString()} — oportunidad de incrementar valor por cliente`}\n];\n\nconst html = `<div style='font-family:Arial,sans-serif;max-width:640px;margin:0 auto;background:#f8fafc;padding:24px'>\n<div style='background:white;border-radius:12px;padding:32px;box-shadow:0 1px 3px rgba(0,0,0,.1)'>\n<div style='display:flex;align-items:center;gap:12px;margin-bottom:24px'><div style='width:48px;height:48px;border-radius:12px;background:#2E7BF6;display:flex;align-items:center;justify-content:center'><span style='font-size:24px'>📊</span></div><div><h1 style='margin:0;font-size:20px;color:#1e293b'>Reporte ${periodoLabel}</h1><p style='margin:0;font-size:14px;color:#64748b'>${negocio}</p></div></div>\n\n<div style='display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:24px'>\n<div style='background:#f0f9ff;border:1px solid #bae6fd;border-radius:8px;padding:16px;text-align:center'><div style='font-size:24px;font-weight:800;color:#0369a1'>$${ventas.toLocaleString()}</div><div style='font-size:12px;color:#64748b;margin-top:4px'>Ventas totales</div></div>\n<div style='background:#f0fdf4;border:1px solid #bbf7d0;border-radius:8px;padding:16px;text-align:center'><div style='font-size:24px;font-weight:800;color:${cambioColor}'>${cambioSign}${cambio}%</div><div style='font-size:12px;color:#64748b;margin-top:4px'>vs período anterior</div></div>\n<div style='background:#fefce8;border:1px solid #fef08a;border-radius:8px;padding:16px;text-align:center'><div style='font-size:24px;font-weight:800;color:#a16207'>${clientes}</div><div style='font-size:12px;color:#64748b;margin-top:4px'>Clientes activos</div></div>\n<div style='background:#fdf4ff;border:1px solid #f5d0fe;border-radius:8px;padding:16px;text-align:center'><div style='font-size:24px;font-weight:800;color:#86198f'>${satisfaccion}%</div><div style='font-size:12px;color:#64748b;margin-top:4px'>Satisfacción</div></div>\n</div>\n\n<h2 style='font-size:16px;color:#1e293b;margin:0 0 16px'>Acciones Recomendadas</h2>\n${acciones.map(a => `<div style='background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:14px 16px;margin-bottom:8px;font-size:14px;color:#334155;line-height:1.6'>${a.icon} ${a.text}</div>`).join('')}\n\n<div style='margin-top:24px;padding-top:16px;border-top:1px solid #e2e8f0;font-size:12px;color:#94a3b8;text-align:center'>Generado automáticamente por Luis Moreno — Automatización para Negocios</div>\n</div></div>`;\n\nreturn [{json:{email,negocio,periodo:periodoLabel,html,asunto:`Reporte ${periodoLabel} — ${negocio}`}}];"
+      },
+      "id": "code-1",
+      "name": "Generar Reporte",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [460, 300]
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $json.email }}",
+        "subject": "={{ $json.asunto }}",
+        "emailType": "html",
+        "message": "={{ $json.html }}",
+        "options": {}
+      },
+      "id": "gmail-1",
+      "name": "Gmail Reporte",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [680, 300],
+      "credentials": { "gmailOAuth2": { "id": "GMAIL_CREDENTIAL_ID", "name": "Gmail account" } }
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={ \"success\": true, \"message\": \"Reporte enviado correctamente\" }"
+      },
+      "id": "respond-1",
+      "name": "Respond OK",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [900, 300]
+    }
+  ],
+  "connections": {
+    "Webhook": { "main": [[{ "node": "Generar Reporte", "type": "main", "index": 0 }]] },
+    "Generar Reporte": { "main": [[{ "node": "Gmail Reporte", "type": "main", "index": 0 }]] },
+    "Gmail Reporte": { "main": [[{ "node": "Respond OK", "type": "main", "index": 0 }]] }
+  },
+  "settings": { "executionOrder": "v1" },
+  "staticData": null,
+  "tags": [{ "name": "portafolio" }],
+  "triggerCount": 1,
+  "active": false
+}

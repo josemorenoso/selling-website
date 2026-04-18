@@ -1,0 +1,1468 @@
+{
+  "name": "Hotel Booking AI Agent v3 - Production",
+  "nodes": [
+    {
+      "parameters": {
+        "updates": [
+          "message"
+        ],
+        "additionalFields": {}
+      },
+      "id": "17384eac-0c1c-4304-b05b-e72d215cd1be",
+      "name": "Telegram Trigger",
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -464,
+        320
+      ],
+      "webhookId": "hotel-booking-webhook",
+      "credentials": {
+        "telegramApi": {
+          "id": "IKqknelEp83Wg9fP",
+          "name": "Telegram Centauri211"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// 1. Extraemos el mensaje de forma segura\nconst msg = $json.message || $json.edited_message || {};\n\n// 2. Usamos Optional Chaining (?.) para que si no existe el dato, devuelva null en vez de error\nconst hasVoice = msg.voice ? true : false;\nconst hasText = msg.text ? true : false;\n\n// 3. Verificamos que al menos existan los datos básicos del chat/usuario\nif (!msg.chat || !msg.from) {\n    return [{\n        json: {\n            error: \"Mensaje de sistema o vacío detectado\",\n            messageType: 'other'\n        }\n    }];\n}\n\n// 4. Detectar comando de reset/clear\nconst text = (msg.text || '').toLowerCase().trim();\nconst resetCommands = ['clear', 'reset', 'reiniciar', 'limpiar', 'nueva conversacion', 'nueva conversación', 'empezar de nuevo', 'start over', 'borrar'];\nconst isResetCommand = resetCommands.includes(text);\n\nreturn [{\n  json: {\n    sessionId: `telegram_${msg.chat.id}`,\n    userId: msg.from.id,\n    userName: `${msg.from.first_name || ''} ${msg.from.last_name || ''}`.trim(),\n    chatId: msg.chat.id,\n    messageId: msg.message_id,\n    messageType: hasVoice ? 'voice' : (hasText ? 'text' : 'other'),\n    rawVoiceFileId: msg.voice?.file_id || null,\n    rawText: msg.text || null,\n    isResetCommand: isResetCommand,\n    timestamp: new Date().toISOString()\n  }\n}];"
+      },
+      "id": "a73ab8bc-c197-4336-8747-cd7b54fc40e7",
+      "name": "Detect Message Type",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -240,
+        320
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "reset-check",
+              "leftValue": "={{ $json.isResetCommand }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "fb5e4b83-66e6-4371-94b8-34c3e98f3b1c",
+      "name": "Is Reset Command?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -16,
+        320
+      ]
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "voice-condition",
+                    "leftValue": "={{ $json.messageType }}",
+                    "rightValue": "voice",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "voice"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "text-condition",
+                    "leftValue": "={{ $json.messageType }}",
+                    "rightValue": "text",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "text"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "864fa652-6734-4523-9938-43a9db07669e",
+      "name": "Switch Voice/Text",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        208,
+        608
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "delete",
+        "key": "={{ ['chat_buffer_' + $json.sessionId, 'counter_' + $json.sessionId, 'timestamp_' + $json.sessionId, 'booking_data_' + $json.sessionId, 'conversation_state_' + $json.sessionId].join(',') }}"
+      },
+      "id": "e63ceaf1-01df-4a89-9dbf-ac154f6671ea",
+      "name": "Clear Redis Session",
+      "type": "n8n-nodes-base.redis",
+      "typeVersion": 1,
+      "position": [
+        432,
+        224
+      ],
+      "credentials": {
+        "redis": {
+          "id": "f2XIbIET271weDek",
+          "name": "Redis account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Prepare for Postgres memory cleanup\nconst sessionId = $input.first().json.sessionId;\nconst chatId = $input.first().json.chatId;\n\nreturn [{\n  json: {\n    sessionId: sessionId,\n    chatId: chatId,\n    // n8n LangChain Postgres Chat Memory usa esta tabla por defecto\n    query: `DELETE FROM n8n_chat_message WHERE session_id = '${sessionId}'`\n  }\n}];"
+      },
+      "id": "f101ff2f-68a7-431d-a916-6e9fb00e9ba3",
+      "name": "Prepare Postgres Clear",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        208,
+        416
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "={{ $json.query }}",
+        "options": {}
+      },
+      "id": "c0a551bb-879e-40bd-9f18-8a18a64f1bd9",
+      "name": "Clear Chat Memory",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.5,
+      "position": [
+        432,
+        416
+      ],
+      "credentials": {
+        "postgres": {
+          "id": "45VfMZ7dgQOOosVt",
+          "name": "Postgres account"
+        }
+      },
+      "continueOnFail": true
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $json.chatId }}",
+        "text": "✅ ¡Conversación reiniciada!\n\nHe limpiado tu historial de chat y todos los datos de sesión. Ahora podemos empezar de nuevo.\n\n¿En qué puedo ayudarte hoy? 🏨",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "id": "c25d050c-e59d-4654-b485-8fbbba1dc495",
+      "name": "Send Reset Confirmation",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        656,
+        224
+      ],
+      "webhookId": "telegram-reset-confirm",
+      "credentials": {
+        "telegramApi": {
+          "id": "IKqknelEp83Wg9fP",
+          "name": "Telegram Centauri211"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "=https://api.telegram.org/file/bot8679914214:AAF2kwJPAcP61I0l9D1Ls-giXIhRFifWQ7k/{{ $json.result.file_path }}",
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "file"
+            }
+          }
+        }
+      },
+      "id": "93bb7fbf-e71e-4847-9259-2fd2a47a7bbb",
+      "name": "Download Audio File",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        656,
+        608
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "audio",
+        "operation": "transcribe",
+        "options": {
+          "language": "es",
+          "temperature": 0
+        }
+      },
+      "id": "284a34b5-bc1c-45ae-b6a6-f5be49a75e87",
+      "name": "Whisper Transcribe",
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.8,
+      "position": [
+        880,
+        608
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "GQHpUijXmHcmbLg3",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Extract transcribed text and add to session data\nconst transcribedText = $json.text || '';\nconst sessionData = $('Detect Message Type').item.json;\n\nreturn [{\n  json: {\n    ...sessionData,\n    processedText: transcribedText,\n    processingSource: 'voice_transcription'\n  }\n}];"
+      },
+      "id": "762e16a5-95e8-421e-aaf6-58a3e3e4cf97",
+      "name": "Format Transcription",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1104,
+        608
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Pass through text directly\nreturn [{\n  json: {\n    ...$json,\n    processedText: $json.rawText,\n    processingSource: 'direct_text'\n  }\n}];"
+      },
+      "id": "d442c251-d457-495b-b05b-098d4f776e91",
+      "name": "Pass Through Text",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1104,
+        800
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "incr",
+        "key": "={{ 'counter_' + $json.sessionId }}"
+      },
+      "id": "4c8247e7-39fa-40db-b63f-8825939ce9cd",
+      "name": "Redis Increment Counter",
+      "type": "n8n-nodes-base.redis",
+      "typeVersion": 1,
+      "position": [
+        1552,
+        608
+      ],
+      "credentials": {
+        "redis": {
+          "id": "f2XIbIET271weDek",
+          "name": "Redis account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "first-msg-check",
+              "leftValue": "={{ $json.counter }}",
+              "rightValue": 1,
+              "operator": {
+                "type": "number",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "0aeee5ac-2861-48e8-ac35-74470201372f",
+      "name": "If First Message",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1776,
+        608
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "c7952e59-77f7-4657-aa91-1729de4cd3dc",
+      "name": "Wait 15 Seconds",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        2000,
+        608
+      ],
+      "webhookId": "1c09e563-9547-4ef2-946c-cf929da19845"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Rapid-fire detected, skip wait\nreturn [$('Redis Increment Counter').item.json];"
+      },
+      "id": "dc8f94cf-4eee-4b2c-9638-5a9655d9f734",
+      "name": "No Wait (Rapid Fire)",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2000,
+        800
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Simple pass-through - no Redis buffering\n// Just format the current message for the AI Agent\n\nconst sessionData = $('Redis Buffer Push').item.json;\n\nreturn [{\n  json: {\n    sessionId: sessionData.sessionId,\n    userId: sessionData.userId,\n    userName: sessionData.userName,\n    chatId: sessionData.chatId,\n    userInput: sessionData.processedText || sessionData.rawText || '',\n    messageCount: 1,\n    isMultiMessage: false,\n    timestamp: new Date().toISOString()\n  }\n}];"
+      },
+      "id": "0e8f83ec-3c64-46d7-ba41-71bd8c36d6fe",
+      "name": "Redis Get All Messages",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2224,
+        608
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Pass through - data already formatted by previous node\nreturn [$json];"
+      },
+      "id": "96ef494c-c426-46e0-bf7d-217e7955562c",
+      "name": "Combine Messages",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2448,
+        608
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "delete",
+        "key": "={{ ['chat_buffer_' + $json.sessionId, 'counter_' + $json.sessionId, 'timestamp_' + $json.sessionId].join(',') }}"
+      },
+      "id": "c04021aa-086a-4f46-9777-e4483bddcdbd",
+      "name": "Redis Cleanup",
+      "type": "n8n-nodes-base.redis",
+      "typeVersion": 1,
+      "position": [
+        2672,
+        608
+      ],
+      "credentials": {
+        "redis": {
+          "id": "f2XIbIET271weDek",
+          "name": "Redis account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.userInput }}",
+        "options": {
+          "systemMessage": "=Rol\nEres un agente de reservas hotelero experto especializado en convertir conversaciones en reservas confirmadas. Operás en español colombiano, usando un tono cálido, profesional y eficiente.\n\nTu objetivo principal es obtener tres datos críticos luego de asesorar al cliente:\n1. **Fecha de llegada** (arrival_date)\n2. **Número de noches** (num_nights) \n3. **Número de huéspedes** (num_guests)\n\nUna vez tengas estos tres datos, INMEDIATAMENTE verificás disponibilidad usando la herramienta Qloapps check availability \n\nProceso de Conversación (FLUJO OBLIGATORIO):\n\n##Antes de paso 1\n\nSiempre recibir con: \n\n\"Hola cómo estás??, es un placer para nosotros recibirte, cuentame en qué te puedo ayudar\"\n\nAsesora al cliente en una conversación fluida y natural con el puro objetivo de asesorar con la info requerida y continua con PASO 1\n\n**PASO 1: Recolección de Datos (Máximo 3 mensajes)**\n\nSi el usuario tiene los 3 datos → Verificar disponibilidad inmediatamente.\n\nSi faltan datos, preguntar específicamente:\n- Sin fecha: \"¿Para qué fecha necesitas la habitación?\"\n- Sin noches: \"¿Cuántas noches te quedás?\"\n- Sin huéspedes: \"¿Cuántas personas se hospedarán?\"\n\nEjemplos de respuestas:\n- Usuario: \"Quiero reservar para mañana\" → \"Perfecto, ¿para mañana cuántas noches y cuántas personas?\"\n- Usuario: \"15 de marzo, 3 noches\" → \"Genial, ¿para cuántas personas es la reserva?\"\n- Usuario: \"Somos 2, para el finde\" → \"Perfecto, ¿qué fecha exacta de llegada y cuántas noches?\"\n\n**PASO 2: Verificar Disponibilidad**\n\nCuando tengas arrival_date, num_nights, num_guests:\n\nUSAR HERRAMIENTA: Qloapps check availability \n- action: \"check_availability_v2\"\n- arrivalDate: \"YYYY-MM-DD\"\n- numNights: número\n- numGuests: número\n\n**PASO 3: Presentar Opciones**\n\nSi hay disponibilidad:\n\"¡Excelente! Para el [fecha] por [noches] noches con [huéspedes] personas tengo disponible:\n\n🛏️ **Habitación Estándar** - $XXX/noche ($XXX total)\nCapacidad: 4 personas (2 adultos + 2 niños)\n\n🛏️ **Habitación Superior** - $XXX/noche ($XXX total)  \nCapacidad: 4 personas\n\n¿Cuál te interesa más?\"\n\nSi NO hay disponibilidad:\n\"No tenemos disponibilidad para el [fecha] por [noches] noches. \n\nPero tengo estas alternativas:\n📅 [fecha alternativa 1] - mismo precio\n📅 [fecha alternativa 2] - mismo precio  \n📅 [fecha alternativa 3] - mismo precio\n\n¿Alguna de estas te funciona?\"\n\n**PASO 4: Recolección de Datos del Cliente**\n\nSolo DESPUÉS de que elija habitación:\n\"Perfecto, la Habitación [tipo]. Para confirmar la reserva necesito:\n\n✏️ Tu nombre completo\n✉️ Correo electrónico  \n📱 Número de teléfono\n\n¿Me los proporcionás por favor?\"\n\n**PASO 5: Confirmación y Creación de Reserva**\n\nAntes de enviarte el link de reserva, confirmar explícitamente:\n\"Déjame confirmar los detalles:\n\n📅 Llegada: [fecha]\n🏁 Salida: [fecha]  \n🛏️ Habitación: [nombre (string)]\n👥 Huéspedes: [número]\n💰 Total: $XXX COP\n\n👤 Nombre: [nombre]\n- Nombre de la habitación\n\n**Paso 6: usar la herramienta Qloapps generate link v10\n- action: \"check_availability_v2\"\n- arrivalDate: \"YYYY-MM-DD\"\n- numNights: número\n- numGuests: número\n- roomName: string (mismo nombre proporcionado por la herramienta)\n\nNOTA IMPORTANTE PARA OBTENER LINK EN HERRAMIENTA loapps generate link v10 SIEMPRE ENVIAR NOMBRE DE HABITACIÓN\n\nTono y Estilo:\n- Español colombiano: \"usted\" para formalidad hotelera\n- Conciso: máximo 4-5 oraciones por mensaje\n- Proactivo: siempre avanzar hacia la reserva\n- Sin inventar: precios y disponibilidad solo de las herramientas\n- Emojis moderados: 🏨 🛏️ 📅 ✅ 💰\n\nCRÍTICO - NO HAGAS:\n❌ NO verificar disponibilidad sin los 3 datos completos\n❌ NO crear reserva sin confirmación explícita del usuario\n❌ NO inventar precios o disponibilidad\n❌ NO usar check-in/check-out, solo \"llegada/salida\"\n❌ NO solicites al cliente numero de noches si ya te proporcionó la fecha de llegada y salida\n\nFecha actual: {{ $now.setZone('America/Bogota').toFormat('dd/MM/yyyy') }}\nHora actual: {{ $now.setZone('America/Bogota').toFormat('HH:mm') }}"
+        }
+      },
+      "id": "b8132d16-5615-44e7-aa92-2633f2058f97",
+      "name": "AI Agent",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.8,
+      "position": [
+        3376,
+        608
+      ]
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-4o"
+        },
+        "options": {}
+      },
+      "id": "6833c2f5-0d85-4093-83c2-3b7c5ab6e9b1",
+      "name": "OpenAI Chat Model",
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        2880,
+        832
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "GQHpUijXmHcmbLg3",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "contextWindowLength": 10
+      },
+      "id": "9094496f-b013-4045-a9b4-83cce4e2dadf",
+      "name": "Postgres Chat Memory",
+      "type": "@n8n/n8n-nodes-langchain.memoryPostgresChat",
+      "typeVersion": 1.3,
+      "position": [
+        3024,
+        832
+      ],
+      "credentials": {
+        "postgres": {
+          "id": "45VfMZ7dgQOOosVt",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "3b65d963-2ff4-4db8-a5da-af6f0184718c",
+      "name": "Embeddings OpenAI",
+      "type": "@n8n/n8n-nodes-langchain.embeddingsOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        3232,
+        1040
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "GQHpUijXmHcmbLg3",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "retrieve-as-tool",
+        "toolDescription": "Base de conocimientos del hotel. Consulta para información sobre habitaciones, servicios, precios, políticas y amenidades. SIEMPRE consultar antes de dar información específica.",
+        "tableName": {
+          "__rl": true,
+          "mode": "list",
+          "value": "hotel_knowledge"
+        },
+        "options": {
+          "queryName": "search_hotel_info"
+        }
+      },
+      "id": "2520060f-1743-4a5a-b650-acc8d32ebbaf",
+      "name": "Supabase Vector Store",
+      "type": "@n8n/n8n-nodes-langchain.vectorStoreSupabase",
+      "typeVersion": 1.3,
+      "position": [
+        3168,
+        832
+      ],
+      "credentials": {
+        "supabaseApi": {
+          "id": "nVvY1IuwKLI3zvlX",
+          "name": "Supabase account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "name": "Website_Fallback",
+        "description": "Redirige al usuario al sitio web de reservas cuando:\n- El usuario prefiere reservar por web\n- La conversación excede 10 mensajes sin reserva\n- Hay problemas técnicos con el chatbot\n- El usuario solicita ver fotos/comparar habitaciones\n\nGenera URL: http://143.198.21.142:8080/ con parámetros pre-llenados.",
+        "workflowId": {
+          "__rl": true,
+          "value": "website-fallback-workflow",
+          "mode": "list",
+          "cachedResultName": "Website Fallback Handler"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "arrivalDate": "={{ $json.arrivalDate }}",
+            "numNights": "={{ $json.numNights }}",
+            "numGuests": "={{ $json.numGuests }}",
+            "reason": "={{ $json.fallbackReason }}"
+          },
+          "matchingColumns": [],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        }
+      },
+      "id": "a47a40e7-75d6-4527-b369-b00952937f5d",
+      "name": "Website Fallback",
+      "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+      "typeVersion": 2,
+      "position": [
+        3920,
+        832
+      ]
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-4o-mini",
+          "mode": "list",
+          "cachedResultName": "GPT-4O-MINI"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "=**Rol**\\nEres un especialista encargado de transformar consultas complejas en información claramente estructurada.\\n\\n**Instrucción**\\nRecibirás un mensaje en formato Markdown. Tu tarea es determinar si dicho mensaje debe dividirse en uno, dos o tres mensajes independientes para mejorar su claridad.\\n\\nEl resultado final deberá ser un objeto JSON que contenga:\\n- `cantidad_de_mensajes`: 1, 2 o 3\\n- `mensaje1`, `mensaje2`, `mensaje3`: cada uno con la parte correspondiente\\n\\n**Objetivo Final**\\nOptimizar la claridad sin alterar el contenido original.",
+              "role": "system"
+            },
+            {
+              "content": "={{ $json.output }}"
+            }
+          ]
+        },
+        "jsonOutput": true,
+        "options": {}
+      },
+      "id": "76ebf6e0-435c-414c-9227-095fab81c710",
+      "name": "OpenAI Message Splitter",
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.8,
+      "position": [
+        4032,
+        608
+      ],
+      "retryOnFail": true,
+      "credentials": {
+        "openAiApi": {
+          "id": "GQHpUijXmHcmbLg3",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.message.content.cantidad_de_mensajes }}",
+                    "rightValue": 1,
+                    "operator": {
+                      "type": "number",
+                      "operation": "equals"
+                    },
+                    "id": "switch-1"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "1 msg"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.message.content.cantidad_de_mensajes }}",
+                    "rightValue": 2,
+                    "operator": {
+                      "type": "number",
+                      "operation": "equals"
+                    },
+                    "id": "switch-2"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "2 msg"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.message.content.cantidad_de_mensajes }}",
+                    "rightValue": 3,
+                    "operator": {
+                      "type": "number",
+                      "operation": "equals"
+                    },
+                    "id": "switch-3"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "3 msg"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "3a36e82d-a621-42da-8156-d4960f102951",
+      "name": "Switch",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        4384,
+        592
+      ]
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger').item.json.message.from.id }}",
+        "text": "={{ $json.message.content.mensaje1 }}",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "id": "d0fbbd30-af94-4044-ae05-1d17e6012dca",
+      "name": "Telegram Send 1",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        4608,
+        416
+      ],
+      "webhookId": "telegram-send-1",
+      "credentials": {
+        "telegramApi": {
+          "id": "IKqknelEp83Wg9fP",
+          "name": "Telegram Centauri211"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger').item.json.message.from.id }}",
+        "text": "={{ $json.message.content.mensaje1 }}",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "id": "202e65a9-4137-41a5-a468-474b173c80b7",
+      "name": "Telegram Send 2A",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        4608,
+        608
+      ],
+      "webhookId": "telegram-send-2a",
+      "credentials": {
+        "telegramApi": {
+          "id": "IKqknelEp83Wg9fP",
+          "name": "Telegram Centauri211"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger').item.json.message.from.id }}",
+        "text": "={{ $('Switch').item.json.message.content.mensaje2 }}",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "id": "fc48a4f0-6b3c-421c-af4a-00a758c97a85",
+      "name": "Telegram Send 2B",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        4832,
+        608
+      ],
+      "webhookId": "telegram-send-2b",
+      "credentials": {
+        "telegramApi": {
+          "id": "IKqknelEp83Wg9fP",
+          "name": "Telegram Centauri211"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger').item.json.message.from.id }}",
+        "text": "={{ $json.message.content.mensaje1 }}",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "id": "5ad01287-39b8-411b-849b-1c7a36e4dd17",
+      "name": "Telegram Send 3A",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        4608,
+        800
+      ],
+      "webhookId": "telegram-send-3a",
+      "credentials": {
+        "telegramApi": {
+          "id": "IKqknelEp83Wg9fP",
+          "name": "Telegram Centauri211"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger').item.json.message.from.id }}",
+        "text": "={{ $('Switch').item.json.message.content.mensaje2 }}",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "id": "91ac274c-626c-424b-a7ec-9043f81dea3b",
+      "name": "Telegram Send 3B",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        4832,
+        800
+      ],
+      "webhookId": "telegram-send-3b",
+      "credentials": {
+        "telegramApi": {
+          "id": "IKqknelEp83Wg9fP",
+          "name": "Telegram Centauri211"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger').item.json.message.from.id }}",
+        "text": "={{ $('Switch').item.json.message.content.mensaje3 }}",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "id": "31507edb-3d09-42c0-8814-68fc6b9703a9",
+      "name": "Telegram Send 3C",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        5056,
+        800
+      ],
+      "webhookId": "telegram-send-3c",
+      "credentials": {
+        "telegramApi": {
+          "id": "IKqknelEp83Wg9fP",
+          "name": "Telegram Centauri211"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Pass through with sessionId\nreturn [{\n  json: {\n    ...$json,\n    sessionId: `telegram_${$json.chatId}`,\n    timestamp: new Date().toISOString()\n  }\n}];\n"
+      },
+      "id": "9d4a93f3-842d-4a5b-b17d-0643471161ea",
+      "name": "Redis Buffer Push",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1328,
+        608
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "file",
+        "fileId": "={{ $node[\"Switch Voice/Text\"].json[\"rawVoiceFileId\"] }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        432,
+        608
+      ],
+      "id": "b032fd44-3127-4f64-b232-e7e3eaac8e9e",
+      "name": "Get a file",
+      "webhookId": "cbe30816-1bbf-4eca-b741-bb45f15ad033",
+      "credentials": {
+        "telegramApi": {
+          "id": "IKqknelEp83Wg9fP",
+          "name": "Telegram Centauri211"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "name": "Qloapps_Booking_Agent",
+        "description": "Sistema de reservas hoteleras.\n Acciones disponibles:\n- check_availability_v2: Verificar disponibilidad \n(requiere: arrivalDate YYYY-MM-DD, numNights, numGuests)",
+        "workflowId": {
+          "__rl": true,
+          "value": "F7ejH9FS1pClGEkG6gFhz",
+          "mode": "list",
+          "cachedResultUrl": "/workflow/F7ejH9FS1pClGEkG6gFhz",
+          "cachedResultName": "Qloapps check availability v10"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "numNights": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('numNights', ``, 'number') }}",
+            "numGuests": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('numGuests', ``, 'number') }}",
+            "action": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('action', ``, 'string') }}",
+            "arrivalDate": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('arrivalDate', ``, 'string') }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "action",
+              "displayName": "action",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "arrivalDate",
+              "displayName": "arrivalDate",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "numNights",
+              "displayName": "numNights",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "number",
+              "removed": false
+            },
+            {
+              "id": "numGuests",
+              "displayName": "numGuests",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "number",
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        }
+      },
+      "id": "e2d8b913-1402-4684-b28e-cafc78054b99",
+      "name": "Qloapps check availability",
+      "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+      "typeVersion": 2,
+      "position": [
+        3568,
+        832
+      ],
+      "notesInFlow": false
+    },
+    {
+      "parameters": {
+        "name": "Qloapps_link_Agent",
+        "description": "Sistema de reservas hoteleras.\n Acciones disponibles:\n- create_booking: generar link\n(requiere: arrivalDate YYYY-MM-DD, numNights, numGuests y roomName)",
+        "workflowId": {
+          "__rl": true,
+          "value": "MixNKBtyYTN29D9G",
+          "mode": "list",
+          "cachedResultUrl": "/workflow/MixNKBtyYTN29D9G",
+          "cachedResultName": "Qloapps generate link v10"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "numNights": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('numNights', ``, 'number') }}",
+            "numGuests": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('numGuests', ``, 'number') }}",
+            "action": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('action', ``, 'string') }}",
+            "arrivalDate": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('arrivalDate', ``, 'string') }}",
+            "roomName": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('roomName', ``, 'string') }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "action",
+              "displayName": "action",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "arrivalDate",
+              "displayName": "arrivalDate",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "numNights",
+              "displayName": "numNights",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "number",
+              "removed": false
+            },
+            {
+              "id": "numGuests",
+              "displayName": "numGuests",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "number",
+              "removed": false
+            },
+            {
+              "id": "roomName",
+              "displayName": "roomName",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        }
+      },
+      "id": "9c8d681f-93f4-4a99-b9b0-74056239eeab",
+      "name": "Qloapps generate link v10",
+      "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+      "typeVersion": 2,
+      "position": [
+        3744,
+        832
+      ],
+      "notesInFlow": false
+    }
+  ],
+  "pinData": {
+    "Telegram Trigger": [
+      {
+        "json": {
+          "update_id": 880016523,
+          "message": {
+            "message_id": 130,
+            "from": {
+              "id": 6290693695,
+              "is_bot": false,
+              "first_name": "G",
+              "last_name": "M",
+              "username": "Chamovisionario",
+              "language_code": "es"
+            },
+            "chat": {
+              "id": 6290693695,
+              "first_name": "G",
+              "last_name": "M",
+              "username": "Chamovisionario",
+              "type": "private"
+            },
+            "date": 1773095349,
+            "text": "Quiero reservar del 25 al 27 de marzo, somos 4 adultos y un menor de edad"
+          }
+        },
+        "pairedItem": {
+          "item": 0
+        }
+      }
+    ]
+  },
+  "connections": {
+    "Telegram Trigger": {
+      "main": [
+        [
+          {
+            "node": "Detect Message Type",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Detect Message Type": {
+      "main": [
+        [
+          {
+            "node": "Is Reset Command?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Is Reset Command?": {
+      "main": [
+        [
+          {
+            "node": "Clear Redis Session",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Prepare Postgres Clear",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Switch Voice/Text",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Clear Redis Session": {
+      "main": [
+        [
+          {
+            "node": "Send Reset Confirmation",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare Postgres Clear": {
+      "main": [
+        [
+          {
+            "node": "Clear Chat Memory",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Clear Chat Memory": {
+      "main": [
+        [
+          {
+            "node": "Send Reset Confirmation",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch Voice/Text": {
+      "main": [
+        [
+          {
+            "node": "Get a file",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Pass Through Text",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Download Audio File": {
+      "main": [
+        [
+          {
+            "node": "Whisper Transcribe",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Whisper Transcribe": {
+      "main": [
+        [
+          {
+            "node": "Format Transcription",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Format Transcription": {
+      "main": [
+        [
+          {
+            "node": "Redis Buffer Push",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Pass Through Text": {
+      "main": [
+        [
+          {
+            "node": "Redis Buffer Push",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Redis Increment Counter": {
+      "main": [
+        [
+          {
+            "node": "If First Message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If First Message": {
+      "main": [
+        [
+          {
+            "node": "Wait 15 Seconds",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "No Wait (Rapid Fire)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait 15 Seconds": {
+      "main": [
+        [
+          {
+            "node": "Redis Get All Messages",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "No Wait (Rapid Fire)": {
+      "main": [
+        [
+          {
+            "node": "Redis Get All Messages",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Redis Get All Messages": {
+      "main": [
+        [
+          {
+            "node": "Combine Messages",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Combine Messages": {
+      "main": [
+        [
+          {
+            "node": "Redis Cleanup",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Redis Cleanup": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Postgres Chat Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Embeddings OpenAI": {
+      "ai_embedding": [
+        [
+          {
+            "node": "Supabase Vector Store",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Supabase Vector Store": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "OpenAI Message Splitter",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Message Splitter": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "Telegram Send 1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Telegram Send 2A",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Telegram Send 3A",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Telegram Send 2A": {
+      "main": [
+        [
+          {
+            "node": "Telegram Send 2B",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Telegram Send 3A": {
+      "main": [
+        [
+          {
+            "node": "Telegram Send 3B",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Telegram Send 3B": {
+      "main": [
+        [
+          {
+            "node": "Telegram Send 3C",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Redis Buffer Push": {
+      "main": [
+        [
+          {
+            "node": "Redis Increment Counter",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get a file": {
+      "main": [
+        [
+          {
+            "node": "Download Audio File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Website Fallback": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Qloapps check availability": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Qloapps generate link v10": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "availableInMCP": false
+  },
+  "versionId": "ae78ee64-2705-4e4f-813e-28b3de567cbe",
+  "meta": {
+    "instanceId": "e6d6cdd04afbdb35f340d46090d41a2f68377e9679c60a95c2dc161ba5eca37e"
+  },
+  "id": "9GM3Zm6VcfVuvjYExEBxV",
+  "tags": []
+}

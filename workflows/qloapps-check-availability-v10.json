@@ -1,0 +1,808 @@
+{
+  "_readme": "Credenciales requeridas: HTTP Basic Auth para QloApps (VPS: http://143.198.21.142:8080/bamboo-glamping/). Sub-workflow usado por Hotel Booking AI Agent v3.",
+  "name": "Qloapps check availability v10",
+  "nodes": [
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "assign-1",
+              "name": "action",
+              "value": "={{ $json.action || 'check_availability_v2' }}",
+              "type": "string"
+            },
+            {
+              "id": "assign-2",
+              "name": "arrivalDate",
+              "value": "={{ $json.arrivalDate || $json.arrival_date || $json.checkIn || '' }}",
+              "type": "string"
+            },
+            {
+              "id": "assign-3",
+              "name": "numNights",
+              "value": "={{ $json.numNights || $json.num_nights || $json.nights || 1 }}",
+              "type": "number"
+            },
+            {
+              "id": "assign-4",
+              "name": "numGuests",
+              "value": "={{ $json.numGuests || $json.num_guests || $json.guests || 2 }}",
+              "type": "number"
+            },
+            {
+              "id": "assign-5",
+              "name": "roomTypeId",
+              "value": "={{ $json.roomTypeId || $json.room_type_id || $json.roomType || '' }}",
+              "type": "number"
+            },
+            {
+              "id": "assign-6",
+              "name": "customerName",
+              "value": "={{ $json.customerName || $json.customer_name || $json.guest_name || '' }}",
+              "type": "string"
+            },
+            {
+              "id": "assign-7",
+              "name": "customerEmail",
+              "value": "={{ $json.customerEmail || $json.customer_email || $json.guest_email || '' }}",
+              "type": "string"
+            },
+            {
+              "id": "assign-8",
+              "name": "customerPhone",
+              "value": "={{ $json.customerPhone || $json.customer_phone || $json.guest_phone || '' }}",
+              "type": "string"
+            },
+            {
+              "id": "assign-9",
+              "name": "bookingId",
+              "value": "={{ $json.bookingId || $json.booking_id || '' }}",
+              "type": "string"
+            },
+            {
+              "id": "assign-10",
+              "name": "hotelId",
+              "value": "={{ $json.hotelId || $json.hotel_id || '1' }}",
+              "type": "string"
+            },
+            {
+              "id": "assign-11",
+              "name": "checkIn",
+              "value": "={{ $json.checkIn || $json.check_in || '' }}",
+              "type": "string"
+            },
+            {
+              "id": "assign-12",
+              "name": "checkOut",
+              "value": "={{ $json.checkOut || $json.check_out || '' }}",
+              "type": "string"
+            },
+            {
+              "id": "assign-13",
+              "name": "roomName",
+              "value": "={{ $json.roomName || $json.room_name || $json.room || '' }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "e6d3c645-561b-403c-8995-f4025094a2e4",
+      "name": "Parse Input",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.3,
+      "position": [
+        -480,
+        704
+      ]
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.action }}",
+                    "rightValue": "check_availability_v2",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "cond-1"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "check_availability_v2"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.action }}",
+                    "rightValue": "check_availability",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "cond-2"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "check_availability"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.action }}",
+                    "rightValue": "create_booking",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "cond-3"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "create_booking"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.action }}",
+                    "rightValue": "validate_booking",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "cond-4"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "validate_booking"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.action }}",
+                    "rightValue": "modify_booking",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "cond-5"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "modify_booking"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.action }}",
+                    "rightValue": "cancel_booking",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "cond-6"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "cancel_booking"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "00af6023-4ffc-4021-bb19-6b58c7f5133c",
+      "name": "Switch by Action",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        -240,
+        640
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Check Availability v2 - Date + Nights approach with proper overlap detection\nconst input = $input.first().json;\n\nconst arrivalDate = input.arrivalDate;\nconst numNights = parseInt(input.numNights) || 1;\nconst numGuests = parseInt(input.numGuests) || 2;\nconst roomTypeId = input.roomTypeId;\nconst roomName = input.roomName;\n\n// Calculate check-in and check-out\nconst checkIn = new Date(arrivalDate);\nconst checkOut = new Date(checkIn);\ncheckOut.setDate(checkOut.getDate() + numNights);\n\nconst checkInStr = checkIn.toISOString().split('T')[0];\nconst checkOutStr = checkOut.toISOString().split('T')[0];\n\n// Return configuration for HTTP requests\nreturn [{\n  json: {\n    arrivalDate: arrivalDate,\n    numNights: numNights,\n    numGuests: numGuests,\n    roomTypeId: roomTypeId,\n    roomName: roomName,\n    checkIn: checkInStr,\n    checkOut: checkOutStr,\n    hotelId: input.hotelId\n  }\n}];"
+      },
+      "id": "55f9c9be-c4bf-4053-8d49-4bdd592a443c",
+      "name": "Prepare Availability v2",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        0,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "url": "=http://143.198.21.142:8080/webservice/dispatcher.php?url=room_types&display=full&output_format=JSON",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpBasicAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Accept",
+              "value": "application/json"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "3e706ca2-5de2-4bc2-89cf-8b410e5b8cc9",
+      "name": "Get Room Types",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        192,
+        0
+      ],
+      "credentials": {
+        "httpBasicAuth": {
+          "id": "e64HvqLcsGqP0BqF",
+          "name": "Unnamed credential"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "=http://143.198.21.142:8080/webservice/dispatcher.php?url=hotel_rooms&display=full&output_format=JSON",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpBasicAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Accept",
+              "value": "application/json"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "16a5363c-2fad-416b-be79-5a6bf2da0fbb",
+      "name": "Get Room Inventory",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        192,
+        224
+      ],
+      "credentials": {
+        "httpBasicAuth": {
+          "id": "e64HvqLcsGqP0BqF",
+          "name": "Unnamed credential"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "=http://143.198.21.142:8080/webservice/dispatcher.php?url=room_bookings&display=full&output_format=JSON",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpBasicAuth",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "date_from",
+              "value": "={{ new Date(new Date($('Prepare Availability v2').item.json.checkIn).getTime() - 30*24*60*60*1000).toISOString().split('T')[0] }}"
+            },
+            {
+              "name": "date_to",
+              "value": "={{ new Date(new Date($('Prepare Availability v2').item.json.checkOut).getTime() + 30*24*60*60*1000).toISOString().split('T')[0] }}"
+            }
+          ]
+        },
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Accept",
+              "value": "application/json"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "f20188a8-813f-44bc-94cb-0451c5cd96aa",
+      "name": "Get Existing Bookings",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        192,
+        432
+      ],
+      "credentials": {
+        "httpBasicAuth": {
+          "id": "e64HvqLcsGqP0BqF",
+          "name": "Unnamed credential"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Calculate availability using SEQUENTIAL execution - access cached results from previous nodes\n// Using $('NodeName').first().json to get results from previously executed nodes\n\n// Get data from cached node results\nconst roomTypesData = $('Get Room Types').first().json;\nconst roomInventoryData = $('Get Room Inventory').first().json;\nconst existingBookingsData = $('Get Existing Bookings').first().json;\nconst params = $('Prepare Availability v2').first().json;\n\n// Extract arrays from responses\nconst roomTypes = roomTypesData?.room_types || [];\nconst roomInventory = roomInventoryData?.rooms || [];\nconst existingBookings = existingBookingsData?.bookings || [];\n\nconst checkIn = new Date(params.checkIn);\nconst checkOut = new Date(params.checkOut);\nconst numNights = params.numNights;\nconst numGuests = params.numGuests;\nconst requestedRoomTypeId = params.roomTypeId;\nconst roomName = params.roomName;\n\nfunction calculateAvailability(roomTypeId) {\n  // Find physical rooms of this type (id_product links to room type id)\n  const roomsOfType = roomInventory.filter(r =>\n    String(r.id_product) === String(roomTypeId)\n  );\n\n  if (roomsOfType.length === 0) return 0;\n\n  let availableCount = 0;\n\n  for (const room of roomsOfType) {\n    const roomId = room.id;\n    let isAvailable = true;\n\n    // Check all existing bookings for this specific room\n    for (const booking of existingBookings) {\n      // Booking has id_room (physical room) and id_product (room type)\n      const bookingRoomId = booking.id_room;\n      \n      if (String(bookingRoomId) !== String(roomId)) continue;\n\n      // Parse booking dates\n      const bookingDateFrom = new Date(booking.date_from);\n      const bookingDateTo = new Date(booking.date_to);\n\n      // Check for overlap: requested_start < existing_end AND requested_end > existing_start\n      if (checkIn < bookingDateTo && checkOut > bookingDateFrom) {\n        isAvailable = false;\n        break;\n      }\n    }\n\n    if (isAvailable) availableCount++;\n  }\n\n  return availableCount;\n}\n\nconst availableRooms = [];\n\nfor (const roomType of Array.isArray(roomTypes) ? roomTypes : [roomTypes]) {\n  if (!roomType || !roomType.id) continue;\n\n  const rtId = roomType.id;\n  const rtName = roomType.name || 'Habitación';\n  const rtPrice = parseFloat(roomType.price) || 0;\n  const rtCapacity = (parseInt(roomType.adults) || 2) + (parseInt(roomType.children) || 2);\n\n  // Skip if specific room type requested and this isn't it\n  if (requestedRoomTypeId && String(rtId) !== String(requestedRoomTypeId)) continue;\n  \n  // Skip if room capacity insufficient\n  if (numGuests > rtCapacity) continue;\n\n  const availableCount = calculateAvailability(rtId);\n\n  if (availableCount > 0) {\n    availableRooms.push({\n      room_type_id: rtId,\n      room_type_name: rtName,\n      price_per_night: rtPrice,\n      total_price: rtPrice * numNights,\n      currency: 'COP',\n      available_rooms: availableCount,\n      max_guests: rtCapacity,\n      check_in: params.checkIn,\n      check_out: params.checkOut,\n      num_nights: numNights\n    });\n  }\n}\n\n// Sort by price (lowest first)\navailableRooms.sort((a, b) => a.price_per_night - b.price_per_night);\n\nreturn [{\n  json: {\n    success: true,\n    operation: 'check_availability_v2',\n    arrival_date: params.arrivalDate,\n    num_nights: numNights,\n    check_in: params.checkIn,\n    check_out: params.checkOut,\n    num_guests: numGuests,\n    room_name: roomName,\n    available: availableRooms.length > 0,\n    available_rooms: availableRooms,\n    total_available_types: availableRooms.length\n  }\n}];"
+      },
+      "id": "965790a9-b688-4bca-a755-3dd4abf57eb5",
+      "name": "Calculate Availability",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        448,
+        432
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Find alternative dates when no availability\nconst input = $input.first().json;\n\n// Check if we have availability\nconst hasRooms = input.available === true && \n                 Array.isArray(input.available_rooms) && \n                 input.available_rooms.length > 0;\n\n// If rooms available, just pass through\nif (hasRooms) {\n  return [{\n    json: {\n      ...input,\n      hasAlternatives: false,\n      message: \"Hay disponibilidad\"\n    }\n  }];\n}\n\n// No availability - need to find alternatives\nconst params = $('Prepare Availability v2').first().json;\nconst arrivalDate = new Date(params.arrivalDate);\nconst numNights = params.numNights;\n\nconst alternatives = [];\n\n// Generate ±7 days alternatives\nfor (let offset = 1; offset <= 7 && alternatives.length < 6; offset++) {\n  // Earlier date\n  const earlier = new Date(arrivalDate);\n  earlier.setDate(earlier.getDate() - offset);\n  alternatives.push({\n    type: 'earlier',\n    arrival_date: earlier.toISOString().split('T')[0],\n    num_nights: numNights,\n    display: earlier.toLocaleDateString('es-CO', { \n      weekday: 'short', \n      day: 'numeric', \n      month: 'short' \n    })\n  });\n  \n  // Later date\n  const later = new Date(arrivalDate);\n  later.setDate(later.getDate() + offset);\n  alternatives.push({\n    type: 'later',\n    arrival_date: later.toISOString().split('T')[0],\n    num_nights: numNights,\n    display: later.toLocaleDateString('es-CO', { \n      weekday: 'short', \n      day: 'numeric', \n      month: 'short' \n    })\n  });\n}\n\n// Sort by proximity to original date\nalternatives.sort((a, b) => {\n  const dateA = new Date(a.arrival_date);\n  const dateB = new Date(b.arrival_date);\n  const original = new Date(arrivalDate);\n  return Math.abs(dateA - original) - Math.abs(dateB - original);\n});\n\nconst bestAlternatives = alternatives.slice(0, 5);\n\n// Format message for WhatsApp/Telegram\nlet message = `🏨 *Sin disponibilidad*\\n\\n`;\nmessage += `No tenemos habitaciones para el *${arrivalDate.toLocaleDateString('es-CO', {\n  weekday: 'long',\n  day: 'numeric',\n  month: 'long'\n})}* por ${numNights} noches.\\n\\n`;\nmessage += `*Alternativas disponibles:*\\n\\n`;\n\nbestAlternatives.forEach((alt, idx) => {\n  const emoji = alt.type === 'earlier' ? '⬅️' : '➡️';\n  message += `${idx + 1}. ${emoji} ${alt.display}\\n`;\n});\n\nmessage += `\\n¿Te interesa alguna de estas fechas?`;\n\nreturn [{\n  json: {\n    ...input,\n    hasAlternatives: true,\n    alternatives: bestAlternatives,\n    user_message: message,\n    original_date: arrivalDate.toISOString().split('T')[0],\n    num_nights: numNights\n  }\n}];"
+      },
+      "id": "8644b461-50d6-46a9-9881-564de805b8f1",
+      "name": "Find Alternatives",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        656,
+        432
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "cond-roomname-exists",
+              "leftValue": "={{ $json.room_name || '' }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEquals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "0995bff7-0eae-4da9-9383-27e481543788",
+      "name": "Has Room Name?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        848,
+        432
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Generate booking link with room name\nconst input = $input.first().json;\n\n// Room configuration mapping - configurable for new rooms\nconst ROOM_CONFIG = {\n  '1': { name: 'Glamping Luna', slug: 'glamping-luna' },\n  '2': { name: 'Glamping Colibri', slug: 'glamping-colibri' },\n  '3': { name: 'Glamping Primavera', slug: 'glamping-primavera' },\n  '4': { name: 'Glamping Corteza', slug: 'glamping-corteza' },\n  // Aliases for name matching (lowercase, no accents)\n  'luna': { id: '1', slug: 'glamping-luna', name: 'Glamping Luna' },\n  'colibri': { id: '2', slug: 'glamping-colibri', name: 'Glamping Colibri' },\n  'colibrí': { id: '2', slug: 'glamping-colibri', name: 'Glamping Colibri' },\n  'primavera': { id: '3', slug: 'glamping-primavera', name: 'Glamping Primavera' },\n  'corteza': { id: '4', slug: 'glamping-corteza', name: 'Glamping Corteza' }\n};\n\nconst BASE_URL = 'http://143.198.21.142:8080/bamboo-glamping';\n\n// Get room name from input\nconst roomName = input.room_name || '';\nconst checkIn = input.check_in || '';\nconst checkOut = input.check_out || '';\nconst availableRooms = input.available_rooms || [];\n\n// Normalize room name for matching\nconst normalizedRoomName = roomName.toLowerCase()\n  .replace(/glamping\\s*/gi, '')\n  .replace(/[áàäâ]/g, 'a')\n  .replace(/[éèëê]/g, 'e')\n  .replace(/[íìïî]/g, 'i')\n  .replace(/[óòöô]/g, 'o')\n  .replace(/[úùüû]/g, 'u')\n  .trim();\n\n// Find room in available rooms\nlet selectedRoom = null;\nfor (const room of availableRooms) {\n  const availableName = room.room_type_name.toLowerCase()\n    .replace(/glamping\\s*/gi, '')\n    .replace(/[áàäâ]/g, 'a')\n    .replace(/[éèëê]/g, 'e')\n    .replace(/[íìïî]/g, 'i')\n    .replace(/[óòöô]/g, 'o')\n    .replace(/[úùüû]/g, 'u')\n    .trim();\n  \n  if (availableName === normalizedRoomName) {\n    selectedRoom = room;\n    break;\n  }\n}\n\n// If not found in available rooms, return error\nif (!selectedRoom) {\n  const availableNames = availableRooms.map(r => r.room_type_name).join(', ');\n  return [{\n    json: {\n      success: false,\n      error: 'ROOM_NOT_AVAILABLE',\n      message: `❌ La habitación \"${roomName}\" no está disponible para las fechas seleccionadas.\\n\\nHabitaciones disponibles: ${availableNames || 'Ninguna'}`,\n      requested_room: roomName,\n      available_rooms: availableRooms\n    }\n  }];\n}\n\n// Get room configuration\nconst roomId = String(selectedRoom.room_type_id);\nconst roomConfig = ROOM_CONFIG[roomId];\n\nif (!roomConfig) {\n  return [{\n    json: {\n      success: false,\n      error: 'ROOM_NOT_CONFIGURED',\n      message: `❌ Configuración no encontrada para la habitación ID ${roomId}. Contacte al administrador.`,\n      room_id: roomId\n    }\n  }];\n}\n\n// Validate dates\nif (!checkIn || !checkOut) {\n  return [{\n    json: {\n      success: false,\n      error: 'MISSING_DATES',\n      message: '❌ Fechas de check-in/check-out no disponibles.',\n      check_in: checkIn,\n      check_out: checkOut\n    }\n  }];\n}\n\n// Build booking URL\nconst bookingUrl = `${BASE_URL}/${roomId}-${roomConfig.slug}.html?date_from=${checkIn}&date_to=${checkOut}`;\n\n// Calculate nights if not provided\nconst checkInDate = new Date(checkIn);\nconst checkOutDate = new Date(checkOut);\nconst numNights = Math.round((checkOutDate - checkInDate) / (1000 * 60 * 60 * 24));\n\nreturn [{\n  json: {\n    success: true,\n    operation: 'generate_booking_link',\n    booking_link: bookingUrl,\n    room: {\n      id: roomId,\n      name: roomConfig.name,\n      slug: roomConfig.slug,\n      price_per_night: selectedRoom.price_per_night,\n      total_price: selectedRoom.total_price,\n      available_count: selectedRoom.available_rooms\n    },\n    dates: {\n      check_in: checkIn,\n      check_out: checkOut,\n      num_nights: numNights\n    },\n    generated_at: new Date().toISOString()\n  }\n}];"
+      },
+      "id": "7430b40a-a92a-4a8d-981a-78a35543e551",
+      "name": "Generate Booking Link",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1056,
+        304
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Format booking link response for user\nconst input = $input.first().json;\n\nif (!input.success) {\n  return [{\n    json: {\n      success: false,\n      operation: 'booking_link_failed',\n      message: input.message,\n      error: input.error,\n      timestamp: new Date().toISOString()\n    }\n  }];\n}\n\nconst room = input.room;\nconst dates = input.dates;\n\nconst userMessage = \n  `✅ ¡Perfecto! Aquí está tu link de reserva\\n\\n` +\n  `🏨 *${room.name}*\\n` +\n  `📅 Entrada: ${dates.check_in}\\n` +\n  `📅 Salida: ${dates.check_out}\\n` +\n  `🌙 Noches: ${dates.num_nights}\\n` +\n  `💰 Precio total: $${room.total_price?.toLocaleString('es-CO') || 'N/A'} COP\\n\\n` +\n  `🔗 *Reserva aquí:*\\n${input.booking_link}\\n\\n` +\n  `Haz clic en el link para completar tu reserva en nuestro sitio web. ¡Te esperamos! 🌟`;\n\nreturn [{\n  json: {\n    success: true,\n    operation: 'booking_link_generated',\n    booking_link: input.booking_link,\n    room: room,\n    dates: dates,\n    message: userMessage,\n    timestamp: new Date().toISOString()\n  }\n}];"
+      },
+      "id": "49a6ca14-3359-409a-9d86-4d3b5a98ca89",
+      "name": "Format Booking Response",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1264,
+        288
+      ]
+    },
+    {
+      "parameters": {
+        "method": "PUT",
+        "url": "=http://143.198.21.142:8080/webservice/dispatcher.php?url=bookings/{{ $('Parse Input').first().json.bookingId }}",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpBasicAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "Accept",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "check_in",
+              "value": "={{ $('Parse Input').first().json.checkIn }}"
+            },
+            {
+              "name": "check_out",
+              "value": "={{ $('Parse Input').first().json.checkOut }}"
+            },
+            {
+              "name": "num_adults",
+              "value": "={{ $('Parse Input').first().json.numGuests }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "d3b19fe9-927c-48dc-be4d-a7960a35b9a0",
+      "name": "Modify Booking",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        144,
+        752
+      ],
+      "credentials": {
+        "httpBasicAuth": {
+          "id": "e64HvqLcsGqP0BqF",
+          "name": "Unnamed credential"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Format modify booking response\nconst response = $input.first().json;\n\nreturn [{\n  json: {\n    success: true,\n    operation: 'modify_booking',\n    bookingId: $('Parse Input').first().json.bookingId,\n    checkIn: $('Parse Input').first().json.checkIn,\n    checkOut: $('Parse Input').first().json.checkOut,\n    message: `Reserva ${$('Parse Input').first().json.bookingId} modificada exitosamente`,\n    rawResponse: response\n  }\n}];"
+      },
+      "id": "f29c008b-035f-4a83-97e8-71da40d8cf80",
+      "name": "Format Modify Response",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        352,
+        752
+      ]
+    },
+    {
+      "parameters": {
+        "method": "DELETE",
+        "url": "=http://143.198.21.142:8080/webservice/dispatcher.php?url=bookings/{{ $('Parse Input').first().json.bookingId }}",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpBasicAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Accept",
+              "value": "application/json"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "477df8fa-dacf-4a04-898a-1e172e52d45a",
+      "name": "Cancel Booking",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        144,
+        944
+      ],
+      "credentials": {
+        "httpBasicAuth": {
+          "id": "e64HvqLcsGqP0BqF",
+          "name": "Unnamed credential"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Format cancel booking response\nconst response = $input.first().json;\n\nreturn [{\n  json: {\n    success: true,\n    operation: 'cancel_booking',\n    bookingId: $('Parse Input').first().json.bookingId,\n    message: `Reserva ${$('Parse Input').first().json.bookingId} cancelada exitosamente`,\n    rawResponse: response\n  }\n}];"
+      },
+      "id": "91b6d488-5e7d-498f-88e9-02300af61238",
+      "name": "Format Cancel Response",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        352,
+        944
+      ]
+    },
+    {
+      "parameters": {
+        "inputSource": "jsonExample",
+        "jsonExample": "{\n  \"action\": \"check_availability_v2\",\n  \"arrivalDate\": \"2026-03-11\",\n  \"numNights\": 2,\n  \"numGuests\": 2\n}"
+      },
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -752,
+        704
+      ],
+      "id": "a96656b6-ccfe-47c7-88d8-9d046a106675",
+      "name": "When Executed by Another Workflow"
+    },
+    {
+      "parameters": {
+        "jsCode": "return $input.all();"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1056,
+        544
+      ],
+      "id": "b93b8469-6eee-4494-b4a3-a0938410b6ec",
+      "name": "Code in JavaScript"
+    }
+  ],
+  "pinData": {
+    "When Executed by Another Workflow": [
+      {
+        "json": {
+          "action": "check_availability_v2",
+          "arrivalDate": "2026-03-11",
+          "numNights": 2,
+          "numGuests": 2,
+          "roomName": "Glamping Primavera"
+        }
+      }
+    ]
+  },
+  "connections": {
+    "Parse Input": {
+      "main": [
+        [
+          {
+            "node": "Switch by Action",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch by Action": {
+      "main": [
+        [
+          {
+            "node": "Prepare Availability v2",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [],
+        [
+          {
+            "node": "Prepare Availability v2",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [],
+        [
+          {
+            "node": "Modify Booking",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Cancel Booking",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare Availability v2": {
+      "main": [
+        [
+          {
+            "node": "Get Room Types",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Room Types": {
+      "main": [
+        [
+          {
+            "node": "Get Room Inventory",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Room Inventory": {
+      "main": [
+        [
+          {
+            "node": "Get Existing Bookings",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Existing Bookings": {
+      "main": [
+        [
+          {
+            "node": "Calculate Availability",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Calculate Availability": {
+      "main": [
+        [
+          {
+            "node": "Find Alternatives",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Find Alternatives": {
+      "main": [
+        [
+          {
+            "node": "Has Room Name?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Has Room Name?": {
+      "main": [
+        [
+          {
+            "node": "Generate Booking Link",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate Booking Link": {
+      "main": [
+        [
+          {
+            "node": "Format Booking Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Format Booking Response": {
+      "main": [
+        []
+      ]
+    },
+    "Modify Booking": {
+      "main": [
+        [
+          {
+            "node": "Format Modify Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cancel Booking": {
+      "main": [
+        [
+          {
+            "node": "Format Cancel Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When Executed by Another Workflow": {
+      "main": [
+        [
+          {
+            "node": "Parse Input",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "availableInMCP": false
+  },
+  "versionId": "dc212d84-3610-427f-87e9-f4d8e7d1f9bc",
+  "meta": {
+    "instanceId": "e6d6cdd04afbdb35f340d46090d41a2f68377e9679c60a95c2dc161ba5eca37e"
+  },
+  "id": "F7ejH9FS1pClGEkG6gFhz",
+  "tags": []
+}

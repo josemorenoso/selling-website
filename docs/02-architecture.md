@@ -9,7 +9,7 @@
 | Inter (Google Fonts) | Variable | Tipografía body |
 | Puppeteer | 24.40.0 | Screenshots de desarrollo (dev only) |
 
-## Estructura de Carpetas (Actualizada 2026-04-13)
+## Estructura de Carpetas (Actualizada 2026-04-16)
 ```
 luis-moreno-website/
 ├── docs/                              # Documentación (Método AInnovate)
@@ -21,7 +21,23 @@ luis-moreno-website/
 │   ├── API_DOCS.md                    # Servicios externos
 │   ├── SKILLS.md                      # Skills instaladas (frontend-design)
 │   └── features/                      # Un .md por funcionalidad
-│       └── home-redesign.md          # Rediseño FASE 2
+│       ├── home-redesign.md           # Rediseño FASE 2
+│       └── portfolio.md               # Portafolio de Automatizaciones (5 herramientas)
+├── demos/                             # Páginas de demo protegidas por PIN
+│   ├── index.html                     # PIN gate (sessionStorage)
+│   ├── shared.css                     # Estilos oscuros compartidos
+│   ├── restaurantes.html              # iframe RestaurantQR dashboard
+│   ├── hoteles.html                   # Widget chat n8n (agente IA)
+│   ├── prospectos.html                # Formulario captación leads
+│   ├── reporte.html                   # Generador reportes semanales
+│   └── presupuestos.html              # Cotizador dinámico
+├── workflows/                         # Workflows n8n importables (JSON)
+│   ├── captador-prospectos.json       # Webhook → Code → Gmail ×2
+│   ├── reporte-negocio.json           # Webhook → Code → Gmail
+│   ├── creador-presupuestos.json      # Webhook → Code → Gmail ×2
+│   ├── hotel-booking-ai-agent-v3.json # Agente IA reservas (Telegram/Chat → GPT-4o)
+│   ├── qloapps-check-availability-v10.json  # Sub-workflow QloApps
+│   └── qloapps-generate-link-v10.json       # Sub-workflow QloApps
 ├── public/                            # Assets estáticos
 │   ├── images/
 │   │   └── luis-moreno.jpg            # Foto personal (8.9MB — optimizar antes de deploy)
@@ -35,7 +51,7 @@ luis-moreno-website/
 │       └── antigravity-color.svg
 ├── .github/
 │   └── copilot-instructions.md        # Reglas para GitHub Copilot
-├── index.html                         # Página principal (Home) — rediseñada FASE 2
+├── index.html                         # Página principal (Home) — incluye sección #portafolio
 ├── index-backup.html                  # Backup del diseño anterior (FASE 1)
 ├── restaurantqr.html                  # [PENDIENTE] Showcase RestaurantQR + Demo
 ├── .windsurfrules                     # Reglas para Windsurf/Cascade
@@ -125,6 +141,12 @@ restaurantqr.html (Demo Dashboard)
 **Contexto:** Se creó un nuevo repo `selling-website` conectado al proyecto Vercel `selling-website`
 **Decisión:** Usar remote `selling` (github.com/josemorenoso/selling-website) como repo principal de deploy. Remote `origin` (My-website) se mantiene como backup.
 **Consecuencias:** Push con `git push selling main`. Deploy automático en Vercel desde ese repo.
+
+### ADR-007: Demos protegidas por PIN con sessionStorage
+**Fecha:** 2026-04-16
+**Contexto:** Luis necesita mostrar demos en vivo a clientes en reuniones. Las demos deben ser accesibles pero no públicas.
+**Decisión:** PIN gate en `/demos/index.html` usando sessionStorage. PIN hardcodeado en JS (seguridad por oscuridad).
+**Consecuencias:** Suficiente para el caso de uso (demo en reuniones, no datos sensibles). sessionStorage se limpia al cerrar navegador. Los workflows n8n están en VPS privado.
 
 ### ADR-003: Mantener Tailwind CDN
 **Fecha:** 2025-04-13
